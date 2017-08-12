@@ -1,5 +1,5 @@
 # Tensor Trzaskowskiego
-Atari 8-bit game prepared for Ironia 2k17 party
+"Award winning" Atari 8-bit game prepared for Ironia 2k17 party. 1st place in the competition :)
 
 ![Title screen](https://github.com/mgr-inz-rafal/tensor/blob/master/screenshots/tensor_01.png?raw=true)
 

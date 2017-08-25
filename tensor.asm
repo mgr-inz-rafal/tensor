@@ -33,6 +33,7 @@ GS_FIN	equ	2	; Level completed
 ROT_CTR	equ	30	; Delay between rotations
 PL_CHR	equ 1	; Player character
 
+.zpvar	.byte	instafall
 .zpvar	.byte	first_run
 .zpvar	.byte	amygdala_color
 .zpvar	.byte	amygdala_type
@@ -1025,7 +1026,14 @@ game_loop
 			adw curmapname #MAP_02_NAME-MAP_01_NAME
 			mva #GS_FIN gstate
 		#end
-gl_0	jsr synchro
+gl_0	
+
+;		TODO: Uncomment to get rapid fall
+;		#if .byte gstate <> #GS_GRAV
+;			jsr synchro
+;		#end
+		jsr synchro
+		
 		lda repaint
 		cmp #0
 		beq @+
@@ -1081,7 +1089,13 @@ game_loop_movement
 		jmp game_loop
 		
 freefall
-		lda mvstate
+		lda instafall
+		cmp #0
+		beq @+
+		jsr do_instant_fall
+		rts
+		
+@		lda mvstate
 		cmp #MV_IDLE
 		bne @+
 		jsr scan_geometry
@@ -2056,6 +2070,43 @@ recalc_player_position
 		bne @-1
 		rts
 		
+do_instant_fall
+		mva #GS_PLAY gstate
+
+		mva #MAPSIZE-3 ptr0
+		
+		mwa #(SCRMEM+(SCWIDTH*(MAPSIZE-3))+MAPSIZE+MARGIN/2) ptr3
+		
+@		ldx #MAPSIZE-2
+		
+@		ldy #0
+		lda #$ff
+		sta (ptr3),y
+		dew ptr3
+		dex
+		bne @-
+		
+		sbw ptr3 #(MARGIN+1)*2
+		dec ptr0
+		bne @-1
+		
+		/*
+		ldy #0
+		lda (ptr3),y
+		jsr is_movable
+		ldx movable
+		cpx #0
+		beq chuj
+		
+		ldy #SCWIDTH
+		sta (ptr3),y
+		
+chuj	jmp chuj
+		
+@		rts
+		*/
+		rts
+		
 scan_geometry
 		mva #0 any_moved
 		mva #9 py
@@ -2291,6 +2342,7 @@ set_previous_starting_level
 		jsr paint_level_number
 		rts
 
+.align		$100
 DLGAME
 :3			dta b($70)
 			dta b($47)
@@ -2386,6 +2438,8 @@ music_start_table
 	dta a(MAP_01_NAME)
 	org first_run
 	dta b(0)
+	org instafall
+	dta b(1)
 
 
 ; Notes

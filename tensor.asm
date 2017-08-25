@@ -30,7 +30,7 @@ C_WALL2	equ	$14	; Wall #2
 GS_GRAV	equ	0	; Making sure everything is on the ground
 GS_PLAY	equ	1	; Player movement
 GS_FIN	equ	2	; Level completed
-ROT_CTR	equ	30	; Delay between rotations
+ROT_CTR	equ	100	; Delay between rotations
 PL_CHR	equ 1	; Player character
 
 .zpvar	.byte	instafall
@@ -64,7 +64,6 @@ PL_CHR	equ 1	; Player character
 .zpvar	.byte	compared
 .zpvar	.byte	sync
 .zpvar	.byte	any_moved
-.zpvar	.byte	rot_warmup
 .zpvar	.byte	collect
 .zpvar	.byte	target
 .zpvar	.byte	collectibles
@@ -1027,22 +1026,20 @@ game_loop
 			mva #GS_FIN gstate
 		#end
 gl_0	
-
-;		TODO: Uncomment to get rapid fall
-;		#if .byte gstate <> #GS_GRAV
-;			jsr synchro
-;		#end
+		lda instafall
+		cmp #1
+		beq gl_2
 		jsr synchro
-		
-		lda repaint
+		jmp gl_7
+gl_2	lda moved
+		cmp #PL_CHR
+		bne gl_7
+		jsr synchro
+gl_7	lda repaint
 		cmp #0
 		beq @+
 		jsr repaint_player_sprite
-@		dec rot_warmup
-		lda rot_warmup
-		cmp #0-1
-		bne @+
-		inc rot_warmup
+		
 @		lda gstate
 		cmp #GS_GRAV
 		bne @+
@@ -1089,12 +1086,6 @@ game_loop_movement
 		jmp game_loop
 		
 freefall
-		lda instafall
-		cmp #0
-		beq @+
-		jsr do_instant_fall
-		rts
-		
 @		lda mvstate
 		cmp #MV_IDLE
 		bne @+
@@ -1629,7 +1620,6 @@ init_game
 		stx collect
 		stx collecting
 		stx mvcntr
-		stx rot_warmup
 		stx direction
 		jsr set_font
 		stx ludek_offset
@@ -1727,14 +1717,13 @@ stick_right
 		lda STRIG0
 		cmp #0
 		bne @+
-		#if .byte rot_warmup = #0
-			mva #ROT_CTR rot_warmup
+;		#if .word can_rotate = #0
 			jsr clear_player_sprite
 			jsr rotate_clockwise
 			jsr recalc_player_position
 			mva #1 repaint
 			mva #GS_GRAV gstate
-		#end
+;		#end
 		jmp game_loop
 @		mva ppx px
 		mva ppy py
@@ -1752,14 +1741,13 @@ stick_left
 		lda STRIG0
 		cmp #0
 		bne @+
-		#if .byte rot_warmup = #0
-			mva #ROT_CTR rot_warmup
+;		#if .word can_rotate = #0
 			jsr clear_player_sprite
 			jsr rotate_counter_clockwise
 			jsr recalc_player_position
 			mva #1 repaint
 			mva #GS_GRAV gstate
-		#end
+;		#end
 		jmp game_loop
 @		mva ppx px
 		mva ppy py
@@ -1769,7 +1757,7 @@ stick_left
 		jsr init_movement
 		mva #MV_MLFT mvstate
 		jmp game_loop
-
+		
 set_falling_sprite_color
 		pha
 		sta ptr0+1
@@ -2068,43 +2056,6 @@ recalc_player_position
 		cmp #0
 		dec ptr3
 		bne @-1
-		rts
-		
-do_instant_fall
-		mva #GS_PLAY gstate
-
-		mva #MAPSIZE-3 ptr0
-		
-		mwa #(SCRMEM+(SCWIDTH*(MAPSIZE-3))+MAPSIZE+MARGIN/2) ptr3
-		
-@		ldx #MAPSIZE-2
-		
-@		ldy #0
-		lda #$ff
-		sta (ptr3),y
-		dew ptr3
-		dex
-		bne @-
-		
-		sbw ptr3 #(MARGIN+1)*2
-		dec ptr0
-		bne @-1
-		
-		/*
-		ldy #0
-		lda (ptr3),y
-		jsr is_movable
-		ldx movable
-		cpx #0
-		beq chuj
-		
-		ldy #SCWIDTH
-		sta (ptr3),y
-		
-chuj	jmp chuj
-		
-@		rts
-		*/
 		rts
 		
 scan_geometry
@@ -2439,7 +2390,7 @@ music_start_table
 	org first_run
 	dta b(0)
 	org instafall
-	dta b(1)
+	dta b(0)
 
 
 ; Notes

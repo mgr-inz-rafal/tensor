@@ -30,9 +30,10 @@ C_WALL2	equ	$14	; Wall #2
 GS_GRAV	equ	0	; Making sure everything is on the ground
 GS_PLAY	equ	1	; Player movement
 GS_FIN	equ	2	; Level completed
-ROT_CTR	equ	100	; Delay between rotations
+ROT_CTR	equ	20	; Delay between rotations
 PL_CHR	equ 1	; Player character
 
+.zpvar	.byte	rotation_warmup
 .zpvar	.byte	instafall
 .zpvar	.byte	first_run
 .zpvar	.byte	amygdala_color
@@ -1034,6 +1035,7 @@ gl_0
 gl_2	lda moved
 		cmp #PL_CHR
 		bne gl_7
+
 		jsr synchro
 gl_7	lda repaint
 		cmp #0
@@ -1547,7 +1549,12 @@ show_intermission
 		
 vbi_routine
 		jsr RASTERMUSICTRACKER+3
-		jmp XITVBV
+		dec rotation_warmup
+		lda rotation_warmup
+		cmp #$ff
+		bne @+
+		inc rotation_warmup
+@		jmp XITVBV
 		
 set_amygdala
 		lda amygdala_type
@@ -1632,6 +1639,12 @@ init_game
 		rts
 
 rotate_clockwise
+		lda rotation_warmup
+		cmp #0
+		beq @+
+		rts
+@		mva #ROT_CTR rotation_warmup
+
 		dec direction
 		lda direction
 		and #%00000011
@@ -1667,6 +1680,12 @@ rotate_clockwise
 		rts
 		
 rotate_counter_clockwise
+		lda rotation_warmup
+		cmp #0
+		beq @+
+		rts
+@		mva #ROT_CTR rotation_warmup
+		
 		inc direction
 		lda direction
 		and #%00000011
@@ -2390,7 +2409,7 @@ music_start_table
 	org first_run
 	dta b(0)
 	org instafall
-	dta b(0)
+	dta b(1)
 
 
 ; Notes

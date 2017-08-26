@@ -30,9 +30,12 @@ C_WALL2	equ	$14	; Wall #2
 GS_GRAV	equ	0	; Making sure everything is on the ground
 GS_PLAY	equ	1	; Player movement
 GS_FIN	equ	2	; Level completed
-ROT_CTR	equ	30	; Delay between rotations
+ROT_CTR	equ	20	; Delay between rotations
 PL_CHR	equ 1	; Player character
 
+.zpvar	.byte	instruction_page
+.zpvar	.byte	rotation_warmup
+.zpvar	.byte	instafall
 .zpvar	.byte	first_run
 .zpvar	.byte	amygdala_color
 .zpvar	.byte	amygdala_type
@@ -63,7 +66,6 @@ PL_CHR	equ 1	; Player character
 .zpvar	.byte	compared
 .zpvar	.byte	sync
 .zpvar	.byte	any_moved
-.zpvar	.byte	rot_warmup
 .zpvar	.byte	collect
 .zpvar	.byte	target
 .zpvar	.byte	collectibles
@@ -128,6 +130,43 @@ AMYGDALA_DATA_2	; Diament
 
 AMYGDALA_DATA_3	; Serce
 	dta b(0),b(108),b(190),b(250),b(116),b(56),b(16),b(0),b($36)
+TITLE_PART_1_X
+	dta b(62)
+:38	dta b(125)
+	dta b(93)
+	dta b(124)
+	dta d' to jest miejsce na druga strone      ',b(124)
+	dta b(124)
+	dta d' instrukcji oraz chyba jakies opcje   ',b(124)
+	dta b(124)
+	dta d' .................................... ',b(124)
+	dta b(124)
+	dta d' .................................... ',b(124)
+	dta b(124)
+	dta d' .................................... ',b(124)
+TITLE_PART_2_X
+	dta b(124)
+	dta d' .................................... ',b(124)
+	dta b(124)
+	dta d' .................................... ',b(124)
+	dta b(124)
+	dta d' ',b(72),d'SELECT'*,b(72+128)
+	dta d' - migdaly ',b(7)
+TITLE_AMYGDALA_SPEED
+	dta d'       e',b(7),d' ...... ',b(124)
+	dta b(124)
+	dta d' ..................................!D ',b(124)
+	dta b(63)
+:38	dta b(125)
+	dta b(29)
+	dta b(124)
+	dta b(128)
+	dta b(94+128)
+	dta b(95+128)
+	dta d' - pieczara:'*
+	dta d'           '*
+	dta b(32+128),b(64+128)
+	dta d' - strona '*,b(124)
 TITLE_PART_1
 	dta b(62)
 :38	dta b(125)
@@ -170,7 +209,9 @@ TITLE_PART_2
 	dta b(95+128)
 	dta d' - pieczara:'*
 TITLE_LEVEL_NUMBER
-	dta d'          FIRE - start '*,b(124)
+	dta d'           '*
+	dta b(32+128),b(64+128)
+	dta d' - strona '*,b(124)
 TITLE_PART_3
 	dta b(91)
 :31	dta b(125)
@@ -285,6 +326,11 @@ main
 	dey
 	cpy #0
 	bne @-
+	
+	ldx #0
+	stx instruction_page
+	mwa #TITLE_PART_1 ptr0
+	mwa #TITLE_PART_2 ptr1
 
 	lda #0
 	sta mapnumber
@@ -819,6 +865,19 @@ raster_program_end
 	bne @+
 	jsr set_previous_starting_level
 xx1	
+@	cmp #253
+	bne @+
+	jsr flip_instruction_page
+	jmp xx2
+@	cmp #254
+	bne xx2
+	jsr flip_instruction_page
+xx2	
+	lda consol
+	cmp #5
+	bne @+
+	jsr flip_amygdala_speed
+
 @	jmp skp
 
 stop
@@ -1025,16 +1084,23 @@ game_loop
 			adw curmapname #MAP_02_NAME-MAP_01_NAME
 			mva #GS_FIN gstate
 		#end
-gl_0	jsr synchro
-		lda repaint
+gl_0	
+		lda instafall
+		and #%00000001
+		cmp #1
+		beq gl_2
+		jsr synchro
+		jmp gl_7
+gl_2	lda moved
+		cmp #PL_CHR
+		bne gl_7
+
+		jsr synchro
+gl_7	lda repaint
 		cmp #0
 		beq @+
 		jsr repaint_player_sprite
-@		dec rot_warmup
-		lda rot_warmup
-		cmp #0-1
-		bne @+
-		inc rot_warmup
+		
 @		lda gstate
 		cmp #GS_GRAV
 		bne @+
@@ -1074,14 +1140,14 @@ gl_0	jsr synchro
 		bne game_loop_movement
 		ldx #$ff
 		stx CH
-		jmp main		
+		jmp main
 
 game_loop_movement
 		jsr move_element
 		jmp game_loop
 		
 freefall
-		lda mvstate
+@		lda mvstate
 		cmp #MV_IDLE
 		bne @+
 		jsr scan_geometry
@@ -1542,7 +1608,12 @@ show_intermission
 		
 vbi_routine
 		jsr RASTERMUSICTRACKER+3
-		jmp XITVBV
+		dec rotation_warmup
+		lda rotation_warmup
+		cmp #$ff
+		bne @+
+		inc rotation_warmup
+@		jmp XITVBV
 		
 set_amygdala
 		lda amygdala_type
@@ -1615,7 +1686,6 @@ init_game
 		stx collect
 		stx collecting
 		stx mvcntr
-		stx rot_warmup
 		stx direction
 		jsr set_font
 		stx ludek_offset
@@ -1628,6 +1698,12 @@ init_game
 		rts
 
 rotate_clockwise
+		lda rotation_warmup
+		cmp #0
+		beq @+
+		rts
+@		mva #ROT_CTR rotation_warmup
+
 		dec direction
 		lda direction
 		and #%00000011
@@ -1663,6 +1739,12 @@ rotate_clockwise
 		rts
 		
 rotate_counter_clockwise
+		lda rotation_warmup
+		cmp #0
+		beq @+
+		rts
+@		mva #ROT_CTR rotation_warmup
+		
 		inc direction
 		lda direction
 		and #%00000011
@@ -1713,14 +1795,13 @@ stick_right
 		lda STRIG0
 		cmp #0
 		bne @+
-		#if .byte rot_warmup = #0
-			mva #ROT_CTR rot_warmup
+;		#if .word can_rotate = #0
 			jsr clear_player_sprite
 			jsr rotate_clockwise
 			jsr recalc_player_position
 			mva #1 repaint
 			mva #GS_GRAV gstate
-		#end
+;		#end
 		jmp game_loop
 @		mva ppx px
 		mva ppy py
@@ -1738,14 +1819,13 @@ stick_left
 		lda STRIG0
 		cmp #0
 		bne @+
-		#if .byte rot_warmup = #0
-			mva #ROT_CTR rot_warmup
+;		#if .word can_rotate = #0
 			jsr clear_player_sprite
 			jsr rotate_counter_clockwise
 			jsr recalc_player_position
 			mva #1 repaint
 			mva #GS_GRAV gstate
-		#end
+;		#end
 		jmp game_loop
 @		mva ppx px
 		mva ppy py
@@ -1755,7 +1835,7 @@ stick_left
 		jsr init_movement
 		mva #MV_MLFT mvstate
 		jmp game_loop
-
+		
 set_falling_sprite_color
 		pha
 		sta ptr0+1
@@ -2231,13 +2311,13 @@ synchr2	cmp VCOUNT
 
 paint_title_text
 		ldy #0
-@		lda TITLE_PART_1,y
+@		lda (ptr0),y
 		sta SCRMEM,y
 		iny
 		cpy #240
 		bne @-
 		ldy #0
-@		lda TITLE_PART_2,y
+@		lda (ptr1),y
 		sta SCRMEM+40*6,y
 		iny
 		cpy #240
@@ -2248,6 +2328,7 @@ paint_title_text
 		iny
 		cpy #40+3*20
 		bne @-
+		jsr paint_amygdala_speed
 		rts
 
 paint_level_number
@@ -2263,8 +2344,8 @@ paint_level_number
 		
 set_next_starting_level
 		lda delayer
-		and #%00000111
-		cmp #%00000111
+		and #%00000011
+		cmp #%00000011
 		bne @+
 		adw curmap #MAP_02-MAP_01
 		adw curmapname #MAP_02_NAME-MAP_01_NAME
@@ -2290,7 +2371,81 @@ set_previous_starting_level
 		#end
 		jsr paint_level_number
 		rts
+		
+flip_instruction_page
+		lda delayer
+		and #%00000111
+		cmp #%00000111
+		bne fip_XX
+		dec instruction_page
+		lda instruction_page
+		and #%00000001
+		cmp #0
+		beq @+
+		mwa #TITLE_PART_1_X ptr0
+		mwa #TITLE_PART_2_X ptr1
+		jmp fip_X
+@		mwa #TITLE_PART_1 ptr0
+		mwa #TITLE_PART_2 ptr1
+fip_X	jsr paint_title_text
+		jsr paint_level_number
+fip_XX	rts
 
+flip_amygdala_speed
+		lda delayer
+		and #%00000111
+		cmp #%00000111
+		bne @+
+		inc instafall
+		jsr paint_amygdala_speed
+@		rts
+
+paint_amygdala_speed
+		lda instruction_page
+		and #%00000001
+		cmp #0
+		beq pas_X
+		
+		lda instafall
+		and #%00000001
+		cmp #0
+		bne pas_0
+
+		lda #46
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)
+		lda #105
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+1
+		lda #101
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+2
+		lda #109
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+3
+		lda #114
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+4
+		lda #97
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+5
+		lda #119
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+6
+		jmp pas_X
+
+pas_0
+		lda #2
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)
+		lda #112
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+1
+		lda #105
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+2
+		lda #101
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+3
+		lda #115
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+4
+		lda #122
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+5
+		lda #110
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+6
+		
+pas_X	rts
+
+.align		$100
 DLGAME
 :3			dta b($70)
 			dta b($47)
@@ -2386,6 +2541,10 @@ music_start_table
 	dta a(MAP_01_NAME)
 	org first_run
 	dta b(0)
+	org instruction_page
+	dta b(0)
+	org instafall
+	dta b(1)
 
 
 ; Notes

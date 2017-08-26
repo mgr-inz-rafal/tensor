@@ -150,7 +150,10 @@ TITLE_PART_2_X
 	dta b(124)
 	dta d' .................................... ',b(124)
 	dta b(124)
-	dta d' .................................... ',b(124)
+	dta d' ',b(72),d'SELECT'*,b(72+128)
+	dta d' - migdaly ',b(7)
+TITLE_AMYGDALA_SPEED
+	dta d'       e',b(7),d' ...... ',b(124)
 	dta b(124)
 	dta d' ..................................!D ',b(124)
 	dta b(63)
@@ -324,6 +327,8 @@ main
 	cpy #0
 	bne @-
 	
+	ldx #0
+	stx instruction_page
 	mwa #TITLE_PART_1 ptr0
 	mwa #TITLE_PART_2 ptr1
 
@@ -867,7 +872,13 @@ xx1
 @	cmp #254
 	bne xx2
 	jsr flip_instruction_page
-xx2	jmp skp
+xx2	
+	lda consol
+	cmp #5
+	bne @+
+	jsr flip_amygdala_speed
+
+@	jmp skp
 
 stop
 	jsr RASTERMUSICTRACKER+9 ; Stop music
@@ -1075,6 +1086,7 @@ game_loop
 		#end
 gl_0	
 		lda instafall
+		and #%00000001
 		cmp #1
 		beq gl_2
 		jsr synchro
@@ -1128,7 +1140,7 @@ gl_7	lda repaint
 		bne game_loop_movement
 		ldx #$ff
 		stx CH
-		jmp main		
+		jmp main
 
 game_loop_movement
 		jsr move_element
@@ -2316,6 +2328,7 @@ paint_title_text
 		iny
 		cpy #40+3*20
 		bne @-
+		jsr paint_amygdala_speed
 		rts
 
 paint_level_number
@@ -2331,8 +2344,8 @@ paint_level_number
 		
 set_next_starting_level
 		lda delayer
-		and #%00000111
-		cmp #%00000111
+		and #%00000011
+		cmp #%00000011
 		bne @+
 		adw curmap #MAP_02-MAP_01
 		adw curmapname #MAP_02_NAME-MAP_01_NAME
@@ -2377,6 +2390,60 @@ flip_instruction_page
 fip_X	jsr paint_title_text
 		jsr paint_level_number
 fip_XX	rts
+
+flip_amygdala_speed
+		lda delayer
+		and #%00000111
+		cmp #%00000111
+		bne @+
+		inc instafall
+		jsr paint_amygdala_speed
+@		rts
+
+paint_amygdala_speed
+		lda instruction_page
+		and #%00000001
+		cmp #0
+		beq pas_X
+		
+		lda instafall
+		and #%00000001
+		cmp #0
+		bne pas_0
+
+		lda #46
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)
+		lda #105
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+1
+		lda #101
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+2
+		lda #109
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+3
+		lda #114
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+4
+		lda #97
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+5
+		lda #119
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+6
+		jmp pas_X
+
+pas_0
+		lda #2
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)
+		lda #112
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+1
+		lda #105
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+2
+		lda #101
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+3
+		lda #115
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+4
+		lda #122
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+5
+		lda #110
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+6
+		
+pas_X	rts
 
 .align		$100
 DLGAME

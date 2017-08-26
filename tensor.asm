@@ -33,6 +33,7 @@ GS_FIN	equ	2	; Level completed
 ROT_CTR	equ	20	; Delay between rotations
 PL_CHR	equ 1	; Player character
 
+.zpvar	.byte	instruction_page
 .zpvar	.byte	rotation_warmup
 .zpvar	.byte	instafall
 .zpvar	.byte	first_run
@@ -129,6 +130,40 @@ AMYGDALA_DATA_2	; Diament
 
 AMYGDALA_DATA_3	; Serce
 	dta b(0),b(108),b(190),b(250),b(116),b(56),b(16),b(0),b($36)
+TITLE_PART_1_X
+	dta b(62)
+:38	dta b(125)
+	dta b(93)
+	dta b(124)
+	dta d' to jest miejsce na druga strone      ',b(124)
+	dta b(124)
+	dta d' instrukcji oraz chyba jakies opcje   ',b(124)
+	dta b(124)
+	dta d' .................................... ',b(124)
+	dta b(124)
+	dta d' .................................... ',b(124)
+	dta b(124)
+	dta d' .................................... ',b(124)
+TITLE_PART_2_X
+	dta b(124)
+	dta d' .................................... ',b(124)
+	dta b(124)
+	dta d' .................................... ',b(124)
+	dta b(124)
+	dta d' .................................... ',b(124)
+	dta b(124)
+	dta d' ..................................!D ',b(124)
+	dta b(63)
+:38	dta b(125)
+	dta b(29)
+	dta b(124)
+	dta b(128)
+	dta b(94+128)
+	dta b(95+128)
+	dta d' - pieczara:'*
+	dta d'           '*
+	dta b(32+128),b(64+128)
+	dta d' - strona '*,b(124)
 TITLE_PART_1
 	dta b(62)
 :38	dta b(125)
@@ -171,7 +206,9 @@ TITLE_PART_2
 	dta b(95+128)
 	dta d' - pieczara:'*
 TITLE_LEVEL_NUMBER
-	dta d'          FIRE - start '*,b(124)
+	dta d'           '*
+	dta b(32+128),b(64+128)
+	dta d' - strona '*,b(124)
 TITLE_PART_3
 	dta b(91)
 :31	dta b(125)
@@ -286,6 +323,9 @@ main
 	dey
 	cpy #0
 	bne @-
+	
+	mwa #TITLE_PART_1 ptr0
+	mwa #TITLE_PART_2 ptr1
 
 	lda #0
 	sta mapnumber
@@ -820,7 +860,14 @@ raster_program_end
 	bne @+
 	jsr set_previous_starting_level
 xx1	
-@	jmp skp
+@	cmp #253
+	bne @+
+	jsr flip_instruction_page
+	jmp xx2
+@	cmp #254
+	bne xx2
+	jsr flip_instruction_page
+xx2	jmp skp
 
 stop
 	jsr RASTERMUSICTRACKER+9 ; Stop music
@@ -2252,13 +2299,13 @@ synchr2	cmp VCOUNT
 
 paint_title_text
 		ldy #0
-@		lda TITLE_PART_1,y
+@		lda (ptr0),y
 		sta SCRMEM,y
 		iny
 		cpy #240
 		bne @-
 		ldy #0
-@		lda TITLE_PART_2,y
+@		lda (ptr1),y
 		sta SCRMEM+40*6,y
 		iny
 		cpy #240
@@ -2311,6 +2358,25 @@ set_previous_starting_level
 		#end
 		jsr paint_level_number
 		rts
+		
+flip_instruction_page
+		lda delayer
+		and #%00000111
+		cmp #%00000111
+		bne fip_XX
+		dec instruction_page
+		lda instruction_page
+		and #%00000001
+		cmp #0
+		beq @+
+		mwa #TITLE_PART_1_X ptr0
+		mwa #TITLE_PART_2_X ptr1
+		jmp fip_X
+@		mwa #TITLE_PART_1 ptr0
+		mwa #TITLE_PART_2 ptr1
+fip_X	jsr paint_title_text
+		jsr paint_level_number
+fip_XX	rts
 
 .align		$100
 DLGAME
@@ -2407,6 +2473,8 @@ music_start_table
 	org curmapname
 	dta a(MAP_01_NAME)
 	org first_run
+	dta b(0)
+	org instruction_page
 	dta b(0)
 	org instafall
 	dta b(1)

@@ -216,7 +216,8 @@ TITLE_PART_3
 	dta b(91)
 :31	dta b(125)
 	dta b(126)
-	dta d'v1.0'
+	dta d'v1.'
+	dta b(31)
 	dta b(127)
 	dta b(125)
 	dta b(92)

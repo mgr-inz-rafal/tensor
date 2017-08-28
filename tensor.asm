@@ -9,6 +9,7 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
+MAPCOUNT equ 17
 MUSICPLAYER	equ $9000
 ;MODUL	equ $2dc0
 MAPSIZE	equ	12
@@ -255,10 +256,10 @@ MAP_02_NAME
 		dta d'   ziej',b(4+64),d'ca jadem       przed obiadem    11'
 		dta d'   grzyb widelec       ',b(10+64),d'arowka robot    12'
 		dta d' komnata  ',b(2+64),d'mierdzi       bez szans      13'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa14'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa15'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa16'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa17'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa14'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa15'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa16'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa17'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa18'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa19'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
@@ -2529,7 +2530,7 @@ MAP_01
 
 	
 MAP_02
-.rept 13-1 #+2
+.rept MAPCOUNT-1 #+2
 	ins "maps\v:1.map"
 .endr
 MAP_LAST

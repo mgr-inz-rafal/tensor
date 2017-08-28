@@ -33,6 +33,7 @@ GS_FIN	equ	2	; Level completed
 ROT_CTR	equ	20	; Delay between rotations
 PL_CHR	equ 1	; Player character
 
+.zpvar	.byte	old_instafall
 .zpvar	.byte	instruction_page
 .zpvar	.byte	rotation_warmup
 .zpvar	.byte	instafall
@@ -1105,7 +1106,12 @@ gl_7	lda repaint
 @		lda gstate
 		cmp #GS_GRAV
 		bne @+
-		jsr move_element
+		lda STICK0
+		cmp #13
+		bne gl_1
+		lda #1
+		sta instafall
+gl_1	jsr move_element
 		jsr freefall
 		jmp game_loop
 @		cmp #GS_FIN
@@ -1156,6 +1162,7 @@ freefall
 		cmp #1
 		beq @+
 		mva #GS_PLAY gstate
+		mva old_instafall instafall
 		mvx #$ff CH
 		mva #1 ignorestick
 @		rts
@@ -1651,7 +1658,7 @@ init_game
 		lda #7
 		jsr SETVBV
 		
-	
+		mva instafall old_instafall
 		jsr show_intermission
 
 		#if .byte first_run = #0
@@ -1796,13 +1803,11 @@ stick_right
 		lda STRIG0
 		cmp #0
 		bne @+
-;		#if .word can_rotate = #0
-			jsr clear_player_sprite
-			jsr rotate_clockwise
-			jsr recalc_player_position
-			mva #1 repaint
-			mva #GS_GRAV gstate
-;		#end
+		jsr clear_player_sprite
+		jsr rotate_clockwise
+		jsr recalc_player_position
+		mva #1 repaint
+		mva #GS_GRAV gstate
 		jmp game_loop
 @		mva ppx px
 		mva ppy py
@@ -1820,13 +1825,11 @@ stick_left
 		lda STRIG0
 		cmp #0
 		bne @+
-;		#if .word can_rotate = #0
-			jsr clear_player_sprite
-			jsr rotate_counter_clockwise
-			jsr recalc_player_position
-			mva #1 repaint
-			mva #GS_GRAV gstate
-;		#end
+		jsr clear_player_sprite
+		jsr rotate_counter_clockwise
+		jsr recalc_player_position
+		mva #1 repaint
+		mva #GS_GRAV gstate
 		jmp game_loop
 @		mva ppx px
 		mva ppy py
@@ -2563,3 +2566,4 @@ music_start_table
 ; TODO:
 ; - Check player gravity only after movement
 ; - Integrate next raster optimization from Vidol
+; - Add detailed instruction (instafall on demand and so on)

@@ -244,7 +244,6 @@ MAP_02_NAME
 		dta d'ytne         ko'
 		dta b(2+64)
 		dta d'ciepiecho    02'
-;             #........;.........##........;.........#
 		dta d'  wieloraka grota    poszanowania kota  03'
 		dta d'     sawa woda         santiago bela    04'
 		dta d' wydrapane miejsce    eliminacji sera   05'
@@ -255,11 +254,12 @@ MAP_02_NAME
 		dta d'   przepompownia       okrutnego z',b(11+64),d'a    10'
 		dta d'   ziej',b(4+64),d'ca jadem       przed obiadem    11'
 		dta d'   grzyb widelec       ',b(10+64),d'arowka robot    12'
-		dta d' komnata  ',b(2+64),d'mierdzi       bez szans      13'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa14'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa15'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa16'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa17'
+		dta d' podwodny grobowiec   kwiatk',b(5+64),d'w i mi',b(1+64),d'sa  13'
+		dta d'  krater z',b(11+64),d'a pe',b(11+64),d'en    spienionej piany  14'
+		dta d'nisza kolonistki olikt',b(5+64),d'ra drwi',b(11+64),d'a z gruzu15'
+;             #........;.........##........;.........#
+		dta d' izba sn',b(5+64),d'w obsikana  przez koty szatana 16'
+		dta d' komnata  ',b(2+64),d'mierdzi       bez szans      17'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa18'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa19'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'

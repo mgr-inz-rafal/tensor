@@ -9,7 +9,7 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
-MAPCOUNT equ 17
+MAPCOUNT equ 25
 MUSICPLAYER	equ $9000
 ;MODUL	equ $2dc0
 MAPSIZE	equ	12
@@ -260,6 +260,15 @@ MAP_02_NAME
 ;             #........;.........##........;.........#
 		dta d' izba sn',b(5+64),d'w obsikana  przez koty szatana 16'
 		dta d' komnata  ',b(2+64),d'mierdzi       bez szans      17'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa18'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa19'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa21'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa22'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa23'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa24'
+		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa25'
+;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa18'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa19'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'

@@ -9,7 +9,7 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
-MAPCOUNT equ 25
+MAPCOUNT equ 26
 MUSICPLAYER	equ $9000
 ;MODUL	equ $2dc0
 MAPSIZE	equ	12
@@ -268,7 +268,8 @@ MAP_02_NAME
 ;             #........;.........##........;.........#
 		dta d'  wype',b(11+64),d'nione  rop',b(4+64),d'   koszmarne  po',b(11+64),d'acie 24'
 		dta d' ',b(2+64),d'luza numer siedem wcze',b(2+64),d'niej spopielona25'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
+;             #........;.........##........;.........#
+		dta d'przedpok',b(5+64),d'j  kulawych lis',b(5+64),d'w  snycerskich 26'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa18'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa19'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
@@ -2522,21 +2523,33 @@ GAME_FONT_2
 		icl "music\rmtplayr.a65"
 
 MAP_01
-	ins "maps\v1.map"
+;	ins "maps\v1.map"
 
-		 ; dta d'%&''()*+%%%%%'
-		 ; dta d'%          %'		
-		 ; dta d'%    %%%   %'		
-		 ; dta d'%    %     %'		
-		 ; dta d'%   ,-./012,'		
-		 ; dta d'%          %'		
-		 ; dta d'%       %  %'		
-		 ; dta d'%%%%%%% %  %'		
-		 ; dta d'%   "   %  %'		
-		 ; dta d'%  %%%  %  %'		
-		 ; dta d'%!      %  %'		
-		 ; dta d'%%%%%%&''()*+'
+		  dta d'%%%%%%%%%%%%'
+		  dta d'%    %% # "%'		
+		  dta d'%%%% %% %%%%'		
+		  dta d'%  # #     %'		
+		  dta d'% %%%%%%%% %'		
+		  dta d'%       #  %'		
+		  dta d'%%%%%  %%%%%'		
+		  dta d'% ! %  % " %'		
+		  dta d'% % %  % % %'		
+		  dta d'%   %  %   %'		
+		  dta d'%          %'		
+		  dta d'%%%%%%%%%%%%'
 
+		  ; dta d'%%%%%%%%%%%%'
+		  ; dta d'%          %'		
+		  ; dta d'%          %'		
+		  ; dta d'%          %'		
+		  ; dta d'%          %'		
+		  ; dta d'%          %'		
+		  ; dta d'%          %'		
+		  ; dta d'%          %'		
+		  ; dta d'%          %'		
+		  ; dta d'%          %'		
+		  ; dta d'%!         %'		
+		  ; dta d'%%%%%%%%%%%%'
 	
 MAP_02
 .rept MAPCOUNT-1 #+2

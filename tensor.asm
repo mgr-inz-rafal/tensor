@@ -132,6 +132,19 @@ AMYGDALA_DATA_2	; Diament
 
 AMYGDALA_DATA_3	; Serce
 	dta b(0),b(108),b(190),b(250),b(116),b(56),b(16),b(0),b($36)
+
+AMYGDALA_DATA_4	; Swiecznik
+	dta b(16),b(24),b(48),b(16),b(68),b(56),b(16),b(56),b($ff)
+
+AMYGDALA_DATA_5	; Miecz
+	dta b(0),b(192),b(160),b(84),b(44),b(24),b(52),b(2),b($ff)
+
+AMYGDALA_DATA_6	; Pierscionek
+	dta b(0),b(60),b(24),b(52),b(82),b(64),b(66),b(52),b($ff)
+
+AMYGDALA_DATA_7	; Robak
+	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($ff)
+	
 TITLE_PART_1_X
 	dta b(62)
 :38	dta b(125)
@@ -1648,7 +1661,23 @@ set_amygdala
 		bne @+
 		mwa #AMYGDALA_DATA_2 ptr0
 		jmp sa_0
-@		mwa #AMYGDALA_DATA_3 ptr0
+@		cmp #3
+		bne @+
+		mwa #AMYGDALA_DATA_3 ptr0
+		jmp sa_0
+@		cmp #4
+		bne @+
+		mwa #AMYGDALA_DATA_4 ptr0
+		jmp sa_0
+@		cmp #5
+		bne @+
+		mwa #AMYGDALA_DATA_5 ptr0
+		jmp sa_0
+@		cmp #6
+		bne @+
+		mwa #AMYGDALA_DATA_6 ptr0
+		jmp sa_0
+@		mwa #AMYGDALA_DATA_7 ptr0
 sa_0		
 		ldy #0
 @		lda (ptr0),y
@@ -1686,7 +1715,7 @@ init_game
 		jsr RASTERMUSICTRACKER
 
 		lda RANDOM
-		and #%00000011
+		and #%00000111
 		sta amygdala_type
 		jsr set_amygdala
 		

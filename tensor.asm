@@ -9,7 +9,7 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
-MAPCOUNT equ 26
+MAPCOUNT equ 27
 MUSICPLAYER	equ $9000
 ;MODUL	equ $2dc0
 MAPSIZE	equ	12
@@ -278,11 +278,11 @@ MAP_02_NAME
 		dta d'cztery p',b(11+64),d'ozy strachu ponad osiem mi',b(1+64),b(2+64),d'ni 21'
 		dta d'  dom lisa siostry  brata drwala staszka22'
 		dta d'  podwodne  piek',b(11+64),d'o   beztypowych ',b(2+64),d'ledzi 23'
-;             #........;.........##........;.........#
 		dta d'  wype',b(11+64),d'nione  rop',b(4+64),d'   koszmarne  po',b(11+64),d'acie 24'
 		dta d' ',b(2+64),d'luza numer siedem wcze',b(2+64),d'niej spopielona25'
-;             #........;.........##........;.........#
 		dta d'przedpok',b(5+64),d'j  kulawych lis',b(5+64),d'w  snycerskich 26'
+;             #........;.........##........;.........#
+		dta d'  miejsce',b(12+64),d' kt',b(5+64),d'rego   nigdy nie za wiele 27'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa18'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa19'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'

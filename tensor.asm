@@ -9,7 +9,7 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
-MAPCOUNT equ 30
+MAPCOUNT equ 32
 MUSICPLAYER	equ $9000
 ;MODUL	equ $2dc0
 MAPSIZE	equ	12
@@ -284,8 +284,11 @@ MAP_02_NAME
 		dta d'  miejsce',b(12+64),d' kt',b(5+64),d'rego   nigdy nie za wiele 27'
 		dta d'  xena xenia xella       przewiewna     28'
 		dta d'   tunel mglisty        nieparzysty     29'
-;             #........;.........##........;.........#
 		dta d' zatopiony par',b(5+64),d'w z   groszkiem i psami  30'
+		dta d' wiktor czterna',b(2+64),d'cie labradore labradorem31'
+;             #........;.........##........;.........#
+		dta d' wida',b(3+64),d' w tej grocie pozosta',b(11+64),d'o',b(2+64),d'ci choroby32'
+;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
 MAP_NAME_LAST
 		dta b($9b)

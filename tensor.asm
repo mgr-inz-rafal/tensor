@@ -9,7 +9,7 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
-MAPCOUNT equ 29
+MAPCOUNT equ 30
 MUSICPLAYER	equ $9000
 ;MODUL	equ $2dc0
 MAPSIZE	equ	12
@@ -283,8 +283,9 @@ MAP_02_NAME
 		dta d'przedpok',b(5+64),d'j  kulawych lis',b(5+64),d'w  snycerskich 26'
 		dta d'  miejsce',b(12+64),d' kt',b(5+64),d'rego   nigdy nie za wiele 27'
 		dta d'  xena xenia xella       przewiewna     28'
-;             #........;.........##........;.........#
 		dta d'   tunel mglisty        nieparzysty     29'
+;             #........;.........##........;.........#
+		dta d' zatopiony par',b(5+64),d'w z   groszkiem i psami  30'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
 MAP_NAME_LAST
 		dta b($9b)
@@ -2510,19 +2511,6 @@ DLINTERMISSION
 			dta b($07)
 			dta b($41),a(DLINTERMISSION)
 
-		; dta d'%&''()*+%%%%%'
-		; dta d'%          %'		
-		; dta d'%    %%%   %'		
-		; dta d'%    %"$$  %'		
-		; dta d'%   ,-./012,'		
-		; dta d'%          %'		
-		; dta d'%"##    %  %'		
-		; dta d'%%%%%%% %  %'		
-		; dta d'%   "   %  %'		
-		; dta d'%  %%%  %  %'		
-		; dta d'%!  "   %  %'		
-		; dta d'%%%%%%&''()*+'
-
 ; Sprites
 .align		$1000
 pmg_base
@@ -2554,18 +2542,18 @@ GAME_FONT_2
 MAP_01
 ;	ins "maps\v1.map"
 
-		   dta d'   %%%%%%   '
-		   dta d'   %   "%   '		
-		   dta d'   %%% %%   '		
-		   dta d'%%%%    %%%%'		
-		   dta d'% %        %'		
-		   dta d'%        % %'		
-		   dta d'% %     %% %'		
-		   dta d'%"%    %%  %'		
-		   dta d'%%%   %% ##%'		
-		   dta d'%    %% ##%%'		
-		   dta d'%!  %% ##%% '		
-		   dta d'%%%%%%%%%%  '
+		  dta d'%%%%%%%%%%% '
+		  dta d'%##"" ##""% '		
+		  dta d'%""## ""##% '		
+		  dta d'%%%%% %%%%% '		
+		  dta d'    % %     '		
+		  dta d'    % % %%%%'		
+		  dta d'    % % % !%'		
+		  dta d'    % % % %%'		
+		  dta d' %%%% %%% %%'		
+		  dta d' %         %'		
+		  dta d' %         %'		
+		  dta d' %%%%%%%%%%%'
 
 		  ; dta d'%%%%%%%%%%%%'
 		  ; dta d'%          %'		
@@ -2577,7 +2565,7 @@ MAP_01
 		  ; dta d'%          %'		
 		  ; dta d'%          %'		
 		  ; dta d'%          %'		
-		  ; dta d'%!         %'		
+		  ; dta d'%!    "   #%'		
 		  ; dta d'%%%%%%%%%%%%'
 	
 MAP_02

@@ -1415,242 +1415,48 @@ clear_intermission_screen
 		bne @-
 		rts
 		
+draw_header
+		ldy #0
+		ldx #(header_text_END-header_text)
+@		lda header_text,y
+		sta SCRMEM+3,y
+		iny
+		dex
+		bne @-
+		rts
+		
+header_text
+		dta d'pieczara'
+header_text_END
+		
 show_intermission
-		lda #$da
-		sta CLR1
-
-		lda #$0F
-		sta CLR0
-
-		lda #$77
-		sta CLR2
-
 		ldx #<MODUL
 		ldy #>MODUL
 		lda #$36
 		jsr RASTERMUSICTRACKER
 
-		ldx #0
-		sta HPOSM0
-		sta HPOSP0
-		sta HPOSP1
+		; Enable DLI
+		lda <dli_routine
+		sta VDSLST
+		lda >dli_routine
+		sta VDSLST+1
+		lda #192
+		sta NMIEN
 
 		ldx <DLINTERMISSION
 		ldy >DLINTERMISSION
 		stx SDLSTL
 		sty SDLSTL+1
-		lda >TITLE_FONT
-		sta CHBAS
 		
-		; TODO: Optimize these moves
-		#if .byte showsummary = #1
-			jsr clear_intermission_screen
-			mva #39 SCRMEM+5	; G
-			mva #50 SCRMEM+6	; R
-			mva #33 SCRMEM+7	; A
-			mva #52 SCRMEM+8	; T
-			mva #53 SCRMEM+9	; U
-			mva #44 SCRMEM+10	; L
-			mva #33 SCRMEM+11	; A
-			mva #35 SCRMEM+12	; C
-			mva #42 SCRMEM+13	; J
-			mva #37 SCRMEM+14	; E
-			jsr sleep_for_some_time
-
-			mva #128+36 SCRMEM+20	; D
-			mva #128+47 SCRMEM+21	; O
-			mva #128+35 SCRMEM+22	; C
-			mva #128+37 SCRMEM+23	; E
-			mva #128+46 SCRMEM+24	; N
-			mva #128+35 SCRMEM+25	; C
-			mva #128+41 SCRMEM+26	; I
-			mva #128+37 SCRMEM+27	; E
-			jsr sleep_for_some_time
-			mva #64+52 SCRMEM+29	; T
-			mva #64+50 SCRMEM+30	; R
-			mva #64+58 SCRMEM+31	; Z
-			mva #64+33 SCRMEM+32	; A
-			mva #64+51 SCRMEM+33	; S
-			mva #64+43 SCRMEM+34	; K
-			mva #64+47 SCRMEM+35	; O
-			mva #64+55 SCRMEM+36	; W
-			mva #64+51 SCRMEM+37	; S
-			mva #64+43 SCRMEM+38	; K
-			mva #64+41 SCRMEM+39	; I
-			jsr sleep_for_some_time
-			
-			mva #34 SCRMEM+60
-			jsr sleep_for_short_time
-			mva #47 SCRMEM+61
-			jsr sleep_for_short_time
-			mva #58 SCRMEM+63
-			jsr sleep_for_short_time
-			mva #55 SCRMEM+64
-			jsr sleep_for_short_time
-			mva #57 SCRMEM+65
-			jsr sleep_for_short_time
-			mva #35 SCRMEM+66
-			jsr sleep_for_short_time
-			mva #41 SCRMEM+67
-			jsr sleep_for_short_time
-			mva #1 SCRMEM+68
-			jsr sleep_for_short_time
-			mva #10 SCRMEM+69
-			jsr sleep_for_short_time
-			mva #57 SCRMEM+70
-			jsr sleep_for_short_time
-			mva #3 SCRMEM+71
-			jsr sleep_for_short_time
-			mva #45 SCRMEM+73
-			jsr sleep_for_short_time
-			mva #47 SCRMEM+74
-			jsr sleep_for_short_time
-			mva #39 SCRMEM+75
-			jsr sleep_for_short_time
-			mva #4 SCRMEM+76
-			jsr sleep_for_short_time
-			mva #35 SCRMEM+78
-			jsr sleep_for_short_time
-			mva #41 SCRMEM+79
-			jsr sleep_for_short_time
-			
-			mva #128+35 SCRMEM+80
-			jsr sleep_for_short_time
-			mva #128+47 SCRMEM+81
-			jsr sleep_for_short_time
-			mva #128+52 SCRMEM+83
-			jsr sleep_for_short_time
-			mva #128+37 SCRMEM+84
-			jsr sleep_for_short_time
-			mva #128+46 SCRMEM+85
-			jsr sleep_for_short_time
-			mva #128+51 SCRMEM+86
-			jsr sleep_for_short_time
-			mva #128+47 SCRMEM+87
-			jsr sleep_for_short_time
-			mva #128+50 SCRMEM+88
-			jsr sleep_for_short_time
-			mva #128+37 SCRMEM+89
-			jsr sleep_for_short_time
-			mva #128+45 SCRMEM+90
-			jsr sleep_for_short_time
-			mva #128+55 SCRMEM+92
-			jsr sleep_for_short_time
-			mva #128+11 SCRMEM+93
-			jsr sleep_for_short_time
-			mva #128+47 SCRMEM+94
-			jsr sleep_for_short_time
-			mva #128+36 SCRMEM+95
-			jsr sleep_for_short_time
-			mva #128+33 SCRMEM+96
-			jsr sleep_for_short_time
-			mva #128+50 SCRMEM+97
-			jsr sleep_for_short_time
-			mva #128+58 SCRMEM+98
-			jsr sleep_for_short_time
-			mva #128+4 SCRMEM+99
-
-@			lda trig0		; FIRE #0
-			bne @-
-
-			jsr clear_intermission_screen
-			jsr sleep_for_short_time
-			ldy #0
-			lda (curmapname),y
-			cmp #$9b
-			bne @+
-			pla
-			pla
-			pla
-			pla
-:4			jsr sleep_for_some_time
-
-			mwa #MAP_01 curmap
-			mwa #MAP_01_NAME curmapname
+		lda #$ff
+		sta CLR4	
 		
-			jmp main
-@
-		#end
-		
-		mva #1 showsummary
-		
-		jsr clear_intermission_screen
-		
-		mva #48 SCRMEM+1	; P
-		mva #37 SCRMEM+2	; E
-		mva #46 SCRMEM+3	; N
-		mva #37 SCRMEM+4	; E
-		mva #52 SCRMEM+5	; T
-		mva #50 SCRMEM+6	; R
-		mva #33 SCRMEM+7	; A
-		mva #35 SCRMEM+8	; C
-		mva #42 SCRMEM+9	; J
-		mva #33 SCRMEM+10	; A
-		mva #42 SCRMEM+12	; J
-		mva #33 SCRMEM+13	; A
-		mva #51 SCRMEM+14	; S
-		mva #43 SCRMEM+15	; K
-		mva #41 SCRMEM+16	; I
-		mva #46 SCRMEM+17	; N
-		mva #41 SCRMEM+18	; I
-		jsr sleep_for_some_time
-	
-		mva #46+128 SCRMEM+26	;  
-		mva #53+128 SCRMEM+27	;  
-		mva #45+128 SCRMEM+28	;  
-		mva #37+128 SCRMEM+29	;  
-		mva #50+128 SCRMEM+30	;  
-		jsr sleep_for_some_time
-		
-		ldy #40
-		lda (curmapname),y
-		add #64
-		sta SCRMEM+32
-		iny
-		lda (curmapname),y
-		add #64
-		sta SCRMEM+33
-		jsr sleep_for_some_time
-		
-		mva #58 SCRMEM+40	;  
-		mva #55 SCRMEM+41	;  
-		mva #33 SCRMEM+42	;  
-		mva #46 SCRMEM+43	;  
-		mva #37 SCRMEM+44	;  
-		mva #42 SCRMEM+45	;  
-		mva #37 SCRMEM+47	;  
-		mva #46 SCRMEM+48	;  
-		mva #41 SCRMEM+49	;  
-		mva #39 SCRMEM+50	;  G
-		mva #45 SCRMEM+51	;  M
-		mva #33 SCRMEM+52	;  A
-		mva #52 SCRMEM+53	;  T
-		#if .byte RANDOM > #128
-			mva #57 SCRMEM+54	;  Y
-			mva #35 SCRMEM+55	;  C
-			mva #58 SCRMEM+56	;  Z
-		#else
-			mva #35 SCRMEM+54	;  C
-			mva #58 SCRMEM+55	;  Z
-			mva #57 SCRMEM+56	;  Y
-		#end
-		mva #46 SCRMEM+57	;  
-		mva #41 SCRMEM+58	;  
-		mva #37 SCRMEM+59	;  
-		jsr sleep_for_some_time
-	
-		ldy #0
-@		lda (curmapname),y
-		sta SCRMEM+60,y
-		cmp #0
-		beq @+
-		jsr sleep_for_short_time
-@		iny
-		cpy #40
-		bne @-1
+		jsr draw_header
 
 @		lda trig0		; FIRE #0
 		bne @-
+
+:3		jsr sleep_for_some_time
 
 		ldx #$ff
 		stx CH
@@ -2515,14 +2321,15 @@ DLGAME
 :MAPSIZE-1	dta	b($07)
 			dta b($41),a(DLGAME)
 DLINTERMISSION
-:8			dta b($70)
-			dta b($46)
+:8			dta b($60)
+			dta b(%10010000)	; DLI - top 		[VCOUNT=$20]
+			dta b($47)
 			dta a(SCRMEM)
-			dta b($70)
-			dta b($06)
-			dta b($70)
-			dta b($06)
-:4			dta b($70)
+			dta b(%11110000)	; DLI - digits		[VCOUNT=$2C]
+			dta b($07)
+			dta b($07)
+:3			dta b($70)
+			dta b(%11110000)	; DLI - level name	[VCOUNT=$4C]
 			dta b($07)
 			dta b($40)
 			dta b($07)
@@ -2552,6 +2359,8 @@ GAME_FONT
 .align	$400
 GAME_FONT_2
 		ins "fonts\fontek2.fnt"
+DIGITS_FONT
+		ins "fonts\digits.fnt"
 		
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"
@@ -2596,6 +2405,12 @@ SCREEN_MARGIN_DATA_END
 music_start_table
 	dta b($00),b($1e),b($45),b($45),b($5d),b($57),b($57),b($57) ; $5d
 
+dli_routine
+		phr
+		
+		plr
+		rti
+	
 	org curmap
 	dta a(MAP_01)
 	org curmapname

@@ -1457,6 +1457,7 @@ show_intermission
 		bne @-
 
 :3		jsr sleep_for_some_time
+dupa	jmp dupa
 
 		ldx #$ff
 		stx CH
@@ -2408,6 +2409,26 @@ music_start_table
 dli_routine
 		phr
 		
+		lda VCOUNT
+		cmp #$20	; Header
+		bne @+
+		
+		lda >TITLE_FONT
+		sta CHBASE
+		jmp dli_end
+		
+@		cmp #$2C	; Digits
+		bne @+
+
+		lda >DIGITS_FONT
+		sta CHBASE
+		jmp dli_end
+		
+@		lda >TITLE_FONT
+		sta CHBASE
+
+		
+dli_end		
 		plr
 		rti
 	

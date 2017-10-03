@@ -250,7 +250,9 @@ MAP_01_NAME
 ;             #........;.........##........;.........#
 		dta d'      kr'
 		dta b(1+64)
-		dta d'pcewo        w prawo i w lewo  01'
+		dta d'pcewo        w prawo i w lewo  '
+MAP_01_NAME_END
+		dta d'36'
 MAP_02_NAME
 		dta d'     staro'
 		dta b(10+64)
@@ -1425,6 +1427,39 @@ draw_header
 		bne @-
 		rts
 		
+draw_cavern_number
+		mwa curmapname ptr0
+		adw ptr0 #(MAP_01_NAME_END-MAP_01_NAME)
+		ldy #0
+		lda (ptr0),y
+		sub #$10
+		asl
+		add #2
+		sta SCRMEM+20,y
+		add #1
+		sta SCRMEM+21,y
+		add #31
+		sta SCRMEM+20+20,y
+		add #1
+		sta SCRMEM+21+20,y
+		
+		iny 
+		
+		lda (ptr0),y
+		dey
+		sub #$10
+		asl
+		add #2
+		sta SCRMEM+22,y
+		add #1
+		sta SCRMEM+23,y
+		add #31
+		sta SCRMEM+22+20,y
+		add #1
+		sta SCRMEM+23+20,y
+		
+		rts
+		
 header_text
 		dta d'pieczara'
 header_text_END
@@ -1452,6 +1487,7 @@ show_intermission
 		sta CLR4	
 		
 		jsr draw_header
+		jsr draw_cavern_number
 
 @		lda trig0		; FIRE #0
 		bne @-

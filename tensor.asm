@@ -9,6 +9,7 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
+DIGITOFFSET	equ 6
 MAPCOUNT equ 44
 MUSICPLAYER	equ $9000
 ;MODUL	equ $2dc0
@@ -246,6 +247,7 @@ TITLE_PART_3
 	dta d'vidol'*
 	dta d'MSX:  '
 	dta d'makary brauner'*
+/*
 MAP_01_NAME
 ;             #........;.........##........;.........#
 		dta d'      kr'
@@ -306,6 +308,18 @@ MAP_02_NAME
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
+*/
+MAP_01_NAME
+		dta d'abcdabcdabcdabcd'
+		dta d'wxyzwxyzwxyzwxyz'
+MAP_01_NAME_END
+		dta d'36'
+MAP_02_NAME
+		dta d'     staro'
+		dta b(10+64)
+		dta d'ytne         ko'
+		dta b(2+64)
+		dta d'ciepiecho    02'
 MAP_NAME_LAST
 		dta b($9b)
 		
@@ -1421,7 +1435,7 @@ draw_header
 		ldy #0
 		ldx #(header_text_END-header_text)
 @		lda header_text,y
-		sta SCRMEM+3,y
+		sta SCRMEM+DIGITOFFSET-2,y
 		iny
 		dex
 		bne @-
@@ -1435,13 +1449,13 @@ draw_cavern_number
 		sub #$10
 		asl
 		add #2
-		sta SCRMEM+20,y
+		sta SCRMEM+20+DIGITOFFSET,y
 		add #1
-		sta SCRMEM+21,y
+		sta SCRMEM+21+DIGITOFFSET,y
 		add #31
-		sta SCRMEM+20+20,y
+		sta SCRMEM+20+20+DIGITOFFSET,y
 		add #1
-		sta SCRMEM+21+20,y
+		sta SCRMEM+21+20+DIGITOFFSET,y
 		
 		iny 
 		
@@ -1450,13 +1464,16 @@ draw_cavern_number
 		sub #$10
 		asl
 		add #2
-		sta SCRMEM+22,y
+		sta SCRMEM+22+DIGITOFFSET,y
 		add #1
-		sta SCRMEM+23,y
+		sta SCRMEM+23+DIGITOFFSET,y
 		add #31
-		sta SCRMEM+22+20,y
+		sta SCRMEM+22+20+DIGITOFFSET,y
 		add #1
-		sta SCRMEM+23+20,y
+		sta SCRMEM+23+20+DIGITOFFSET,y
+		
+		lda #33
+		sta SCRMEM+20+20+DIGITOFFSET-1,y
 		
 		rts
 		
@@ -1483,9 +1500,7 @@ show_intermission
 		stx SDLSTL
 		sty SDLSTL+1
 		
-		lda #$ff
-		sta CLR4	
-		
+		jsr clear_intermission_screen
 		jsr draw_header
 		jsr draw_cavern_number
 

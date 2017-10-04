@@ -1480,12 +1480,56 @@ draw_cavern_number
 		rts
 		
 draw_level_name
+		; Init pointer to the end of the text
+		mwa curmapname ptr0
+		adw ptr0 #14
+		
+		; How many times to scroll (16 = length, 2 bytes per scroll)
+		ldx #16/2
+		
+dln_1
+		; Copy two bytes from pointer to the edge of the screen
 		ldy #0
-		lda (curmapname),y
+		lda (ptr0),y
 		sta SCRMEM+TITLEOFFSET,y
 		iny
-		lda (curmapname),y
+		lda (ptr0),y
 		sta SCRMEM+TITLEOFFSET,y
+		
+		; Animate
+dln_0
+:2		jsr synchro
+		inc scroll
+		lda scroll
+		and #%00001111
+		sta hscrol
+		cmp #0
+		bne dln_0
+		
+		; Two bytes moved in - copy entire line to the right
+		ldy #22
+@		lda SCRMEM+TITLEOFFSET,y
+		iny
+		iny
+		sta SCRMEM+TITLEOFFSET,y
+		dey
+		dey
+		dey
+		lda SCRMEM+TITLEOFFSET,y
+		iny
+		iny
+		sta SCRMEM+TITLEOFFSET,y
+		dey
+		dey
+		dey
+		cpy #$fe
+		bne @-
+		
+		; Decrase pointer and repeat
+		sbw ptr0 #2
+		dex
+		bne dln_1
+	
 		rts
 		
 header_text
@@ -1519,14 +1563,7 @@ show_intermission
 @		lda trig0		; FIRE #0
 		bne @-
 
-dupa	
-		jsr synchro
-		inc scroll
-		lda scroll
-		and #%00001111
-		sta hscrol
-		jsr sleep_for_short_time
-		jmp dupa
+dupa	jmp dupa
 
 		ldx #$ff
 		stx CH

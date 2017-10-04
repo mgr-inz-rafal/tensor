@@ -312,8 +312,8 @@ MAP_02_NAME
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
 */
 MAP_01_NAME
-		dta d'abcdefghijklmnop'
-		dta d'qrstuvwxyzabcdef'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
 MAP_01_NAME_END
 		dta d'36'
 MAP_02_NAME
@@ -1479,46 +1479,42 @@ draw_cavern_number
 		
 		rts
 		
-draw_level_name
-		; Init pointer to the end of the text
-		mwa curmapname ptr0
-		adw ptr0 #14
-		
+do_level_name_scroll
 		; How many times to scroll (16 = length, 2 bytes per scroll)
 		ldx #16/2
 		
-dln_1
+dlns_1
 		; Copy two bytes from pointer to the edge of the screen
 		ldy #0
 		lda (ptr0),y
-		sta SCRMEM+TITLEOFFSET,y
+		sta (ptr1),y
 		iny
 		lda (ptr0),y
-		sta SCRMEM+TITLEOFFSET,y
+		sta (ptr1),y
 		
 		; Animate
-dln_0
+dlns_0
 :2		jsr synchro
 		inc scroll
 		lda scroll
 		and #%00001111
 		sta hscrol
 		cmp #0
-		bne dln_0
+		bne dlns_0
 		
 		; Two bytes moved in - copy entire line to the right
 		ldy #22
-@		lda SCRMEM+TITLEOFFSET,y
+@		lda (ptr1),y
 		iny
 		iny
-		sta SCRMEM+TITLEOFFSET,y
+		sta (ptr1),y
 		dey
 		dey
 		dey
-		lda SCRMEM+TITLEOFFSET,y
+		lda (ptr1),y
 		iny
 		iny
-		sta SCRMEM+TITLEOFFSET,y
+		sta (ptr1),y
 		dey
 		dey
 		dey
@@ -1528,7 +1524,37 @@ dln_0
 		; Decrase pointer and repeat
 		sbw ptr0 #2
 		dex
-		bne dln_1
+		bne dlns_1
+		rts
+		
+draw_level_name
+		; Init pointers to the end of the first line of level name
+		mwa #SCRMEM+TITLEOFFSET ptr1
+		mwa curmapname ptr0
+		adw ptr0 #14
+		jsr do_level_name_scroll
+		
+		; Disable scroll on the top row
+		lda #%111
+		sta DL_TOP_SCROL
+		
+		; Copy the top row in the right place
+		ldy #0
+@		lda (curmapname),y
+		sta SCRMEM+TITLEOFFSET,y
+		iny
+		cpy #16
+		bne @-
+		lda #0
+		sta SCRMEM+TITLEOFFSET,y
+		iny
+		sta SCRMEM+TITLEOFFSET,y
+	
+		; Init pointers to the end of the first line of level name
+		mwa #SCRMEM+TITLEOFFSET+20 ptr1
+		mwa curmapname ptr0
+		adw ptr0 #14+16
+		jsr do_level_name_scroll
 	
 		rts
 		
@@ -2438,8 +2464,10 @@ DLINTERMISSION
 			dta b($07)
 :3			dta b($70)
 			dta b(%11110000)	; DLI - level name	[VCOUNT=$4C]
+DL_TOP_SCROL
 			dta b(%10111)
 			dta b($40)
+DL_BOT_SCROL			
 			dta b(%10111)
 			dta b($41),a(DLINTERMISSION)
 

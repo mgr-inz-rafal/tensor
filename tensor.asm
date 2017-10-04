@@ -10,6 +10,7 @@
 	icl "include\atari.inc"
 
 DIGITOFFSET	equ 6
+TITLEOFFSET equ 60
 MAPCOUNT equ 44
 MUSICPLAYER	equ $9000
 ;MODUL	equ $2dc0
@@ -35,6 +36,7 @@ GS_FIN	equ	2	; Level completed
 ROT_CTR	equ	20	; Delay between rotations
 PL_CHR	equ 1	; Player character
 
+.zpvar	.byte	scroll
 .zpvar	.byte	old_instafall
 .zpvar	.byte	instruction_page
 .zpvar	.byte	rotation_warmup
@@ -310,8 +312,8 @@ MAP_02_NAME
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
 */
 MAP_01_NAME
-		dta d'abcdabcdabcdabcd'
-		dta d'wxyzwxyzwxyzwxyz'
+		dta d'abcdefghijklmnop'
+		dta d'qrstuvwxyzabcdef'
 MAP_01_NAME_END
 		dta d'36'
 MAP_02_NAME
@@ -1427,7 +1429,7 @@ clear_intermission_screen
 		tya
 @		sta SCRMEM,y
 		iny
-		cpy #100
+		cpy #105
 		bne @-
 		rts
 		
@@ -1477,6 +1479,15 @@ draw_cavern_number
 		
 		rts
 		
+draw_level_name
+		ldy #0
+		lda (curmapname),y
+		sta SCRMEM+TITLEOFFSET,y
+		iny
+		lda (curmapname),y
+		sta SCRMEM+TITLEOFFSET,y
+		rts
+		
 header_text
 		dta d'pieczara'
 header_text_END
@@ -1503,12 +1514,19 @@ show_intermission
 		jsr clear_intermission_screen
 		jsr draw_header
 		jsr draw_cavern_number
+		jsr draw_level_name
 
 @		lda trig0		; FIRE #0
 		bne @-
 
-:3		jsr sleep_for_some_time
-dupa	jmp dupa
+dupa	
+		jsr synchro
+		inc scroll
+		lda scroll
+		and #%00001111
+		sta hscrol
+		jsr sleep_for_short_time
+		jmp dupa
 
 		ldx #$ff
 		stx CH
@@ -1606,6 +1624,7 @@ init_game
 		ldx #$ff/2-4
 		stx reducer
 		ldx #0
+		stx scroll
 		stx collectibles
 		stx collect
 		stx collecting
@@ -2382,9 +2401,9 @@ DLINTERMISSION
 			dta b($07)
 :3			dta b($70)
 			dta b(%11110000)	; DLI - level name	[VCOUNT=$4C]
-			dta b($07)
+			dta b(%10111)
 			dta b($40)
-			dta b($07)
+			dta b(%10111)
 			dta b($41),a(DLINTERMISSION)
 
 ; Sprites

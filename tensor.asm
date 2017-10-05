@@ -1538,6 +1538,8 @@ draw_level_name
 		jsr do_level_name_scroll
 		
 		; Disable scroll on the top row
+		lda DL_TOP_SCROL
+		sta ptr3+1
 		lda #%111
 		sta DL_TOP_SCROL
 		
@@ -1558,7 +1560,7 @@ draw_level_name
 		mwa curmapname ptr0
 		adw ptr0 #14+16
 		jsr do_level_name_scroll
-	
+
 		rts
 		
 header_text
@@ -1725,6 +1727,11 @@ show_intermission
 
 		ldx #$ff
 		stx CH
+
+		; Reenable scroll on the first line of the title
+		lda ptr3+1
+		sta DL_TOP_SCROL
+		
 		rts
 		
 vbi_routine
@@ -2638,34 +2645,21 @@ DIGITS_FONT
 		icl "music\rmtplayr.a65"
 
 MAP_01
-;	ins "maps\v1.map"
+	ins "maps\v1.map"
 
-		  dta d'%%%%%%%%%%% '
-		  dta d'%##"" ##""% '		
-		  dta d'%""## ""##% '		
-		  dta d'%%%%% %%%%% '		
-		  dta d'    % %     '		
-		  dta d'    % % %%%%'		
-		  dta d'    % % % !%'		
-		  dta d'    % % % %%'		
-		  dta d' %%%% %%% %%'		
-		  dta d' %         %'		
-		  dta d' %         %'		
-		  dta d' %%%%%%%%%%%'
+		  ; dta d'%%%%%%%%%%% '
+		  ; dta d'%##"" ##""% '		
+		  ; dta d'%""## ""##% '		
+		  ; dta d'%%%%% %%%%% '		
+		  ; dta d'    % %     '		
+		  ; dta d'    % % %%%%'		
+		  ; dta d'    % % % !%'		
+		  ; dta d'    % % % %%'		
+		  ; dta d' %%%% %%% %%'		
+		  ; dta d' %         %'		
+		  ; dta d' %         %'		
+		  ; dta d' %%%%%%%%%%%'
 
-		  ; dta d'%%%%%%%%%%%%'
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%!    "   #%'		
-		  ; dta d'%%%%%%%%%%%%'
-	
 MAP_02
 .rept MAPCOUNT-1 #+2
 	ins "maps\v:1.map"

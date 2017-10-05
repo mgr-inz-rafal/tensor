@@ -10,7 +10,7 @@
 	icl "include\atari.inc"
 
 TARGETDECO equ $b0
-PMGDECOOFFSET equ 10
+PMGDECOOFFSET equ 12
 DIGITOFFSET	equ 6
 TITLEOFFSET equ 60
 MAPCOUNT equ 44
@@ -1565,6 +1565,15 @@ header_text
 header_text_END
 
 draw_decoration
+		ldy #0
+		tya
+@		sta pmg_p0,y
+		iny
+		bne @-
+@		sta pmg_p2,y
+		iny
+		bne @-
+
 		ldy #0
 @		lda sprite_decoration_data_0,y
 		sta pmg_p0+PMGDECOOFFSET,y

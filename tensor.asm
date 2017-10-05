@@ -1550,7 +1550,7 @@ draw_level_name
 		iny
 		sta SCRMEM+TITLEOFFSET,y
 	
-		; Init pointers to the end of the first line of level name
+		; Init pointers to the end of the second line of level name
 		mwa #SCRMEM+TITLEOFFSET+20 ptr1
 		mwa curmapname ptr0
 		adw ptr0 #14+16

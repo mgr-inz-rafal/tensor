@@ -9,6 +9,7 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
+SOURCEDECO equ $ff-8*3
 TARGETDECO equ $b0
 PMGDECOOFFSET equ 12
 DIGITOFFSET	equ 6
@@ -1574,6 +1575,15 @@ draw_decoration
 		iny
 		bne @-
 
+		lda #$39
+		sta PCOLR0
+		lda #$59
+		sta PCOLR1
+		lda #$79
+		sta PCOLR2
+		lda #$99
+		sta PCOLR3
+		
 .rept 4 #
 		ldy #0
 @		lda sprite_decoration_data_:1,y
@@ -1582,26 +1592,31 @@ draw_decoration
 		cpy #sprite_decoration_data_0_LEN-sprite_decoration_data_0
 		bne @-
 .endr
-		
-		lda #TARGETDECO
-		sta hposp0
-		lda #$39
-		sta PCOLR0
-		
-		lda #TARGETDECO+8
-		sta hposp1
-		lda #$59
-		sta PCOLR1
-		
-		lda #TARGETDECO+8+8
-		sta hposp2
-		lda #$79
-		sta PCOLR2
 
-		lda #TARGETDECO+8+8+8
+		mva #SOURCEDECO+8*0 ptr0
+		mva #SOURCEDECO+8*1 ptr0+1
+		mva #SOURCEDECO+8*2 ptr1
+		mva #SOURCEDECO+8*3 ptr1+1
+
+		ldy #0
+@		
+:4		jsr synchro
+		lda ptr0
+		sta hposp0
+		lda ptr0+1
+		sta hposp1
+		lda ptr1
+		sta hposp2
+		lda ptr1+1
 		sta hposp3
-		lda #$99
-		sta PCOLR3
+		dec ptr0
+		dec ptr0+1
+		dec ptr1
+		dec ptr1+1
+		iny
+		cpy #SOURCEDECO-TARGETDECO+1
+		bne @-
+sranie
 		
 		rts
 		
@@ -1685,8 +1700,10 @@ show_intermission
 		
 		jsr clear_intermission_screen
 		jsr draw_decoration
+:2		jsr sleep_for_some_time
 		jsr draw_header
 		jsr draw_cavern_number
+:2		jsr sleep_for_some_time
 		jsr draw_level_name
 
 @		lda trig0		; FIRE #0

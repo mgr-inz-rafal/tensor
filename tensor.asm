@@ -1575,15 +1575,6 @@ draw_decoration
 		iny
 		bne @-
 
-		lda #$39
-		sta PCOLR0
-		lda #$59
-		sta PCOLR1
-		lda #$79
-		sta PCOLR2
-		lda #$99
-		sta PCOLR3
-		
 .rept 4 #
 		ldy #0
 @		lda sprite_decoration_data_:1,y
@@ -1678,12 +1669,34 @@ sprite_decoration_data_3
 		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
 		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
 
+setup_intermission_colors
+		lda #$04
+		sta PCOLR0
+		lda #$06
+		sta PCOLR1
+		lda #$08
+		sta PCOLR2
+		lda #$0a
+		sta PCOLR3
+		
+		lda #$ea
+		sta CLR0
+		lda #$7a
+		sta CLR1
+		lda #$55
+		sta CLR2
+		lda #$59
+		sta CLR3
+		
+		rts
 		
 show_intermission
 		ldx #<MODUL
 		ldy #>MODUL
 		lda #$36
 		jsr RASTERMUSICTRACKER
+		
+		jsr setup_intermission_colors
 
 		; Enable DLI
 		lda <dli_routine
@@ -1702,6 +1715,7 @@ show_intermission
 		jsr draw_decoration
 :2		jsr sleep_for_some_time
 		jsr draw_header
+		jsr sleep_for_some_time
 		jsr draw_cavern_number
 :2		jsr sleep_for_some_time
 		jsr draw_level_name

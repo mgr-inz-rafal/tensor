@@ -1574,33 +1574,14 @@ draw_decoration
 		iny
 		bne @-
 
+.rept 4 #
 		ldy #0
-@		lda sprite_decoration_data_0,y
-		sta pmg_p0+PMGDECOOFFSET,y
+@		lda sprite_decoration_data_:1,y
+		sta pmg_p:1+PMGDECOOFFSET,y
 		iny
 		cpy #sprite_decoration_data_0_LEN-sprite_decoration_data_0
 		bne @-
-
-		ldy #0
-@		lda sprite_decoration_data_1,y
-		sta pmg_p1+PMGDECOOFFSET,y
-		iny
-		cpy #sprite_decoration_data_0_LEN-sprite_decoration_data_0
-		bne @-
-		
-		ldy #0
-@		lda sprite_decoration_data_2,y
-		sta pmg_p2+PMGDECOOFFSET,y
-		iny
-		cpy #sprite_decoration_data_0_LEN-sprite_decoration_data_0
-		bne @-
-
-		ldy #0
-@		lda sprite_decoration_data_3,y
-		sta pmg_p3+PMGDECOOFFSET,y
-		iny
-		cpy #sprite_decoration_data_0_LEN-sprite_decoration_data_0
-		bne @-
+.endr
 		
 		lda #TARGETDECO
 		sta hposp0

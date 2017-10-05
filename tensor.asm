@@ -9,6 +9,7 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
+TARGETDECO equ $b0
 DIGITOFFSET	equ 6
 TITLEOFFSET equ 60
 MAPCOUNT equ 44
@@ -1561,6 +1562,38 @@ draw_level_name
 header_text
 		dta d'pieczara'
 header_text_END
+
+draw_decoration
+		ldy #0
+		lda #%01010101
+@		sta pmg_p0,y
+		iny
+		bne @-
+@		sta pmg_p2,y
+		iny
+		bne @-
+		
+		lda #TARGETDECO
+		sta hposp0
+		lda #$39
+		sta PCOLR0
+		
+		lda #TARGETDECO+8
+		sta hposp1
+		lda #$59
+		sta PCOLR1
+		
+		lda #TARGETDECO+8+8
+		sta hposp2
+		lda #$79
+		sta PCOLR2
+
+		lda #TARGETDECO+8+8+8
+		sta hposp3
+		lda #$99
+		sta PCOLR3
+		
+		rts
 		
 show_intermission
 		ldx #<MODUL
@@ -1582,6 +1615,7 @@ show_intermission
 		sty SDLSTL+1
 		
 		jsr clear_intermission_screen
+		jsr draw_decoration
 		jsr draw_header
 		jsr draw_cavern_number
 		jsr draw_level_name
@@ -1656,6 +1690,7 @@ init_game
 		jsr SETVBV
 		
 		mva instafall old_instafall
+		jsr enable_sprites
 		jsr show_intermission
 
 		#if .byte first_run = #0
@@ -1903,15 +1938,7 @@ set_font
 		sta CHBAS
 		rts
 		
-init_sprites
-		lda #0
-		ldy #0
-@		sta pmg_p2,y
-		sta pmg_p3,y
-		iny
-		cpy #pmg_p3-pmg_p2
-		bne @-
-
+enable_sprites
 		lda #>pmg_base
 		sta PMBASE
 		lda #%00000001
@@ -1923,7 +1950,18 @@ init_sprites
 		lda SDMCTL
 		ora #%00001100
 		sta SDMCTL
+		rts
+
 		
+init_sprites
+		lda #0
+		ldy #0
+@		sta pmg_p2,y
+		sta pmg_p3,y
+		iny
+		cpy #pmg_p3-pmg_p2
+		bne @-
+
 		lda #0
 		sta SIZEP0
 

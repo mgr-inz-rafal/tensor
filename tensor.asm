@@ -1681,7 +1681,7 @@ setup_intermission_colors
 		lda #$0a
 		sta PCOLR3
 		
-		lda #$ea
+		lda #$eb
 		sta CLR0
 		lda #$7a
 		sta CLR1
@@ -2603,7 +2603,7 @@ DLINTERMISSION
 			dta b($47)
 			dta a(SCRMEM)
 			dta b(%11110000)	; DLI - digits		[VCOUNT=$2C]
-			dta b($07)
+			dta b($87)			; DLI - digits half	[VCOUNT=$34]
 			dta b($07)
 :3			dta b($70)
 			dta b(%11110000)	; DLI - level name	[VCOUNT=$4C]
@@ -2687,8 +2687,41 @@ dli_routine
 
 		lda >DIGITS_FONT
 		sta CHBASE
+		
+		ldy #$eb-2
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sty COLOR0
+		
 		jmp dli_end
 		
+@		cmp #$34	; Digits - lower part
+		bne @+
+
+		ldy #$eb-4
+		sta WSYNC
+		sty COLOR0
+		
+		ldy #$eb-6
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sty COLOR0
+		
+		jmp dli_end
+
 @		lda >TITLE_FONT
 		sta CHBASE
 

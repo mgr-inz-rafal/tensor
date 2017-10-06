@@ -1713,11 +1713,11 @@ sprite_decoration_data_3
 setup_intermission_colors
 		lda #$04
 		sta PCOLR0
-		lda #$06
+		lda #$0a
 		sta PCOLR1
 		lda #$08
 		sta PCOLR2
-		lda #$0a
+		lda #$04
 		sta PCOLR3
 		
 		lda #$eb

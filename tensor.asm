@@ -1486,7 +1486,7 @@ draw_cavern_number
 		rts
 		
 draw_cavern_number_shadow
-		lda #1
+		lda #65
 		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET-1
 		rts
 		
@@ -2607,15 +2607,15 @@ DLGAME
 			dta b($41),a(DLGAME)
 DLINTERMISSION
 :8			dta b($60)
-			dta b(%10010000)	; DLI - top 		[VCOUNT=$20]
+			dta b(%10010000)	; DLI - top 			[VCOUNT=$20]
 			dta b($47)
 			dta a(SCRMEM)
-			dta b(%11110000)	; DLI - digits		[VCOUNT=$2C]
-			dta b($87)			; DLI - digits half	[VCOUNT=$34]
-			dta b($07)
-			dta b($06)
+			dta b(%11110000)	; DLI - digits			[VCOUNT=$2C]
+			dta b($87)			; DLI - digits half		[VCOUNT=$34]
+			dta b($87)			; DLI - digits shadow	[VCOUNT=$3C]
+			dta b($06)			
 :2			dta b($70)
-			dta b(%11110000)	; DLI - level name	[VCOUNT=$4C]
+			dta b(%11110000)	; DLI - level name		[VCOUNT=$4C]
 DL_TOP_SCROL
 			dta b(%10111)
 			dta b($40)
@@ -2686,17 +2686,14 @@ dli_routine
 		lda VCOUNT
 		cmp #$20	; Header
 		bne @+
-		
 		lda >TITLE_FONT
 		sta CHBASE
 		jmp dli_end
 		
 @		cmp #$2C	; Digits
 		bne @+
-
 		lda >DIGITS_FONT
 		sta CHBASE
-		
 		ldy #$eb-2
 		sta WSYNC
 		sta WSYNC
@@ -2708,16 +2705,13 @@ dli_routine
 		sta WSYNC
 		sta WSYNC
 		sty COLOR0
-		
 		jmp dli_end
 		
 @		cmp #$34	; Digits - lower part
 		bne @+
-
 		ldy #$eb-4
 		sta WSYNC
 		sty COLOR0
-		
 		ldy #$eb-6
 		sta WSYNC
 		sta WSYNC
@@ -2728,12 +2722,17 @@ dli_routine
 		sta WSYNC
 		sta WSYNC
 		sty COLOR0
-		
 		jmp dli_end
 
+@		cmp #$3C	; Digits - shadow
+		bne @+
+		ldy #$02
+		sta WSYNC
+		sty COLOR1
+		jmp dli_end
+		
 @		lda >TITLE_FONT
 		sta CHBASE
-
 		
 dli_end		
 		plr

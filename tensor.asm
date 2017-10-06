@@ -319,7 +319,7 @@ MAP_01_NAME
 		dta d'abcdefghijklmnop'*
 		dta d'QRSTUVWXYZABCDEF'*
 MAP_01_NAME_END
-		dta d'73'
+		dta d'72'
 MAP_02_NAME
 		dta d'     staro'
 		dta b(10+64)

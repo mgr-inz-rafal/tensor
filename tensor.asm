@@ -319,7 +319,7 @@ MAP_01_NAME
 		dta d'abcdefghijklmnop'*
 		dta d'QRSTUVWXYZABCDEF'*
 MAP_01_NAME_END
-		dta d'36'
+		dta d'73'
 MAP_02_NAME
 		dta d'     staro'
 		dta b(10+64)
@@ -1488,6 +1488,37 @@ draw_cavern_number
 draw_cavern_number_shadow
 		lda #65
 		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET-1
+
+		ldy #0
+		lda (ptr0),y
+		dey
+		sub #$10
+		asl
+		#if .byte @ < #5*2
+			add #22
+		#else
+			add #(54-12)+2
+		#end
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET
+		add #1
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+1
+
+		iny 
+		iny
+
+		lda (ptr0),y
+		dey
+		sub #$10
+		asl
+		#if .byte @ < #5*2
+			add #22
+		#else
+			add #(54-12)+2
+		#end
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+2
+		add #1
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+3
+
 		rts
 		
 do_level_name_scroll

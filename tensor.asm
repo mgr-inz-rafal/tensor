@@ -13,7 +13,8 @@ SOURCEDECO equ $ff-8*3
 TARGETDECO equ $b0
 PMGDECOOFFSET equ 12
 DIGITOFFSET	equ 6
-TITLEOFFSET equ 60
+SHADOWOFFSET equ 60
+TITLEOFFSET equ 60+20
 MAPCOUNT equ 44
 MUSICPLAYER	equ $9000
 ;MODUL	equ $2dc0
@@ -1432,7 +1433,7 @@ clear_intermission_screen
 		tya
 @		sta SCRMEM,y
 		iny
-		cpy #105
+		cpy #105+22
 		bne @-
 		rts
 		
@@ -1480,6 +1481,13 @@ draw_cavern_number
 		lda #33
 		sta SCRMEM+20+20+DIGITOFFSET-1,y
 		
+		jsr draw_cavern_number_shadow
+		
+		rts
+		
+draw_cavern_number_shadow
+		lda #1
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET-1
 		rts
 		
 do_level_name_scroll
@@ -2605,7 +2613,8 @@ DLINTERMISSION
 			dta b(%11110000)	; DLI - digits		[VCOUNT=$2C]
 			dta b($87)			; DLI - digits half	[VCOUNT=$34]
 			dta b($07)
-:3			dta b($70)
+			dta b($06)
+:2			dta b($70)
 			dta b(%11110000)	; DLI - level name	[VCOUNT=$4C]
 DL_TOP_SCROL
 			dta b(%10111)

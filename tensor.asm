@@ -1444,6 +1444,11 @@ draw_header
 		sta SCRMEM+DIGITOFFSET-2,y
 		iny
 		dex
+		txa
+		pha
+		jsr sleep_for_short_time
+		pla
+		tax
 		bne @-
 		rts
 		

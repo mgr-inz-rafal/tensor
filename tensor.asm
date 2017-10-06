@@ -1495,9 +1495,9 @@ draw_cavern_number_shadow
 		sub #$10
 		asl
 		#if .byte @ < #5*2
-			add #22
+			add #22+64
 		#else
-			add #(54-12)+2
+			add #(54-12)+2+64
 		#end
 		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET
 		add #1
@@ -1511,9 +1511,9 @@ draw_cavern_number_shadow
 		sub #$10
 		asl
 		#if .byte @ < #5*2
-			add #22
+			add #22+64
 		#else
-			add #(54-12)+2
+			add #(54-12)+2+64
 		#end
 		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+2
 		add #1

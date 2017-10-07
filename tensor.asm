@@ -253,39 +253,6 @@ TITLE_PART_3
 	dta d'vidol'*
 	dta d'MSX:  '
 	dta d'makary brauner'*
-/*
-		dta d'   grota  przebi',b(3+64),d'    z onych  za',b(2+64),d'wiat',b(5+64),d'w 19'
-		dta d'       budka          mitochondrialna   20'
-		dta d'cztery p',b(11+64),d'ozy strachu ponad osiem mi',b(1+64),b(2+64),d'ni 21'
-		dta d'  dom lisa siostry  brata drwala staszka22'
-		dta d'  podwodne  piek',b(11+64),d'o   beztypowych ',b(2+64),d'ledzi 23'
-		dta d'  wype',b(11+64),d'nione  rop',b(4+64),d'   koszmarne  po',b(11+64),d'acie 24'
-		dta d' ',b(2+64),d'luza numer siedem wcze',b(2+64),d'niej spopielona25'
-		dta d'przedpok',b(5+64),d'j  kulawych lis',b(5+64),d'w  snycerskich 26'
-		dta d'  miejsce',b(12+64),d' kt',b(5+64),d'rego   nigdy nie za wiele 27'
-		dta d'  xena xenia xella       przewiewna     28'
-		dta d'   tunel mglisty        nieparzysty     29'
-		dta d' zatopiony par',b(5+64),d'w z   groszkiem i psami  30'
-		dta d' wiktor czterna',b(2+64),d'cie labradore labradorem31'
-;             #........;.........##........;.........#
-		dta d' wida',b(3+64),d' w tej grocie pozosta',b(11+64),d'o',b(2+64),d'ci choroby32'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa33'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa34'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa35'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa36'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa37'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa38'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa39'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa40'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa41'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa42'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa43'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa44'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
-*/
 MAP_01_NAME
 ;		dta d'abcdefghijklmnop'*
 ;		dta d'QRSTUVWXYZABCDEF'*
@@ -336,8 +303,6 @@ MAP_02_NAME
 		dta d'nisza schorza'*,b(11+64*3),d'ej'*
 		dta d' KOLONISTKI OLI '*
 		dta d'15'
-;		dta d'abcdefghijklmnop'*
-;		dta d'QRSTUVWXYZABCDEF'*
 		dta d'izba sn'*,b(5+64*3),d'w du'*,b(10+64*3),d'ego'*
 		dta d'P'*,b(1+64*2),d'KATEGO SZATANA'*
 		dta d'16'
@@ -350,6 +315,81 @@ MAP_02_NAME
 		dta d' jama przebicia '*
 		dta d'SYFU Z ZA'*,b(2+64*2),d'WIAT'*,b(5+64*2),d'W'*
 		dta d'19'
+		dta d' zw'*,b(1+64*3),d'glona budka '*
+		dta d'  PE'*,b(11+64*2),d'NA MITOZY  '*
+		dta d'20'
+		dta d' gibony strachu '*
+		dta d' TU JADA'*,b(11+64*2),d'Y '*,b(2+64*2),d'LUZ '*
+		dta d'21'
+		dta d' dom '*,b(10+64*3),d'ony brata '*
+		dta d' SIOSTRY TE'*,b(2+64*2),d'CIA '*
+		dta d'22'
+		dta d'podwodny bezkres'*
+		dta d'POLA '*,b(2+64*2),d'LEDZIOWEGO'*
+		dta d'23'
+		dta d' dwie zaropia'*,b(11+64*3),d'e '*
+		dta d'WN'*,b(1+64*2),d'TRZNO'*,b(2+64*2),d'CI DYNI'*
+		dta d'24'
+		dta b(2+64*3),d'luza numer trzy'*
+		dta d'ONGI'*,b(2+64*2),d' DZIA'*,b(11+64*2),d'AJ'*,b(4+64*2),d'CA'*
+		dta d'25'
+		dta d'   przedpok'*,b(5+64*3),d'j   '*
+		dta d'SNYCERSKICH PS'*,b(5+64*2),d'W'*
+		dta d'26'
+		dta d'zbiornik balsamu'*
+		dta d' Z DERMATOFIT'*,b(5+64*2),d'W '*
+		dta d'27'
+		dta d'miejsce poch'*,b(5+64*3),d'wku'*
+		dta d'OGORZA'*,b(11+64*2),d'EJ ESTERY'*
+		dta d'28'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'29'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'30'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'31'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'32'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'33'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'34'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'35'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'36'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'37'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'38'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'39'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'40'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'41'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'42'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'43'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'44'
 MAP_NAME_LAST
 		dta b($9b)
 		

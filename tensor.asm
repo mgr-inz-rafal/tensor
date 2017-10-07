@@ -254,23 +254,6 @@ TITLE_PART_3
 	dta d'MSX:  '
 	dta d'makary brauner'*
 /*
-MAP_01_NAME
-;             #........;.........##........;.........#
-		dta d'      kr'
-		dta b(1+64)
-		dta d'pcewo        w prawo i w lewo  '
-MAP_01_NAME_END
-		dta d'36'
-MAP_02_NAME
-		dta d'     staro'
-		dta b(10+64)
-		dta d'ytne         ko'
-		dta b(2+64)
-		dta d'ciepiecho    02'
-		dta d'  wieloraka grota    poszanowania kota  03'
-		dta d'     sawa woda         santiago bela    04'
-		dta d' wydrapane miejsce    eliminacji sera   05'
-		dta d'  dystopia siedem    dla ciemnych lw',b(5+64),d'w  06'
 		dta d'komora do kompresji  trzech stawonog',b(5+64),d'w  07'
 		dta d'    miejsce snu        molibdenowego    08'
 		dta d' wydr',b(4+64),b(10+64),d'ona w skale   jama ',b(10+64),d'uka tomasza  09'
@@ -326,6 +309,18 @@ MAP_02_NAME
 		dta d'   staro'*,b(10+64*3),d'ytne   '*
 		dta d'  KO'*,b(2+64*2),d'CIEPIECHO  '*
 		dta d'02'
+		dta d'sple'*,b(2+64*3),d'nia'*,b(11+64*3),d'a grota'*
+		dta d'  OTY'*,b(11+64*2),d'EGO KOTA  '*
+		dta d'03'
+		dta d' sawa woda alfa '*
+		dta d' SANTIAGO BELLA '*
+		dta d'04'
+		dta d' wydrapany loft '*
+		dta d'FERMENTACJI SERA'*
+		dta d'05'
+		dta d' dystopia sze'*,b(2+64*3),b(3+64*3),d' '*
+		dta d'DLA UMYTYCH LW'*,b(5+64*2),d'W'*
+		dta d'06'
 MAP_NAME_LAST
 		dta b($9b)
 		

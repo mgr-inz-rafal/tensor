@@ -342,17 +342,17 @@ MAP_02_NAME
 		dta d'miejsce poch'*,b(5+64*3),d'wku'*
 		dta d'OGORZA'*,b(11+64*2),d'EJ ESTERY'*
 		dta d'28'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'  upiorny loft  '*
+		dta d'Z KRWAW'*,b(4+64*2),d' KAPLIC'*,b(4+64*2)
 		dta d'29'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'  biblioteka z  '*
+		dta d'  UMAR'*,b(11+64*2),b(4+64*2),d' PRAS'*,b(4+64*2),d'  '*
 		dta d'30'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d' pop'*,b(1+64*3),d'kany strop '*
+		dta d' GROZI KOLAPSJ'*,b(4+64*2),d' '*
 		dta d'31'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'  wiktoria'*,b(15+64*3),d'ski  '*
+		dta d'     RYGIEL     '*
 		dta d'32'
 		dta d'abcdefghijklmnop'*
 		dta d'QRSTUVWXYZABCDEF'*

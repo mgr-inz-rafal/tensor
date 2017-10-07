@@ -316,16 +316,16 @@ MAP_02_NAME
 ;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
 */
 MAP_01_NAME
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+;		dta d'abcdefghijklmnop'*
+;		dta d'QRSTUVWXYZABCDEF'*
+		dta d'kr'*,b(1+64*3),d'pcewo w prawo'*
+		dta d'    I W LEWO    '*
 MAP_01_NAME_END
-		dta d'72'
+		dta d'01'
 MAP_02_NAME
-		dta d'     staro'
-		dta b(10+64)
-		dta d'ytne         ko'
-		dta b(2+64)
-		dta d'ciepiecho    02'
+		dta d'   staro'*,b(10+64*3),d'ytne   '*
+		dta d'  KO'*,b(2+64*2),d'CIEPIECHO  '*
+		dta d'02'
 MAP_NAME_LAST
 		dta b($9b)
 		
@@ -1808,11 +1808,11 @@ setup_intermission_colors
 		
 		lda #$eb
 		sta CLR0
-		lda #$7a
+		lda #$85
 		sta CLR1
-		lda #$55
+		lda #$b5
 		sta CLR2
-		lda #$59
+		lda #$b9
 		sta CLR3
 		
 		rts

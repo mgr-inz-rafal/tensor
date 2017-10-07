@@ -254,14 +254,6 @@ TITLE_PART_3
 	dta d'MSX:  '
 	dta d'makary brauner'*
 /*
-		dta d'komora do kompresji  trzech stawonog',b(5+64),d'w  07'
-		dta d'    miejsce snu        molibdenowego    08'
-		dta d' wydr',b(4+64),b(10+64),d'ona w skale   jama ',b(10+64),d'uka tomasza  09'
-		dta d'   przepompownia       okrutnego z',b(11+64),d'a    10'
-		dta d'   ziej',b(4+64),d'ca jadem       przed obiadem    11'
-		dta d'   grzyb widelec       ',b(10+64),d'arowka robot    12'
-		dta d' podwodny grobowiec   kwiatk',b(5+64),d'w i mi',b(1+64),d'sa  13'
-		dta d'  krater z',b(11+64),d'a pe',b(11+64),d'en    spienionej piany  14'
 		dta d'nisza kolonistki olikt',b(5+64),d'ra drwi',b(11+64),d'a z gruzu15'
 		dta d' izba sn',b(5+64),d'w obsikana  przez koty szatana 16'
 		dta d' odwrotna kolimacja    biedoty z boru   17'
@@ -321,6 +313,30 @@ MAP_02_NAME
 		dta d' dystopia sze'*,b(2+64*3),b(3+64*3),d' '*
 		dta d'DLA UMYTYCH LW'*,b(5+64*2),d'W'*
 		dta d'06'
+		dta d'komora kompresji'*
+		dta d'STAWONOG'*,b(5+64*2),d'W I KUR'*
+		dta d'07'
+		dta d'  miejsce bytu  '*
+		dta d'DWUMOLIBDENOWEGO'*
+		dta d'08'
+		dta d'swie'*,b(10+64*3),d'o wydr'*,b(4+64*3),b(10+64*3),d'ona'*
+		dta d'JAMA '*,b(10+64*2),d'UKA ZENONA'*
+		dta d'09'
+		dta d' przesi'*,b(4+64*3),d'kni'*,b(1+64*3),d'cie '*
+		dta d'  PONUREGO Z'*,b(11+64*2),d'A  '*
+		dta d'10'
+		dta d'tryskaj'*,b(4+64*3),d'ca jadem'*
+		dta d'KLITA CHRZCIELNA'*
+		dta d'11'
+		dta d' grzyby widelec '*
+		dta b(10+64*2),d'AR'*,b(5+64*2),d'WKA ROBOT V4'*
+		dta d'12'
+		dta d'podwodna piwnica'*
+		dta d'Z MI'*,b(1+64*2),d'SEM I PSAMI'*
+		dta d'13'
+		dta d'  krater z'*,b(11+64*3),d'a i  '*
+		dta d'SPIENIONEJ PIANY'*
+		dta d'14'
 MAP_NAME_LAST
 		dta b($9b)
 		

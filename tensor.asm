@@ -9,6 +9,12 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
+SOURCEDECO equ $ff-8*3
+TARGETDECO equ $b0
+PMGDECOOFFSET equ 12
+DIGITOFFSET	equ 6
+SHADOWOFFSET equ 60
+TITLEOFFSET equ 60+20
 MAPCOUNT equ 44
 MUSICPLAYER	equ $9000
 ;MODUL	equ $2dc0
@@ -34,6 +40,7 @@ GS_FIN	equ	2	; Level completed
 ROT_CTR	equ	20	; Delay between rotations
 PL_CHR	equ 1	; Player character
 
+.zpvar	.byte	scroll
 .zpvar	.byte	old_instafall
 .zpvar	.byte	instruction_page
 .zpvar	.byte	rotation_warmup
@@ -247,63 +254,142 @@ TITLE_PART_3
 	dta d'MSX:  '
 	dta d'makary brauner'*
 MAP_01_NAME
-;             #........;.........##........;.........#
-		dta d'      kr'
-		dta b(1+64)
-		dta d'pcewo        w prawo i w lewo  01'
+;		dta d'abcdefghijklmnop'*
+;		dta d'QRSTUVWXYZABCDEF'*
+		dta d'kr'*,b(1+64*3),d'pcewo w prawo'*
+		dta d'    I W LEWO    '*
+MAP_01_NAME_END
+		dta d'01'
 MAP_02_NAME
-		dta d'     staro'
-		dta b(10+64)
-		dta d'ytne         ko'
-		dta b(2+64)
-		dta d'ciepiecho    02'
-		dta d'  wieloraka grota    poszanowania kota  03'
-		dta d'     sawa woda         santiago bela    04'
-		dta d' wydrapane miejsce    eliminacji sera   05'
-		dta d'  dystopia siedem    dla ciemnych lw',b(5+64),d'w  06'
-		dta d'komora do kompresji  trzech stawonog',b(5+64),d'w  07'
-		dta d'    miejsce snu        molibdenowego    08'
-		dta d' wydr',b(4+64),b(10+64),d'ona w skale   jama ',b(10+64),d'uka tomasza  09'
-		dta d'   przepompownia       okrutnego z',b(11+64),d'a    10'
-		dta d'   ziej',b(4+64),d'ca jadem       przed obiadem    11'
-		dta d'   grzyb widelec       ',b(10+64),d'arowka robot    12'
-		dta d' podwodny grobowiec   kwiatk',b(5+64),d'w i mi',b(1+64),d'sa  13'
-		dta d'  krater z',b(11+64),d'a pe',b(11+64),d'en    spienionej piany  14'
-		dta d'nisza kolonistki olikt',b(5+64),d'ra drwi',b(11+64),d'a z gruzu15'
-		dta d' izba sn',b(5+64),d'w obsikana  przez koty szatana 16'
-		dta d' odwrotna kolimacja    biedoty z boru   17'
-		dta d'     ponury k',b(4+64),d't      przeciwnik',b(5+64),d'w dobra 18'
-		dta d'   grota  przebi',b(3+64),d'    z onych  za',b(2+64),d'wiat',b(5+64),d'w 19'
-		dta d'       budka          mitochondrialna   20'
-		dta d'cztery p',b(11+64),d'ozy strachu ponad osiem mi',b(1+64),b(2+64),d'ni 21'
-		dta d'  dom lisa siostry  brata drwala staszka22'
-		dta d'  podwodne  piek',b(11+64),d'o   beztypowych ',b(2+64),d'ledzi 23'
-		dta d'  wype',b(11+64),d'nione  rop',b(4+64),d'   koszmarne  po',b(11+64),d'acie 24'
-		dta d' ',b(2+64),d'luza numer siedem wcze',b(2+64),d'niej spopielona25'
-		dta d'przedpok',b(5+64),d'j  kulawych lis',b(5+64),d'w  snycerskich 26'
-		dta d'  miejsce',b(12+64),d' kt',b(5+64),d'rego   nigdy nie za wiele 27'
-		dta d'  xena xenia xella       przewiewna     28'
-		dta d'   tunel mglisty        nieparzysty     29'
-		dta d' zatopiony par',b(5+64),d'w z   groszkiem i psami  30'
-		dta d' wiktor czterna',b(2+64),d'cie labradore labradorem31'
-;             #........;.........##........;.........#
-		dta d' wida',b(3+64),d' w tej grocie pozosta',b(11+64),d'o',b(2+64),d'ci choroby32'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa33'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa34'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa35'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa36'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa37'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa38'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa39'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa40'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa41'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa42'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa43'
-		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa44'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
-;		dta d'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa20'
+		dta d'   staro'*,b(10+64*3),d'ytne   '*
+		dta d'  KO'*,b(2+64*2),d'CIEPIECHO  '*
+		dta d'02'
+		dta d'sple'*,b(2+64*3),d'nia'*,b(11+64*3),d'a grota'*
+		dta d'  OTY'*,b(11+64*2),d'EGO KOTA  '*
+		dta d'03'
+		dta d' sawa woda alfa '*
+		dta d' SANTIAGO BELLA '*
+		dta d'04'
+		dta d' wydrapany loft '*
+		dta d'FERMENTACJI SERA'*
+		dta d'05'
+		dta d' dystopia sze'*,b(2+64*3),b(3+64*3),d' '*
+		dta d'DLA UMYTYCH LW'*,b(5+64*2),d'W'*
+		dta d'06'
+		dta d'komora kompresji'*
+		dta d'STAWONOG'*,b(5+64*2),d'W I KUR'*
+		dta d'07'
+		dta d'  miejsce bytu  '*
+		dta d'DWUMOLIBDENOWEGO'*
+		dta d'08'
+		dta d'swie'*,b(10+64*3),d'o wydr'*,b(4+64*3),b(10+64*3),d'ona'*
+		dta d'JAMA '*,b(10+64*2),d'UKA ZENONA'*
+		dta d'09'
+		dta d' przesi'*,b(4+64*3),d'kni'*,b(1+64*3),d'cie '*
+		dta d'  PONUREGO Z'*,b(11+64*2),d'A  '*
+		dta d'10'
+		dta d'tryskaj'*,b(4+64*3),d'ca jadem'*
+		dta d'KLITA CHRZCIELNA'*
+		dta d'11'
+		dta d' grzyby widelec '*
+		dta b(10+64*2),d'AR'*,b(5+64*2),d'WKA ROBOT V4'*
+		dta d'12'
+		dta d'podwodna piwnica'*
+		dta d'Z MI'*,b(1+64*2),d'SEM I PSAMI'*
+		dta d'13'
+		dta d'  krater z'*,b(11+64*3),d'a i  '*
+		dta d'SPIENIONEJ PIANY'*
+		dta d'14'
+		dta d'nisza schorza'*,b(11+64*3),d'ej'*
+		dta d' KOLONISTKI OLI '*
+		dta d'15'
+		dta d'izba sn'*,b(5+64*3),d'w du'*,b(10+64*3),d'ego'*
+		dta d'P'*,b(1+64*2),d'KATEGO SZATANA'*
+		dta d'16'
+		dta d'sprz'*,b(1+64*3),d'g kolimacji'*
+		dta d'NIKLOWO-KADMOWEJ'*
+		dta d'17'
+		dta d'   ponury k'*,b(4+64*3),d't   '*
+		dta d'ZAKICHANYCH CIA'*,b(11+64*2)
+		dta d'18'
+		dta d' jama przebicia '*
+		dta d'SYFU Z ZA'*,b(2+64*2),d'WIAT'*,b(5+64*2),d'W'*
+		dta d'19'
+		dta d' zw'*,b(1+64*3),d'glona budka '*
+		dta d'  PE'*,b(11+64*2),d'NA MITOZY  '*
+		dta d'20'
+		dta d' gibony strachu '*
+		dta d' TU JADA'*,b(11+64*2),d'Y '*,b(2+64*2),d'LUZ '*
+		dta d'21'
+		dta d' dom '*,b(10+64*3),d'ony brata '*
+		dta d' SIOSTRY TE'*,b(2+64*2),d'CIA '*
+		dta d'22'
+		dta d'podwodny bezkres'*
+		dta d'POLA '*,b(2+64*2),d'LEDZIOWEGO'*
+		dta d'23'
+		dta d' dwie zaropia'*,b(11+64*3),d'e '*
+		dta d'WN'*,b(1+64*2),d'TRZNO'*,b(2+64*2),d'CI DYNI'*
+		dta d'24'
+		dta b(2+64*3),d'luza numer trzy'*
+		dta d'ONGI'*,b(2+64*2),d' DZIA'*,b(11+64*2),d'AJ'*,b(4+64*2),d'CA'*
+		dta d'25'
+		dta d'   przedpok'*,b(5+64*3),d'j   '*
+		dta d'SNYCERSKICH PS'*,b(5+64*2),d'W'*
+		dta d'26'
+		dta d'zbiornik balsamu'*
+		dta d' Z DERMATOFIT'*,b(5+64*2),d'W '*
+		dta d'27'
+		dta d'miejsce poch'*,b(5+64*3),d'wku'*
+		dta d'OGORZA'*,b(11+64*2),d'EJ ESTERY'*
+		dta d'28'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'29'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'30'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'31'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'32'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'33'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'34'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'35'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'36'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'37'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'38'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'39'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'40'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'41'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'42'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'43'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'44'
 MAP_NAME_LAST
 		dta b($9b)
 		
@@ -1411,249 +1497,436 @@ clear_intermission_screen
 		tya
 @		sta SCRMEM,y
 		iny
-		cpy #100
+		cpy #105+22
 		bne @-
 		rts
 		
-show_intermission
-		lda #$da
-		sta CLR1
+draw_header
+		ldy #0
+		ldx #(header_text_END-header_text)
+@		lda header_text,y
+		sta SCRMEM+DIGITOFFSET-2,y
+		iny
+		dex
+		txa
+		pha
+		jsr sleep_for_short_time
+		pla
+		tax
+		bne @-
+		rts
+		
+draw_cavern_number
+		mwa curmapname ptr0
+		adw ptr0 #(MAP_01_NAME_END-MAP_01_NAME)
+		ldy #0
+		lda (ptr0),y
+		sub #$10
+		asl
+		add #2
+		sta SCRMEM+20+DIGITOFFSET,y
+		add #1
+		sta SCRMEM+21+DIGITOFFSET,y
+		add #31
+		sta SCRMEM+20+20+DIGITOFFSET,y
+		add #1
+		sta SCRMEM+21+20+DIGITOFFSET,y
+		
+		iny 
+		
+		lda (ptr0),y
+		dey
+		sub #$10
+		asl
+		add #2
+		sta SCRMEM+22+DIGITOFFSET,y
+		add #1
+		sta SCRMEM+23+DIGITOFFSET,y
+		add #31
+		sta SCRMEM+22+20+DIGITOFFSET,y
+		add #1
+		sta SCRMEM+23+20+DIGITOFFSET,y
+		
+		lda #33
+		sta SCRMEM+20+20+DIGITOFFSET-1,y
+		
+		jsr draw_cavern_number_shadow
+		
+		rts
+		
+draw_cavern_number_shadow
+		lda #65
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET-1
 
-		lda #$0F
+		ldy #0
+		lda (ptr0),y
+		dey
+		sub #$10
+		asl
+		#if .byte @ < #5*2
+			add #22+64
+		#else
+			add #(54-12)+2+64
+		#end
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET
+		add #1
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+1
+
+		iny 
+		iny
+
+		lda (ptr0),y
+		dey
+		sub #$10
+		asl
+		#if .byte @ < #5*2
+			add #22+64
+		#else
+			add #(54-12)+2+64
+		#end
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+2
+		add #1
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+3
+
+		rts
+		
+do_level_name_scroll
+		; How many times to scroll (16 = length, 2 bytes per scroll)
+		ldx #16/2
+		
+dlns_1
+		; Copy two bytes from pointer to the edge of the screen
+		ldy #0
+		lda (ptr0),y
+		sta (ptr1),y
+		iny
+		lda (ptr0),y
+		sta (ptr1),y
+		
+		; Animate
+dlns_0
+:2		jsr synchro
+		inc scroll
+		lda scroll
+		and #%00001111
+		sta hscrol
+		cmp #0
+		bne dlns_0
+		
+		; Two bytes moved in - copy entire line to the right
+		ldy #22
+@		lda (ptr1),y
+		iny
+		iny
+		sta (ptr1),y
+		dey
+		dey
+		dey
+		lda (ptr1),y
+		iny
+		iny
+		sta (ptr1),y
+		dey
+		dey
+		dey
+		cpy #$fe
+		bne @-
+		
+		; Decrase pointer and repeat
+		sbw ptr0 #2
+		dex
+		bne dlns_1
+		rts
+		
+draw_level_name
+		; Init pointers to the end of the first line of level name
+		mwa #SCRMEM+TITLEOFFSET ptr1
+		mwa curmapname ptr0
+		adw ptr0 #14
+		jsr do_level_name_scroll
+		
+		; Disable scroll on the top row
+		lda DL_TOP_SCROL
+		sta ptr3+1
+		lda #%111
+		sta DL_TOP_SCROL
+		
+		; Copy the top row in the right place
+		ldy #0
+@		lda (curmapname),y
+		sta SCRMEM+TITLEOFFSET,y
+		iny
+		cpy #16
+		bne @-
+		lda #0
+		sta SCRMEM+TITLEOFFSET,y
+		iny
+		sta SCRMEM+TITLEOFFSET,y
+	
+		; Init pointers to the end of the second line of level name
+		mwa #SCRMEM+TITLEOFFSET+20 ptr1
+		mwa curmapname ptr0
+		adw ptr0 #14+16
+		jsr do_level_name_scroll
+
+		rts
+		
+header_text
+		dta d'pieczara'
+header_text_END
+
+draw_decoration
+		ldy #0
+		tya
+@		sta pmg_p0,y
+		iny
+		bne @-
+@		sta pmg_p2,y
+		iny
+		bne @-
+
+.rept 4 #
+		ldy #0
+@		lda sprite_decoration_data_:1,y
+		sta pmg_p:1+PMGDECOOFFSET,y
+		iny
+		cpy #sprite_decoration_data_0_LEN-sprite_decoration_data_0
+		bne @-
+.endr
+
+		ldy #0
+@		lda decoration_sine_table,y
+		sta HPOSP0
+		add #8
+		sta HPOSP1
+		add #8
+		sta HPOSP2
+		add #8
+		sta HPOSP3
+:5		jsr synchro
+		iny
+		cpy #90
+		bne @-
+		
+		rts
+
+decoration_sine_table
+		dta b(231)
+		dta b(230)
+		dta b(229)
+		dta b(228)
+		dta b(227)
+		dta b(226)
+		dta b(225)
+		dta b(224)
+		dta b(223)
+		dta b(222)
+		dta b(221)
+		dta b(220)
+		dta b(219)
+		dta b(218)
+		dta b(217)
+		dta b(216)
+		dta b(215)
+		dta b(214)
+		dta b(214)
+		dta b(213)
+		dta b(212)
+		dta b(211)
+		dta b(210)
+		dta b(209)
+		dta b(208)
+		dta b(207)
+		dta b(206)
+		dta b(206)
+		dta b(205)
+		dta b(204)
+		dta b(203)
+		dta b(202)
+		dta b(201)
+		dta b(201)
+		dta b(200)
+		dta b(199)
+		dta b(198)
+		dta b(197)
+		dta b(197)
+		dta b(196)
+		dta b(195)
+		dta b(194)
+		dta b(194)
+		dta b(193)
+		dta b(192)
+		dta b(192)
+		dta b(191)
+		dta b(190)
+		dta b(190)
+		dta b(189)
+		dta b(188)
+		dta b(188)
+		dta b(187)
+		dta b(187)
+		dta b(186)
+		dta b(185)
+		dta b(185)
+		dta b(184)
+		dta b(184)
+		dta b(183)
+		dta b(183)
+		dta b(182)
+		dta b(182)
+		dta b(181)
+		dta b(181)
+		dta b(181)
+		dta b(180)
+		dta b(180)
+		dta b(180)
+		dta b(179)
+		dta b(179)
+		dta b(178)
+		dta b(178)
+		dta b(178)
+		dta b(178)
+		dta b(177)
+		dta b(177)
+		dta b(177)
+		dta b(177)
+		dta b(177)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		
+sprite_decoration_data_0
+		dta b(0),b(64),b(0),b(80),b(5),b(82),b(81),b(70)
+		dta b(86),b(64),b(84),b(80),b(80),b(88),b(80),b(72)
+		dta b(90),b(72),b(88),b(75),b(83),b(72),b(74),b(104)
+		dta b(68),b(108),b(68),b(110),b(36),b(46),b(38),b(18)
+		dta b(23),b(27),b(13),b(15),b(5),b(6),b(7),b(2)
+		dta b(3),b(2),b(3),b(2),b(3),b(3),b(3),b(3)
+		dta b(7),b(3),b(7),b(14),b(7),b(14),b(31),b(15)
+		dta b(25),b(59),b(30),b(60),b(28),b(56),b(80),b(57)
+		dta b(112),b(32),b(112),b(38),b(118),b(32),b(80),b(32)
+		dta b(113),b(98),b(80),b(32),b(114),b(32),b(112),b(32)
+		dta b(49),b(57),b(16),b(8),b(4),b(4),b(2),b(1)
+		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
+		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
+sprite_decoration_data_0_LEN
+sprite_decoration_data_1
+		dta b(3),b(67),b(16),b(1),b(12),b(14),b(0),b(0)
+		dta b(5),b(56),b(25),b(34),b(1),b(42),b(129),b(11)
+		dta b(2),b(59),b(53),b(35),b(87),b(43),b(23),b(135)
+		dta b(87),b(137),b(89),b(47),b(95),b(46),b(31),b(46)
+		dta b(29),b(44),b(28),b(174),b(29),b(174),b(159),b(188)
+		dta b(223),b(157),b(219),b(189),b(218),b(154),b(220),b(191)
+		dta b(103),b(171),b(118),b(252),b(153),b(185),b(240),b(248)
+		dta b(240),b(99),b(112),b(100),b(114),b(32),b(114),b(32)
+		dta b(116),b(32),b(114),b(56),b(82),b(24),b(89),b(44)
+		dta b(124),b(174),b(119),b(59),b(17),b(25),b(29),b(14)
+		dta b(135),b(139),b(23),b(18),b(9),b(1),b(1),b(8)
+		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
+		dta b(24),b(161),b(65),b(73),b(99),b(35),b(22),b(44)
+sprite_decoration_data_2
+		dta b(10),b(119),b(122),b(84),b(10),b(239),b(203),b(143)
+		dta b(83),b(179),b(127),b(190),b(101),b(227),b(247),b(254)
+		dta b(149),b(106),b(128),b(48),b(40),b(152),b(64),b(232)
+		dta b(208),b(200),b(221),b(250),b(214),b(162),b(84),b(138)
+		dta b(64),b(162),b(81),b(27),b(65),b(232),b(212),b(228)
+		dta b(117),b(171),b(183),b(222),b(220),b(240),b(193),b(160)
+		dta b(140),b(26),b(12),b(64),b(161),b(35),b(198),b(12)
+		dta b(57),b(18),b(178),b(36),b(53),b(111),b(39),b(110)
+		dta b(47),b(110),b(109),b(109),b(110),b(44),b(108),b(38)
+		dta b(180),b(54),b(18),b(24),b(140),b(164),b(130),b(193)
+		dta b(200),b(192),b(96),b(34),b(49),b(185),b(246),b(160)
+		dta b(240),b(160),b(240),b(164),b(240),b(224),b(224),b(160)
+		dta b(210),b(204),b(64),b(128),b(0),b(128),b(0),b(0)
+sprite_decoration_data_3
+		dta b(171),b(127),b(47),b(127),b(165),b(231),b(255),b(187)
+		dta b(255),b(211),b(249),b(171),b(119),b(251),b(95),b(235)
+		dta b(15),b(5),b(195),b(193),b(27),b(153),b(1),b(131)
+		dta b(65),b(169),b(69),b(239),b(165),b(73),b(5),b(161)
+		dta b(19),b(131),b(69),b(45),b(201),b(147),b(49),b(227)
+		dta b(201),b(131),b(53),b(35),b(7),b(138),b(165),b(14)
+		dta b(157),b(40),b(117),b(162),b(29),b(52),b(66),b(134)
+		dta b(0),b(8),b(80),b(160),b(208),b(128),b(65),b(130)
+		dta b(21),b(202),b(149),b(46),b(85),b(46),b(87),b(11)
+		dta b(5),b(3),b(1),b(2),b(1),b(0),b(1),b(2)
+		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
+		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
+		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
+
+setup_intermission_colors
+		lda #$04
+		sta PCOLR0
+		lda #$0a
+		sta PCOLR1
+		lda #$08
+		sta PCOLR2
+		lda #$04
+		sta PCOLR3
+		
+		lda #$eb
 		sta CLR0
-
-		lda #$77
+		lda #$85
+		sta CLR1
+		lda #$b5
 		sta CLR2
-
+		lda #$b9
+		sta CLR3
+		
+		rts
+		
+show_intermission
 		ldx #<MODUL
 		ldy #>MODUL
 		lda #$36
 		jsr RASTERMUSICTRACKER
 
-		ldx #0
+		lda #0
+		sta $d008 
+		sta $d009
+		sta $d00c
 		sta HPOSM0
-		sta HPOSP0
-		sta HPOSP1
+		
+		jsr setup_intermission_colors
+
+		; Enable DLI
+		lda <dli_routine
+		sta VDSLST
+		lda >dli_routine
+		sta VDSLST+1
+		lda #192
+		sta NMIEN
 
 		ldx <DLINTERMISSION
 		ldy >DLINTERMISSION
 		stx SDLSTL
 		sty SDLSTL+1
-		lda >TITLE_FONT
-		sta CHBAS
-		
-		; TODO: Optimize these moves
-		#if .byte showsummary = #1
-			jsr clear_intermission_screen
-			mva #39 SCRMEM+5	; G
-			mva #50 SCRMEM+6	; R
-			mva #33 SCRMEM+7	; A
-			mva #52 SCRMEM+8	; T
-			mva #53 SCRMEM+9	; U
-			mva #44 SCRMEM+10	; L
-			mva #33 SCRMEM+11	; A
-			mva #35 SCRMEM+12	; C
-			mva #42 SCRMEM+13	; J
-			mva #37 SCRMEM+14	; E
-			jsr sleep_for_some_time
-
-			mva #128+36 SCRMEM+20	; D
-			mva #128+47 SCRMEM+21	; O
-			mva #128+35 SCRMEM+22	; C
-			mva #128+37 SCRMEM+23	; E
-			mva #128+46 SCRMEM+24	; N
-			mva #128+35 SCRMEM+25	; C
-			mva #128+41 SCRMEM+26	; I
-			mva #128+37 SCRMEM+27	; E
-			jsr sleep_for_some_time
-			mva #64+52 SCRMEM+29	; T
-			mva #64+50 SCRMEM+30	; R
-			mva #64+58 SCRMEM+31	; Z
-			mva #64+33 SCRMEM+32	; A
-			mva #64+51 SCRMEM+33	; S
-			mva #64+43 SCRMEM+34	; K
-			mva #64+47 SCRMEM+35	; O
-			mva #64+55 SCRMEM+36	; W
-			mva #64+51 SCRMEM+37	; S
-			mva #64+43 SCRMEM+38	; K
-			mva #64+41 SCRMEM+39	; I
-			jsr sleep_for_some_time
-			
-			mva #34 SCRMEM+60
-			jsr sleep_for_short_time
-			mva #47 SCRMEM+61
-			jsr sleep_for_short_time
-			mva #58 SCRMEM+63
-			jsr sleep_for_short_time
-			mva #55 SCRMEM+64
-			jsr sleep_for_short_time
-			mva #57 SCRMEM+65
-			jsr sleep_for_short_time
-			mva #35 SCRMEM+66
-			jsr sleep_for_short_time
-			mva #41 SCRMEM+67
-			jsr sleep_for_short_time
-			mva #1 SCRMEM+68
-			jsr sleep_for_short_time
-			mva #10 SCRMEM+69
-			jsr sleep_for_short_time
-			mva #57 SCRMEM+70
-			jsr sleep_for_short_time
-			mva #3 SCRMEM+71
-			jsr sleep_for_short_time
-			mva #45 SCRMEM+73
-			jsr sleep_for_short_time
-			mva #47 SCRMEM+74
-			jsr sleep_for_short_time
-			mva #39 SCRMEM+75
-			jsr sleep_for_short_time
-			mva #4 SCRMEM+76
-			jsr sleep_for_short_time
-			mva #35 SCRMEM+78
-			jsr sleep_for_short_time
-			mva #41 SCRMEM+79
-			jsr sleep_for_short_time
-			
-			mva #128+35 SCRMEM+80
-			jsr sleep_for_short_time
-			mva #128+47 SCRMEM+81
-			jsr sleep_for_short_time
-			mva #128+52 SCRMEM+83
-			jsr sleep_for_short_time
-			mva #128+37 SCRMEM+84
-			jsr sleep_for_short_time
-			mva #128+46 SCRMEM+85
-			jsr sleep_for_short_time
-			mva #128+51 SCRMEM+86
-			jsr sleep_for_short_time
-			mva #128+47 SCRMEM+87
-			jsr sleep_for_short_time
-			mva #128+50 SCRMEM+88
-			jsr sleep_for_short_time
-			mva #128+37 SCRMEM+89
-			jsr sleep_for_short_time
-			mva #128+45 SCRMEM+90
-			jsr sleep_for_short_time
-			mva #128+55 SCRMEM+92
-			jsr sleep_for_short_time
-			mva #128+11 SCRMEM+93
-			jsr sleep_for_short_time
-			mva #128+47 SCRMEM+94
-			jsr sleep_for_short_time
-			mva #128+36 SCRMEM+95
-			jsr sleep_for_short_time
-			mva #128+33 SCRMEM+96
-			jsr sleep_for_short_time
-			mva #128+50 SCRMEM+97
-			jsr sleep_for_short_time
-			mva #128+58 SCRMEM+98
-			jsr sleep_for_short_time
-			mva #128+4 SCRMEM+99
-
-@			lda trig0		; FIRE #0
-			bne @-
-
-			jsr clear_intermission_screen
-			jsr sleep_for_short_time
-			ldy #0
-			lda (curmapname),y
-			cmp #$9b
-			bne @+
-			pla
-			pla
-			pla
-			pla
-:4			jsr sleep_for_some_time
-
-			mwa #MAP_01 curmap
-			mwa #MAP_01_NAME curmapname
-		
-			jmp main
-@
-		#end
-		
-		mva #1 showsummary
 		
 		jsr clear_intermission_screen
-		
-		mva #48 SCRMEM+1	; P
-		mva #37 SCRMEM+2	; E
-		mva #46 SCRMEM+3	; N
-		mva #37 SCRMEM+4	; E
-		mva #52 SCRMEM+5	; T
-		mva #50 SCRMEM+6	; R
-		mva #33 SCRMEM+7	; A
-		mva #35 SCRMEM+8	; C
-		mva #42 SCRMEM+9	; J
-		mva #33 SCRMEM+10	; A
-		mva #42 SCRMEM+12	; J
-		mva #33 SCRMEM+13	; A
-		mva #51 SCRMEM+14	; S
-		mva #43 SCRMEM+15	; K
-		mva #41 SCRMEM+16	; I
-		mva #46 SCRMEM+17	; N
-		mva #41 SCRMEM+18	; I
-		jsr sleep_for_some_time
-	
-		mva #46+128 SCRMEM+26	;  
-		mva #53+128 SCRMEM+27	;  
-		mva #45+128 SCRMEM+28	;  
-		mva #37+128 SCRMEM+29	;  
-		mva #50+128 SCRMEM+30	;  
-		jsr sleep_for_some_time
-		
-		ldy #40
-		lda (curmapname),y
-		add #64
-		sta SCRMEM+32
-		iny
-		lda (curmapname),y
-		add #64
-		sta SCRMEM+33
-		jsr sleep_for_some_time
-		
-		mva #58 SCRMEM+40	;  
-		mva #55 SCRMEM+41	;  
-		mva #33 SCRMEM+42	;  
-		mva #46 SCRMEM+43	;  
-		mva #37 SCRMEM+44	;  
-		mva #42 SCRMEM+45	;  
-		mva #37 SCRMEM+47	;  
-		mva #46 SCRMEM+48	;  
-		mva #41 SCRMEM+49	;  
-		mva #39 SCRMEM+50	;  G
-		mva #45 SCRMEM+51	;  M
-		mva #33 SCRMEM+52	;  A
-		mva #52 SCRMEM+53	;  T
-		#if .byte RANDOM > #128
-			mva #57 SCRMEM+54	;  Y
-			mva #35 SCRMEM+55	;  C
-			mva #58 SCRMEM+56	;  Z
-		#else
-			mva #35 SCRMEM+54	;  C
-			mva #58 SCRMEM+55	;  Z
-			mva #57 SCRMEM+56	;  Y
-		#end
-		mva #46 SCRMEM+57	;  
-		mva #41 SCRMEM+58	;  
-		mva #37 SCRMEM+59	;  
-		jsr sleep_for_some_time
-	
-		ldy #0
-@		lda (curmapname),y
-		sta SCRMEM+60,y
-		cmp #0
-		beq @+
-		jsr sleep_for_short_time
-@		iny
-		cpy #40
-		bne @-1
+		jsr draw_decoration
+:4		jsr sleep_for_some_time
+		jsr draw_header
+:4		jsr sleep_for_some_time
+		jsr draw_cavern_number
+:4		jsr sleep_for_some_time
+		jsr draw_level_name
 
 @		lda trig0		; FIRE #0
 		bne @-
 
 		ldx #$ff
 		stx CH
+
+		; Reenable scroll on the first line of the title
+		lda ptr3+1
+		sta DL_TOP_SCROL
+		
 		rts
 		
 vbi_routine
@@ -1717,6 +1990,7 @@ init_game
 		jsr SETVBV
 		
 		mva instafall old_instafall
+		jsr enable_sprites
 		jsr show_intermission
 
 		#if .byte first_run = #0
@@ -1748,6 +2022,7 @@ init_game
 		ldx #$ff/2-4
 		stx reducer
 		ldx #0
+		stx scroll
 		stx collectibles
 		stx collect
 		stx collecting
@@ -1963,15 +2238,7 @@ set_font
 		sta CHBAS
 		rts
 		
-init_sprites
-		lda #0
-		ldy #0
-@		sta pmg_p2,y
-		sta pmg_p3,y
-		iny
-		cpy #pmg_p3-pmg_p2
-		bne @-
-
+enable_sprites
 		lda #>pmg_base
 		sta PMBASE
 		lda #%00000001
@@ -1983,7 +2250,18 @@ init_sprites
 		lda SDMCTL
 		ora #%00001100
 		sta SDMCTL
+		rts
+
 		
+init_sprites
+		lda #0
+		ldy #0
+@		sta pmg_p2,y
+		sta pmg_p3,y
+		iny
+		cpy #pmg_p3-pmg_p2
+		bne @-
+
 		lda #0
 		sta SIZEP0
 
@@ -2515,17 +2793,21 @@ DLGAME
 :MAPSIZE-1	dta	b($07)
 			dta b($41),a(DLGAME)
 DLINTERMISSION
-:8			dta b($70)
-			dta b($46)
+:8			dta b($60)
+			dta b(%10010000)	; DLI - top 			[VCOUNT=$20]
+			dta b($47)
 			dta a(SCRMEM)
-			dta b($70)
-			dta b($06)
-			dta b($70)
-			dta b($06)
-:4			dta b($70)
-			dta b($07)
+			dta b(%11110000)	; DLI - digits			[VCOUNT=$2C]
+			dta b($87)			; DLI - digits half		[VCOUNT=$34]
+			dta b($87)			; DLI - digits shadow	[VCOUNT=$3C]
+			dta b($06)			
+:2			dta b($70)
+			dta b(%11110000)	; DLI - level name		[VCOUNT=$4C]
+DL_TOP_SCROL
+			dta b(%10111)
 			dta b($40)
-			dta b($07)
+DL_BOT_SCROL			
+			dta b(%10111)
 			dta b($41),a(DLINTERMISSION)
 
 ; Sprites
@@ -2552,39 +2834,28 @@ GAME_FONT
 .align	$400
 GAME_FONT_2
 		ins "fonts\fontek2.fnt"
+DIGITS_FONT
+		ins "fonts\digits.fnt"
 		
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"
 
 MAP_01
-;	ins "maps\v1.map"
+	ins "maps\v1.map"
 
-		  dta d'%%%%%%%%%%% '
-		  dta d'%##"" ##""% '		
-		  dta d'%""## ""##% '		
-		  dta d'%%%%% %%%%% '		
-		  dta d'    % %     '		
-		  dta d'    % % %%%%'		
-		  dta d'    % % % !%'		
-		  dta d'    % % % %%'		
-		  dta d' %%%% %%% %%'		
-		  dta d' %         %'		
-		  dta d' %         %'		
-		  dta d' %%%%%%%%%%%'
+		  ; dta d'%%%%%%%%%%% '
+		  ; dta d'%##"" ##""% '		
+		  ; dta d'%""## ""##% '		
+		  ; dta d'%%%%% %%%%% '		
+		  ; dta d'    % %     '		
+		  ; dta d'    % % %%%%'		
+		  ; dta d'    % % % !%'		
+		  ; dta d'    % % % %%'		
+		  ; dta d' %%%% %%% %%'		
+		  ; dta d' %         %'		
+		  ; dta d' %         %'		
+		  ; dta d' %%%%%%%%%%%'
 
-		  ; dta d'%%%%%%%%%%%%'
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%          %'		
-		  ; dta d'%!    "   #%'		
-		  ; dta d'%%%%%%%%%%%%'
-	
 MAP_02
 .rept MAPCOUNT-1 #+2
 	ins "maps\v:1.map"
@@ -2596,6 +2867,64 @@ SCREEN_MARGIN_DATA_END
 music_start_table
 	dta b($00),b($1e),b($45),b($45),b($5d),b($57),b($57),b($57) ; $5d
 
+dli_routine
+		phr
+		
+		lda VCOUNT
+		cmp #$20	; Header
+		bne @+
+		lda >TITLE_FONT
+		sta CHBASE
+		jmp dli_end
+		
+@		cmp #$2C	; Digits
+		bne @+
+		lda >DIGITS_FONT
+		sta CHBASE
+		ldy #$eb-2
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sty COLOR0
+		jmp dli_end
+		
+@		cmp #$34	; Digits - lower part
+		bne @+
+		ldy #$eb-4
+		sta WSYNC
+		sty COLOR0
+		ldy #$eb-6
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sty COLOR0
+		jmp dli_end
+
+@		cmp #$3C	; Digits - shadow
+		bne @+
+		ldy #$02
+		sta WSYNC
+		sty COLOR1
+		jmp dli_end
+		
+@		lda >TITLE_FONT
+		sta CHBASE
+		
+dli_end		
+		plr
+		rti
+	
 	org curmap
 	dta a(MAP_01)
 	org curmapname
@@ -2606,8 +2935,7 @@ music_start_table
 	dta b(0)
 	org instafall
 	dta b(1)
-
-
+	
 ; Notes
 ;
 ; Character codes:

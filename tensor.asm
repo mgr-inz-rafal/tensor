@@ -1822,6 +1822,12 @@ show_intermission
 		ldy #>MODUL
 		lda #$36
 		jsr RASTERMUSICTRACKER
+
+		lda #0
+		sta $d008 
+		sta $d009
+		sta $d00c
+		sta HPOSM0
 		
 		jsr setup_intermission_colors
 

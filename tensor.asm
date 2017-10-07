@@ -1630,32 +1630,113 @@ draw_decoration
 		bne @-
 .endr
 
-		mva #SOURCEDECO+8*0 ptr0
-		mva #SOURCEDECO+8*1 ptr0+1
-		mva #SOURCEDECO+8*2 ptr1
-		mva #SOURCEDECO+8*3 ptr1+1
-
 		ldy #0
-@		
-:4		jsr synchro
-		lda ptr0
-		sta hposp0
-		lda ptr0+1
-		sta hposp1
-		lda ptr1
-		sta hposp2
-		lda ptr1+1
-		sta hposp3
-		dec ptr0
-		dec ptr0+1
-		dec ptr1
-		dec ptr1+1
+@		lda decoration_sine_table,y
+		sta HPOSP0
+		add #8
+		sta HPOSP1
+		add #8
+		sta HPOSP2
+		add #8
+		sta HPOSP3
+:5		jsr synchro
 		iny
-		cpy #SOURCEDECO-TARGETDECO+1
+		cpy #90
 		bne @-
-sranie
 		
 		rts
+
+decoration_sine_table
+		dta b(231)
+		dta b(230)
+		dta b(229)
+		dta b(228)
+		dta b(227)
+		dta b(226)
+		dta b(225)
+		dta b(224)
+		dta b(223)
+		dta b(222)
+		dta b(221)
+		dta b(220)
+		dta b(219)
+		dta b(218)
+		dta b(217)
+		dta b(216)
+		dta b(215)
+		dta b(214)
+		dta b(214)
+		dta b(213)
+		dta b(212)
+		dta b(211)
+		dta b(210)
+		dta b(209)
+		dta b(208)
+		dta b(207)
+		dta b(206)
+		dta b(206)
+		dta b(205)
+		dta b(204)
+		dta b(203)
+		dta b(202)
+		dta b(201)
+		dta b(201)
+		dta b(200)
+		dta b(199)
+		dta b(198)
+		dta b(197)
+		dta b(197)
+		dta b(196)
+		dta b(195)
+		dta b(194)
+		dta b(194)
+		dta b(193)
+		dta b(192)
+		dta b(192)
+		dta b(191)
+		dta b(190)
+		dta b(190)
+		dta b(189)
+		dta b(188)
+		dta b(188)
+		dta b(187)
+		dta b(187)
+		dta b(186)
+		dta b(185)
+		dta b(185)
+		dta b(184)
+		dta b(184)
+		dta b(183)
+		dta b(183)
+		dta b(182)
+		dta b(182)
+		dta b(181)
+		dta b(181)
+		dta b(181)
+		dta b(180)
+		dta b(180)
+		dta b(180)
+		dta b(179)
+		dta b(179)
+		dta b(178)
+		dta b(178)
+		dta b(178)
+		dta b(178)
+		dta b(177)
+		dta b(177)
+		dta b(177)
+		dta b(177)
+		dta b(177)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
+		dta b(176)
 		
 sprite_decoration_data_0
 		dta b(0),b(64),b(0),b(80),b(5),b(82),b(81),b(70)
@@ -1759,11 +1840,11 @@ show_intermission
 		
 		jsr clear_intermission_screen
 		jsr draw_decoration
-:2		jsr sleep_for_some_time
+:4		jsr sleep_for_some_time
 		jsr draw_header
-		jsr sleep_for_some_time
+:4		jsr sleep_for_some_time
 		jsr draw_cavern_number
-:2		jsr sleep_for_some_time
+:4		jsr sleep_for_some_time
 		jsr draw_level_name
 
 @		lda trig0		; FIRE #0
@@ -2784,8 +2865,7 @@ dli_end
 	dta b(0)
 	org instafall
 	dta b(1)
-
-
+	
 ; Notes
 ;
 ; Character codes:

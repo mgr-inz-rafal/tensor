@@ -254,10 +254,6 @@ TITLE_PART_3
 	dta d'MSX:  '
 	dta d'makary brauner'*
 /*
-		dta d'nisza kolonistki olikt',b(5+64),d'ra drwi',b(11+64),d'a z gruzu15'
-		dta d' izba sn',b(5+64),d'w obsikana  przez koty szatana 16'
-		dta d' odwrotna kolimacja    biedoty z boru   17'
-		dta d'     ponury k',b(4+64),d't      przeciwnik',b(5+64),d'w dobra 18'
 		dta d'   grota  przebi',b(3+64),d'    z onych  za',b(2+64),d'wiat',b(5+64),d'w 19'
 		dta d'       budka          mitochondrialna   20'
 		dta d'cztery p',b(11+64),d'ozy strachu ponad osiem mi',b(1+64),b(2+64),d'ni 21'
@@ -337,6 +333,23 @@ MAP_02_NAME
 		dta d'  krater z'*,b(11+64*3),d'a i  '*
 		dta d'SPIENIONEJ PIANY'*
 		dta d'14'
+		dta d'nisza schorza'*,b(11+64*3),d'ej'*
+		dta d' KOLONISTKI OLI '*
+		dta d'15'
+;		dta d'abcdefghijklmnop'*
+;		dta d'QRSTUVWXYZABCDEF'*
+		dta d'izba sn'*,b(5+64*3),d'w du'*,b(10+64*3),d'ego'*
+		dta d'P'*,b(1+64*2),d'KATEGO SZATANA'*
+		dta d'16'
+		dta d'sprz'*,b(1+64*3),d'g kolimacji'*
+		dta d'NIKLOWO-KADMOWEJ'*
+		dta d'17'
+		dta d'   ponury k'*,b(4+64*3),d't   '*
+		dta d'ZAKICHANYCH CIA'*,b(11+64*2)
+		dta d'18'
+		dta d' jama przebicia '*
+		dta d'SYFU Z ZA'*,b(2+64*2),d'WIAT'*,b(5+64*2),d'W'*
+		dta d'19'
 MAP_NAME_LAST
 		dta b($9b)
 		

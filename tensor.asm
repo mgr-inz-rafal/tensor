@@ -2917,7 +2917,7 @@ dli_routine
 
 @		cmp #$3C	; Digits - shadow
 		bne @+
-		ldy #$02
+		ldy #$04
 		sta WSYNC
 		sty COLOR1
 		jmp dli_end

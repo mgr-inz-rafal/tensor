@@ -352,14 +352,14 @@ MAP_02_NAME
 		dta d'  wiktoria'*,b(15+64*3),d'ski  '*
 		dta d'     RYGIEL     '*
 		dta d'32'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'   tunele pod   '*
+		dta d' MIASTEM UWI'*,b(4+64*2),d'DU '*
 		dta d'33'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'  przeci'*,b(1+64*3),d'g jak  '*
+		dta d'   Z KOSZMARU   '*
 		dta d'34'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d' bezkresne pola '*
+		dta d'    OGLEJONU    '*
 		dta d'35'
 		dta d'abcdefghijklmnop'*
 		dta d'QRSTUVWXYZABCDEF'*

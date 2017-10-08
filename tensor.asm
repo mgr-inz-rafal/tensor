@@ -15,7 +15,7 @@ PMGDECOOFFSET equ 12
 DIGITOFFSET	equ 6
 SHADOWOFFSET equ 60
 TITLEOFFSET equ 60+20
-MAPCOUNT equ 44
+MAPCOUNT equ 46
 MUSICPLAYER	equ $9000
 ;MODUL	equ $2dc0
 MAPSIZE	equ	12
@@ -254,8 +254,6 @@ TITLE_PART_3
 	dta d'MSX:  '
 	dta d'makary brauner'*
 MAP_01_NAME
-;		dta d'abcdefghijklmnop'*
-;		dta d'QRSTUVWXYZABCDEF'*
 		dta d'kr'*,b(1+64*3),d'pcewo w prawo'*
 		dta d'    I W LEWO    '*
 MAP_01_NAME_END
@@ -390,6 +388,12 @@ MAP_02_NAME
 		dta d'abcdefghijklmnop'*
 		dta d'QRSTUVWXYZABCDEF'*
 		dta d'44'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'45'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'46'
 MAP_NAME_LAST
 		dta b($9b)
 		

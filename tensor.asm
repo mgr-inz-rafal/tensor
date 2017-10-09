@@ -2295,18 +2295,6 @@ add_color
 			inc collectibles
 			rts
 		#end
-		/*
-		#if .byte ptr3 >= #3 .and .byte ptr3 <= #4
-			lda ptr3
-			add #128
-			rts
-		#end
-		#if .byte ptr3 >= #5 .and .byte ptr3 <= #11
-			lda ptr3
-			add #128+64
-			rts
-		#end
-		*/
 		lda ptr3
 		rts
 		

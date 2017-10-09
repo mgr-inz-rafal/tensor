@@ -17,7 +17,6 @@ SHADOWOFFSET equ 60
 TITLEOFFSET equ 60+20
 MAPCOUNT equ 46
 MUSICPLAYER	equ $9000
-;MODUL	equ $2dc0
 MAPSIZE	equ	12
 SCWIDTH equ 20
 MARGIN 	equ	(SCWIDTH-MAPSIZE)/2
@@ -119,7 +118,6 @@ HEIGHT	= 30
 ; ---	MAIN PROGRAM
 	org $2000
 scr	ins "data\tensor5.raw" +0,+0,3520
-;scr	ins "rmtplayr.a65" +0,+0,3520
 MODUL
 		opt h-
 		ins "music\TENSOR.rmt"
@@ -966,17 +964,6 @@ x20	lda #$2D
 	
 
 raster_program_end
-
-;	lda #$00
-;	sta colpm0
-;	sta colpm1
-;	sta colpm2
-;	sta colpm3
-;	sta color0
-;	sta color1
-;	sta color2
-;	sta color3
-;	sta colbak
 
 // -----------------------------------------------------------
 //	EXIT

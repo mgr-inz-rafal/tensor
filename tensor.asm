@@ -471,6 +471,7 @@ main
 	sta CHBAS
 	jsr paint_title_text
 	jsr paint_level_number
+	jsr paint_credits
 
 	ift USESPRITES
 	mva >pmg pmbase		;missiles and players data address
@@ -940,18 +941,19 @@ c10	ldx #$00
 	jsr wait36cycle
 	cmp 0\ nop
 
-
-
 line80
 x20	lda #$2D
 	sta hposp1
-	
 	
 	ldy #$26
 @	jsr wait54cycle
 	dey
 	bne @-
 
+; At this point we are at the beginning of the instruction section
+	lda >TITLE_FONT
+	sta CHBASE
+	
 	lda #$da
 	sta color2
 	lda #$63
@@ -960,8 +962,20 @@ x20	lda #$2D
 	sta color0
 	lda #$ff
 	sta color3
+
+	ldy #$26*3
+@	jsr wait54cycle
+	dey
+	bne @-
 	
+; At this point we are at the beginning of the credits section
+	lda >CREDITS_FONT
+	sta CHBASE
 	
+	lda #$0f
+	sta color2
+	lda #$00
+	sta color1
 
 raster_program_end
 
@@ -1065,9 +1079,9 @@ _rts	rts
 	dta b($02)
 	dta b($02)
 	dta b($70)
-	dta b($06)
-	dta b($06)
-	dta b($06)
+	dta b($02)
+	dta b($02)
+	dta b($02)
 	
 	dta $41,a(:2)
 .ENDM
@@ -2628,6 +2642,21 @@ synchr2	cmp VCOUNT
 		bne synchr2
 @		rts
 
+paint_credits
+		ldy #0
+		tya
+@		sta SCRMEM+40*13,y
+		iny
+		cpy #40
+		bne @-
+		ldy #0
+@		lda CREDITS_BASE+80*2,y
+		sta SCRMEM+40*14,y
+		iny
+		cpy #80
+		bne @-
+		rts
+
 paint_title_text
 		ldy #0
 @		lda (ptr0),y
@@ -2815,6 +2844,8 @@ GAME_FONT_2
 		ins "fonts\fontek2.fnt"
 DIGITS_FONT
 		ins "fonts\digits.fnt"
+CREDITS_FONT
+		ins "fonts\credits3.fnt"
 		
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"
@@ -2903,6 +2934,9 @@ dli_routine
 dli_end		
 		plr
 		rti
+	
+CREDITS_BASE
+	ins "data\credits.dat"
 	
 	org curmap
 	dta a(MAP_01)

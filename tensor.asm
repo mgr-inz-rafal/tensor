@@ -361,8 +361,8 @@ MAP_02_NAME
 		dta d' bezkresne pola '*
 		dta d'    OGLEJONU    '*
 		dta d'35'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'    jaskinia    '*
+		dta d'PONUREGO KINTARO'*
 		dta d'36'
 		dta d'abcdefghijklmnop'*
 		dta d'QRSTUVWXYZABCDEF'*

@@ -460,14 +460,14 @@ main
 	stx instruction_page
 	mwa #TITLE_PART_1 ptr0
 	mwa #TITLE_PART_2 ptr1
-	lda CS_FADEIN
+	lda #CS_FADEIN
 	sta credits_state
 	ldx #0
 	stx credits_color
 	stx credits_timer
 	inx
 	stx credits_flips
-	mwa #CREDITS_BASE ptr3
+	mwa #CREDITS_BASE+80 ANTIC_PROGRAM0.CREDITS_ADDRESS_DL
 
 	lda #0
 	sta mapnumber

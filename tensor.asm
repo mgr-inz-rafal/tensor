@@ -9,8 +9,8 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
-CREDITCOLSTART	equ $a0
-CREDITCOLEND	equ	$af
+CREDITCOLSTART	equ $20
+CREDITCOLEND	equ	$2f
 LEVELFLIPDELAY	equ %00000011
 SOURCEDECO 		equ $ff-8*3
 TARGETDECO 		equ $b0
@@ -962,14 +962,10 @@ x20	lda #$2D
 	lda >TITLE_FONT
 	sta CHBASE
 	
-	lda #$da
+	lda #$c0
 	sta color2
-	lda #$63
+	lda #$0a
 	sta color1
-	lda #$98
-	sta color0
-	lda #$ff
-	sta color3
 
 	ldy #$26*3
 @	jsr wait54cycle

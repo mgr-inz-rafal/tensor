@@ -462,10 +462,11 @@ main
 	mwa #TITLE_PART_2 ptr1
 	lda CS_FADEIN
 	sta credits_state
-	lda #0
-	sta credits_color
-	sta credits_timer
-	sta credits_flips
+	ldx #0
+	stx credits_color
+	stx credits_timer
+	inx
+	stx credits_flips
 	mwa #CREDITS_BASE ptr3
 
 	lda #0
@@ -1116,7 +1117,7 @@ _rts	rts
 	dta b($02)
 	dta b($42)
 CREDITS_ADDRESS_DL
-	dta a(CREDITS_BASE)
+	dta a(CREDITS_BASE+80)
 	dta b($02)
 	
 	dta $41,a(:2)
@@ -2698,8 +2699,8 @@ paint_title_text
 		cpy #40
 		bne @-
 		ldy #0
-		lda #3
-@		sta SCRMEM+40*7*2,y
+		lda #0
+@		sta SCRMEM+40*13,y
 		iny
 		cpy #40
 		bne @-
@@ -2969,10 +2970,22 @@ flip_credits
 		cmp #3
 		beq @+
 		adw ANTIC_PROGRAM0.CREDITS_ADDRESS_DL #80
+
+		; Remove dot above "inz."
+		ldy #0
+		sty SCRMEM+40*13+26
+		sty SCRMEM+40*13+27
+
 		rts
 @		lda #0
 		sta credits_flips
 		mwa #CREDITS_BASE ANTIC_PROGRAM0.CREDITS_ADDRESS_DL
+		
+		; Paint dot above "inz."
+		ldy #1
+		sty SCRMEM+40*13+26
+		iny
+		sty SCRMEM+40*13+27
 		rts
 
 .align $100		

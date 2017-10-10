@@ -209,10 +209,10 @@ TITLE_AMYGDALA_SPEED
 	dta d'       '*,b(124)
 TITLE_PART_3
 	dta b(91)
-:31	dta b(125)
+:33	dta b(125)
 	dta b(126)
-	dta d'v1.'
-	dta b(31)
+	dta b(72)
+	dta b(73)
 	dta b(127)
 	dta b(125)
 	dta b(92)

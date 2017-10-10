@@ -9,6 +9,8 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
+CREDITCOLSTART	equ $a0
+CREDITCOLEND	equ	$af
 LEVELFLIPDELAY	equ %00000011
 SOURCEDECO 		equ $ff-8*3
 TARGETDECO 		equ $b0
@@ -464,11 +466,12 @@ main
 	lda #CS_FADEIN
 	sta credits_state
 	ldx #0
-	stx credits_color
 	stx credits_timer
 	inx
 	stx credits_flips
 	mwa #CREDITS_BASE+80 ANTIC_PROGRAM0.CREDITS_ADDRESS_DL
+	ldx #CREDITCOLSTART
+	stx credits_color
 
 	lda #0
 	sta mapnumber
@@ -982,7 +985,7 @@ x20	lda #$2D
 	bne cred_state_0
 	inc credits_color
 	lda credits_color
-	cmp #$0f
+	cmp #CREDITCOLEND
 	bne cred_state_fin
 	lda #CS_SHOW
 	sta credits_state
@@ -992,7 +995,7 @@ cred_state_0
 	bne cred_state_1
 	dec credits_color
 	lda credits_color
-	cmp #$00
+	cmp #CREDITCOLSTART
 	bne cred_state_fin
 	lda #CS_FADEIN
 	sta credits_state
@@ -1120,9 +1123,14 @@ _rts	rts
 CREDITS_ADDRESS_DL
 	dta a(CREDITS_BASE+80)
 	dta b($02)
+	dta b($42)
+	dta a(FOURTY_EMPTY_CHARS)
 	
 	dta $41,a(:2)
 .ENDM
+
+FOURTY_EMPTY_CHARS
+:40	dta b(0)
 
 CL
 	.he 90

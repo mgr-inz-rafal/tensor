@@ -9,37 +9,43 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
-SOURCEDECO equ $ff-8*3
-TARGETDECO equ $b0
-PMGDECOOFFSET equ 12
-DIGITOFFSET	equ 6
-SHADOWOFFSET equ 60
-TITLEOFFSET equ 60+20
-MAPCOUNT equ 46
-MUSICPLAYER	equ $9000
-;MODUL	equ $2dc0
-MAPSIZE	equ	12
-SCWIDTH equ 20
-MARGIN 	equ	(SCWIDTH-MAPSIZE)/2
-TOPMARG	equ 16
-LFTMARG	equ 80
-MV_IDLE	equ 0	; Element not moving
-MV_MRGH	equ	1	; Element is moving right
-MV_MLFT	equ	2	; Element is moving left
-MV_MUP	equ	3	; Element is moving up
-MV_MBTM	equ	4	; Element is moving bottom
-MV_CTRD	equ 4	; Single move distance when falling down
-MV_CTR	equ 8	; Single move distance when moving left or right
-C_PLAYR	equ	$5d	; Player color
-C_OBSTA	equ	$76	; Obstacles
-C_WALL1	equ	$54	; Wall #1
-C_WALL2	equ	$14	; Wall #2
-GS_GRAV	equ	0	; Making sure everything is on the ground
-GS_PLAY	equ	1	; Player movement
-GS_FIN	equ	2	; Level completed
-ROT_CTR	equ	20	; Delay between rotations
-PL_CHR	equ 1	; Player character
+SOURCEDECO 		equ $ff-8*3
+TARGETDECO 		equ $b0
+PMGDECOOFFSET 	equ 12
+DIGITOFFSET		equ 6
+SHADOWOFFSET 	equ 60
+TITLEOFFSET 	equ 60+20
+MAPCOUNT 		equ 46
+MUSICPLAYER		equ $9000
+MAPSIZE			equ	12
+SCWIDTH 		equ 20
+MARGIN 			equ	(SCWIDTH-MAPSIZE)/2
+TOPMARG			equ 16
+LFTMARG			equ 80
+MV_IDLE			equ 0	; Element not moving
+MV_MRGH			equ	1	; Element is moving right
+MV_MLFT			equ	2	; Element is moving left
+MV_MUP			equ	3	; Element is moving up
+MV_MBTM			equ	4	; Element is moving bottom
+MV_CTRD			equ 4	; Single move distance when falling down
+MV_CTR			equ 8	; Single move distance when moving left or right
+C_PLAYR			equ	$5d	; Player color
+C_OBSTA			equ	$76	; Obstacles
+C_WALL1			equ	$54	; Wall #1
+C_WALL2			equ	$14	; Wall #2
+GS_GRAV			equ	0	; Making sure everything is on the ground
+GS_PLAY			equ	1	; Player movement
+GS_FIN			equ	2	; Level completed
+ROT_CTR			equ	20	; Delay between rotations
+PL_CHR			equ 1	; Player character
+CS_FADEOUT		equ 0	; Credits are fading out
+CS_FADEIN		equ 1	; Credits are fading in
+CS_SHOW			equ	2	; Credits are being shown
 
+.zpvar	.byte	credits_flips
+.zpvar	.byte	credits_timer
+.zpvar	.byte	credits_color
+.zpvar	.byte	credits_state
 .zpvar	.byte	scroll
 .zpvar	.byte	old_instafall
 .zpvar	.byte	instruction_page
@@ -119,7 +125,6 @@ HEIGHT	= 30
 ; ---	MAIN PROGRAM
 	org $2000
 scr	ins "data\tensor5.raw" +0,+0,3520
-;scr	ins "rmtplayr.a65" +0,+0,3520
 MODUL
 		opt h-
 		ins "music\TENSOR.rmt"
@@ -243,16 +248,6 @@ TITLE_PART_3
 	dta b(127)
 	dta b(125)
 	dta b(92)
-	dta d'CODE: '
-	dta d'mgr in'*
-	dta b(10+64+64+64)
-	dta b(14+64+64+64)
-	dta d' rafa'*
-	dta b(11+64+64+64)
-	dta d'GFX & LEVELS:  '
-	dta d'vidol'*
-	dta d'MSX:  '
-	dta d'makary brauner'*
 MAP_01_NAME
 		dta d'kr'*,b(1+64*3),d'pcewo w prawo'*
 		dta d'    I W LEWO    '*
@@ -465,6 +460,14 @@ main
 	stx instruction_page
 	mwa #TITLE_PART_1 ptr0
 	mwa #TITLE_PART_2 ptr1
+	lda #CS_FADEIN
+	sta credits_state
+	ldx #0
+	stx credits_color
+	stx credits_timer
+	inx
+	stx credits_flips
+	mwa #CREDITS_BASE+80 ANTIC_PROGRAM0.CREDITS_ADDRESS_DL
 
 	lda #0
 	sta mapnumber
@@ -942,18 +945,19 @@ c10	ldx #$00
 	jsr wait36cycle
 	cmp 0\ nop
 
-
-
 line80
 x20	lda #$2D
 	sta hposp1
-	
 	
 	ldy #$26
 @	jsr wait54cycle
 	dey
 	bne @-
 
+; At this point we are at the beginning of the instruction section
+	lda >TITLE_FONT
+	sta CHBASE
+	
 	lda #$da
 	sta color2
 	lda #$63
@@ -962,21 +966,53 @@ x20	lda #$2D
 	sta color0
 	lda #$ff
 	sta color3
+
+	ldy #$26*3
+@	jsr wait54cycle
+	dey
+	bne @-
 	
+; At this point we are at the beginning of the credits section
+	lda >CREDITS_FONT
+	sta CHBASE
 	
+	lda credits_state
+	cmp #CS_FADEIN
+	bne cred_state_0
+	inc credits_color
+	lda credits_color
+	cmp #$0f
+	bne cred_state_fin
+	lda #CS_SHOW
+	sta credits_state
+	jmp cred_state_fin
+cred_state_0
+	cmp #CS_FADEOUT
+	bne cred_state_1
+	dec credits_color
+	lda credits_color
+	cmp #$00
+	bne cred_state_fin
+	lda #CS_FADEIN
+	sta credits_state
+	jsr flip_credits
+	jmp cred_state_fin
+cred_state_1
+	inc credits_timer
+	lda credits_timer
+	cmp #$70
+	bne cred_state_fin
+	lda #0
+	sta credits_timer
+	lda #CS_FADEOUT
+	sta credits_state
+cred_state_fin
+	lda credits_color
+	sta color2
+	lda #$00
+	sta color1
 
 raster_program_end
-
-;	lda #$00
-;	sta colpm0
-;	sta colpm1
-;	sta colpm2
-;	sta colpm3
-;	sta color0
-;	sta color1
-;	sta color2
-;	sta color3
-;	sta colbak
 
 // -----------------------------------------------------------
 //	EXIT
@@ -1078,9 +1114,11 @@ _rts	rts
 	dta b($02)
 	dta b($02)
 	dta b($70)
-	dta b($06)
-	dta b($06)
-	dta b($06)
+	dta b($02)
+	dta b($42)
+CREDITS_ADDRESS_DL
+	dta a(CREDITS_BASE+80)
+	dta b($02)
 	
 	dta $41,a(:2)
 .ENDM
@@ -2308,18 +2346,6 @@ add_color
 			inc collectibles
 			rts
 		#end
-		/*
-		#if .byte ptr3 >= #3 .and .byte ptr3 <= #4
-			lda ptr3
-			add #128
-			rts
-		#end
-		#if .byte ptr3 >= #5 .and .byte ptr3 <= #11
-			lda ptr3
-			add #128+64
-			rts
-		#end
-		*/
 		lda ptr3
 		rts
 		
@@ -2670,8 +2696,15 @@ paint_title_text
 @		lda TITLE_PART_3,y
 		sta SCRMEM+40*6*2,y
 		iny
-		cpy #40+3*20
+		cpy #40
 		bne @-
+		ldy #0
+		lda #0
+@		sta SCRMEM+40*13,y
+		iny
+		cpy #40
+		bne @-
+		
 		jsr paint_amygdala_speed
 		rts
 
@@ -2840,6 +2873,8 @@ GAME_FONT_2
 		ins "fonts\fontek2.fnt"
 DIGITS_FONT
 		ins "fonts\digits.fnt"
+CREDITS_FONT
+		ins "fonts\credits3.fnt"
 		
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"
@@ -2928,6 +2963,34 @@ dli_routine
 dli_end		
 		plr
 		rti
+		
+flip_credits
+		inc credits_flips
+		lda credits_flips
+		cmp #3
+		beq @+
+		adw ANTIC_PROGRAM0.CREDITS_ADDRESS_DL #80
+
+		; Remove dot above "inz."
+		ldy #0
+		sty SCRMEM+40*13+26
+		sty SCRMEM+40*13+27
+
+		rts
+@		lda #0
+		sta credits_flips
+		mwa #CREDITS_BASE ANTIC_PROGRAM0.CREDITS_ADDRESS_DL
+		
+		; Paint dot above "inz."
+		ldy #1
+		sty SCRMEM+40*13+26
+		iny
+		sty SCRMEM+40*13+27
+		rts
+
+.align $100		
+CREDITS_BASE
+	ins "data\credits.dat"
 	
 	org curmap
 	dta a(MAP_01)
@@ -2954,5 +3017,7 @@ dli_end
 
 ; TODO:
 ; - Check player gravity only after movement
-; - Integrate next raster optimization from Vidol
+; - OBSOLETE: Integrate next raster optimization from Vidol
+; - Integrate logo with OS from Vidol
 ; - Add detailed instruction (instafall on demand and so on)
+; - Decreasing cavern number on the title screen is slower than increasing it

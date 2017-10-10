@@ -12,6 +12,7 @@
 CREDITCOLSTART	equ $20
 CREDITCOLEND	equ	$2f
 LEVELFLIPDELAY	equ %00000011
+AMYGDALFLIPDEL	equ %00000111
 SOURCEDECO 		equ $ff-8*3
 TARGETDECO 		equ $b0
 PMGDECOOFFSET 	equ 12
@@ -51,7 +52,6 @@ CS_SHOW			equ	2	; Credits are being shown
 .zpvar	.byte	credits_state
 .zpvar	.byte	scroll
 .zpvar	.byte	old_instafall
-.zpvar	.byte	instruction_page
 .zpvar	.byte	rotation_warmup
 .zpvar	.byte	instafall
 .zpvar	.byte	first_run
@@ -160,43 +160,6 @@ AMYGDALA_DATA_6	; Pierscionek
 AMYGDALA_DATA_7	; Robak
 	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($34)
 	
-TITLE_PART_1_X
-	dta b(62)
-:38	dta b(125)
-	dta b(93)
-	dta b(124)
-	dta d' to jest miejsce na druga strone      ',b(124)
-	dta b(124)
-	dta d' instrukcji oraz chyba jakies opcje   ',b(124)
-	dta b(124)
-	dta d' .................................... ',b(124)
-	dta b(124)
-	dta d' .................................... ',b(124)
-	dta b(124)
-	dta d' .................................... ',b(124)
-TITLE_PART_2_X
-	dta b(124)
-	dta d' .................................... ',b(124)
-	dta b(124)
-	dta d' .................................... ',b(124)
-	dta b(124)
-	dta d' ',b(72),d'SELECT'*,b(72+128)
-	dta d' - migdaly ',b(7)
-TITLE_AMYGDALA_SPEED
-	dta d'       e',b(7),d' ...... ',b(124)
-	dta b(124)
-	dta d' ..................................!D ',b(124)
-	dta b(63)
-:38	dta b(125)
-	dta b(29)
-	dta b(124)
-	dta b(128)
-	dta b(94+128)
-	dta b(95+128)
-	dta d' - pieczara:'*
-	dta d'           '*
-	dta b(32+128),b(64+128)
-	dta d' - strona '*,b(124)
 TITLE_PART_1
 	dta b(62)
 :38	dta b(125)
@@ -241,7 +204,9 @@ TITLE_PART_2
 TITLE_LEVEL_NUMBER
 	dta d'           '*
 	dta b(32+128),b(64+128)
-	dta d' - strona '*,b(124)
+	dta d' - '*
+TITLE_AMYGDALA_SPEED
+	dta d'       '*,b(124)
 TITLE_PART_3
 	dta b(91)
 :31	dta b(125)
@@ -459,8 +424,6 @@ main
 	cpy #0
 	bne @-
 	
-	ldx #0
-	stx instruction_page
 	mwa #TITLE_PART_1 ptr0
 	mwa #TITLE_PART_2 ptr1
 	lda #CS_FADEIN
@@ -480,6 +443,7 @@ main
 	sta CHBAS
 	jsr paint_title_text
 	jsr paint_level_number
+	jsr paint_amygdala_speed
 
 	ift USESPRITES
 	mva >pmg pmbase		;missiles and players data address
@@ -962,9 +926,9 @@ x20	lda #$2D
 	lda >TITLE_FONT
 	sta CHBASE
 	
-	lda #$c0
+	lda #$00
 	sta color2
-	lda #$0a
+	lda #$0f
 	sta color1
 
 	ldy #$26*3
@@ -1037,16 +1001,12 @@ raster_program_end
 xx1	
 @	cmp #253
 	bne @+
-	jsr flip_instruction_page
+	jsr flip_amygdala_speed
 	jmp xx2
 @	cmp #254
 	bne xx2
-	jsr flip_instruction_page
-xx2	
-	lda consol
-	cmp #5
-	bne @+
 	jsr flip_amygdala_speed
+xx2	
 
 @	jmp skp
 
@@ -2707,7 +2667,6 @@ paint_title_text
 		cpy #40
 		bne @-
 		
-		jsr paint_amygdala_speed
 		rts
 
 paint_level_number
@@ -2751,78 +2710,37 @@ set_previous_starting_level
 		jsr paint_level_number
 		rts
 		
-flip_instruction_page
-		lda delayer
-		and #%00000111
-		cmp #%00000111
-		bne fip_XX
-		dec instruction_page
-		lda instruction_page
-		and #%00000001
-		cmp #0
-		beq @+
-		mwa #TITLE_PART_1_X ptr0
-		mwa #TITLE_PART_2_X ptr1
-		jmp fip_X
-@		mwa #TITLE_PART_1 ptr0
-		mwa #TITLE_PART_2 ptr1
-fip_X	jsr paint_title_text
-		jsr paint_level_number
-fip_XX	rts
-
 flip_amygdala_speed
 		lda delayer
-		and #%00000111
-		cmp #%00000111
+		and #AMYGDALFLIPDEL
+		cmp #AMYGDALFLIPDEL
 		bne @+
 		inc instafall
 		jsr paint_amygdala_speed
 @		rts
 
 paint_amygdala_speed
-		lda instruction_page
-		and #%00000001
-		cmp #0
-		beq pas_X
-		
 		lda instafall
 		and #%00000001
-		cmp #0
-		bne pas_0
-
-		lda #46
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)
-		lda #105
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+1
-		lda #101
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+2
-		lda #109
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+3
-		lda #114
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+4
-		lda #97
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+5
-		lda #119
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+6
-		jmp pas_X
-
+		beq @+
+		mwa #amygdala_speed_text_01 ptr3
+		jmp pas_0
+@		mwa #amygdala_speed_text_02 ptr3
 pas_0
-		lda #2
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)
-		lda #112
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+1
-		lda #105
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+2
-		lda #101
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+3
-		lda #115
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+4
-		lda #122
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+5
-		lda #110
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1_X)+6
+		ldy #0
+@		lda (ptr3),y
+		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1),y
+		iny
+		cpy #AMYGDALA_SPEED_TEXT_01_END-AMYGDALA_SPEED_TEXT_01
+		bne @-
+		rts
 		
-pas_X	rts
+AMYGDALA_SPEED_TEXT_01
+		dta d'wartko'*
+AMYGDALA_SPEED_TEXT_01_END
+AMYGDALA_SPEED_TEXT_02
+		dta d'ospale'*
+
 
 .align		$100
 DLGAME
@@ -3001,8 +2919,6 @@ FOURTY_EMPTY_CHARS
 	org curmapname
 	dta a(MAP_01_NAME)
 	org first_run
-	dta b(0)
-	org instruction_page
 	dta b(0)
 	org instafall
 	dta b(1)

@@ -1129,9 +1129,6 @@ CREDITS_ADDRESS_DL
 	dta $41,a(:2)
 .ENDM
 
-FOURTY_EMPTY_CHARS
-:40	dta b(0)
-
 CL
 	.he 90
 
@@ -3000,6 +2997,8 @@ flip_credits
 .align $100		
 CREDITS_BASE
 	ins "data\credits.dat"
+FOURTY_EMPTY_CHARS
+:40	dta b(0)
 	
 	org curmap
 	dta a(MAP_01)

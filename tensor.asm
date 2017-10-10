@@ -194,13 +194,13 @@ TITLE_PART_2
 	dta d' X4'*
 	dta d' nie zostal sam...    ',b(124)
 	dta b(63)
-:38	dta b(125)
+:38	dta b(74)
 	dta b(29)
 	dta b(124)
 	dta b(128)
 	dta b(94+128)
 	dta b(95+128)
-	dta d' - pieczara:'*
+	dta d' - PIECZARA:'*
 TITLE_LEVEL_NUMBER
 	dta d'           '*
 	dta b(32+128),b(64+128)
@@ -2736,10 +2736,10 @@ pas_0
 		rts
 		
 AMYGDALA_SPEED_TEXT_01
-		dta d'wartko'*
+		dta d'WARTKO'*
 AMYGDALA_SPEED_TEXT_01_END
 AMYGDALA_SPEED_TEXT_02
-		dta d'ospale'*
+		dta d'OSPALE'*
 
 
 .align		$100

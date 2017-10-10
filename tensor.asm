@@ -9,6 +9,7 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
+LEVELFLIPDELAY	equ %00000011
 SOURCEDECO 		equ $ff-8*3
 TARGETDECO 		equ $b0
 PMGDECOOFFSET 	equ 12
@@ -2721,8 +2722,8 @@ paint_level_number
 		
 set_next_starting_level
 		lda delayer
-		and #%00000011
-		cmp #%00000011
+		and #LEVELFLIPDELAY
+		cmp #LEVELFLIPDELAY
 		bne @+
 		adw curmap #MAP_02-MAP_01
 		adw curmapname #MAP_02_NAME-MAP_01_NAME
@@ -2736,8 +2737,8 @@ set_next_starting_level
 		
 set_previous_starting_level
 		lda delayer
-		and #%00000111
-		cmp #%00000111
+		and #LEVELFLIPDELAY
+		cmp #LEVELFLIPDELAY
 		bne @-
 		sbw curmap #MAP_02-MAP_01
 		sbw curmapname #MAP_02_NAME-MAP_01_NAME
@@ -3017,7 +3018,7 @@ CREDITS_BASE
 
 ; TODO:
 ; - Check player gravity only after movement
-; - OBSOLETE: Integrate next raster optimization from Vidol
 ; - Integrate logo with OS from Vidol
 ; - Add detailed instruction (instafall on demand and so on)
-; - Decreasing cavern number on the title screen is slower than increasing it
+; - DONE: 		Decreasing cavern number on the title screen is slower than increasing it
+; - OBSOLETE:	Integrate next raster optimization from Vidol

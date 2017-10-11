@@ -937,10 +937,11 @@ x20	lda #$2D
 	lda #$0f
 	sta color1
 
-	ldy #$26*3
+	ldy #$69
 @	jsr wait54cycle
 	dey
 	bne @-
+:4	jsr wait18cycle
 	
 ; At this point we are at the beginning of the credits section
 	lda >CREDITS_FONT
@@ -1064,7 +1065,7 @@ _rts	rts
 	dta $4f,a(:1+$0B40),$f,$f,$f,$f,$f,$f,$f
 	dta $4f,a(:1+$0C80),$f,$f,$f,$f,$f,$f,$f
 	
-	dta b($70)
+	dta b($40)
 	dta b($42)
 	dta a(SCRMEM)
 	dta b($02)
@@ -1079,7 +1080,7 @@ _rts	rts
 	dta b($02)
 	dta b($02)
 	dta b($02)
-	dta b($70)
+	dta b($30)
 	dta b($02)
 	dta b($42)
 CREDITS_ADDRESS_DL

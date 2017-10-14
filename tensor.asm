@@ -318,7 +318,7 @@ MAP_02_NAME
 		dta d'   tunele pod   '*
 		dta d' MIASTEM UWI'*,b(4+64*2),d'DU '*
 		dta d'33'
-		dta d'  przeci'*,b(1+64*3),d'g jak  '*
+		dta d'  przeci'*,b(4+64*3),d'g jak  '*
 		dta d'   Z KOSZMARU   '*
 		dta d'34'
 		dta d' bezkresne pola '*

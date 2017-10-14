@@ -46,6 +46,7 @@ CS_FADEOUT		equ 0	; Credits are fading out
 CS_FADEIN		equ 1	; Credits are fading in
 CS_SHOW			equ	2	; Credits are being shown
 
+.zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
 .zpvar	.byte	scroll_tmp
 .zpvar	.byte	credits_flips
@@ -425,7 +426,7 @@ pmg	.ds $0300
 ant	ANTIC_PROGRAM scr,ant
 
 main
-; ---	init PMG
+	disable_antic
 	ldy #64
 @	jsr synchro
 	dey
@@ -452,6 +453,7 @@ main
 	jsr paint_title_text
 	jsr paint_level_number
 	jsr paint_amygdala_speed
+	enable_antic
 
 	ift USESPRITES
 	mva >pmg pmbase		;missiles and players data address
@@ -1916,7 +1918,8 @@ setup_intermission_colors
 		rts
 		
 show_intermission
-		jsr sleep_for_short_time_time
+		jsr sleep_for_short_time
+		enable_antic
 
 		lda #0
 		sta stop_intermission
@@ -1965,6 +1968,9 @@ show_intermission
 
 di_X	ldx #$ff
 		stx CH
+		
+		disable_antic
+		jsr synchro
 
 		; Reenable scroll on the first line of the title
 		lda scroll_tmp
@@ -2027,13 +2033,15 @@ sa_0
 		rts
 
 init_game
+		jsr enable_sprites
+		disable_antic
+
 		ldy <vbi_routine
 		ldx >vbi_routine
 		lda #7
 		jsr SETVBV
 		
 		mva instafall old_instafall
-		jsr enable_sprites
 		jsr show_intermission
 
 		#if .byte first_run = #0
@@ -2079,6 +2087,7 @@ init_game
 		sta ignorestick
 		lda #PL_CHR
 		sta moved
+		enable_antic
 		rts
 
 rotate_clockwise
@@ -2953,6 +2962,28 @@ CREDITS_BASE
 FOURTY_EMPTY_CHARS
 :40	dta b(0)
 	
+.proc disable_antic
+				lda SDMCTL
+				sta antic_tmp
+				lda #$00
+				sta SDMCTL
+				lda 20
+@				cmp 20
+				beq @-
+				lda #%01000000
+				sta NMIEN
+				rts
+.endp
+
+; Enables ANTIC and DLI
+.proc enable_antic
+				lda antic_tmp
+				sta SDMCTL
+				lda #%11000000
+				sta NMIEN
+				rts
+.endp
+
 	org curmap
 	dta a(MAP_01)
 	org curmapname

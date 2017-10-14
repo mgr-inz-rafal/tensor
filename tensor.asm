@@ -46,6 +46,8 @@ CS_FADEOUT		equ 0	; Credits are fading out
 CS_FADEIN		equ 1	; Credits are fading in
 CS_SHOW			equ	2	; Credits are being shown
 
+.zpvar	.byte	stop_intermission
+.zpvar	.byte	scroll_tmp
 .zpvar	.byte	credits_flips
 .zpvar	.byte	credits_timer
 .zpvar	.byte	credits_color
@@ -1213,6 +1215,8 @@ USESPRITES = 1
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 run_here			
+		lda DL_TOP_SCROL
+		sta scroll_tmp
 		jsr init_game
 		jsr show_level
 
@@ -1522,9 +1526,16 @@ draw_header
 		txa
 		pha
 		jsr sleep_for_short_time
+		
+		lda STRIG0
+		beq @+
+		
 		pla
 		tax
 		bne @-
+		rts
+@		pla
+		inc stop_intermission
 		rts
 		
 draw_cavern_number
@@ -1640,6 +1651,10 @@ dlns_0
 		dey
 		dey
 		dey
+		
+		lda STRIG0
+		beq @+
+		
 		cpy #$fe
 		bne @-
 		
@@ -1648,6 +1663,8 @@ dlns_0
 		dex
 		bne dlns_1
 		rts
+@		inc stop_intermission
+		rts
 		
 draw_level_name
 		; Init pointers to the end of the first line of level name
@@ -1655,10 +1672,10 @@ draw_level_name
 		mwa curmapname ptr0
 		adw ptr0 #14
 		jsr do_level_name_scroll
+		lda stop_intermission
+		bne dln_X
 		
 		; Disable scroll on the top row
-		lda DL_TOP_SCROL
-		sta ptr3+1
 		lda #%111
 		sta DL_TOP_SCROL
 		
@@ -1680,7 +1697,7 @@ draw_level_name
 		adw ptr0 #14+16
 		jsr do_level_name_scroll
 
-		rts
+dln_X	rts
 		
 header_text
 		dta d'pieczara'
@@ -1715,10 +1732,16 @@ draw_decoration
 		add #8
 		sta HPOSP3
 :5		jsr synchro
+
+		lda STRIG0
+		beq @+
+
 		iny
 		cpy #90
 		bne @-
 		
+		rts
+@		inc stop_intermission
 		rts
 
 decoration_sine_table
@@ -1893,6 +1916,11 @@ setup_intermission_colors
 		rts
 		
 show_intermission
+		jsr sleep_for_short_time_time
+
+		lda #0
+		sta stop_intermission
+
 		ldx #<MODUL
 		ldy #>MODUL
 		lda #$36
@@ -1921,8 +1949,12 @@ show_intermission
 		
 		jsr clear_intermission_screen
 		jsr draw_decoration
+		lda stop_intermission
+		bne di_X
 :4		jsr sleep_for_some_time
 		jsr draw_header
+		lda stop_intermission
+		bne di_X
 :4		jsr sleep_for_some_time
 		jsr draw_cavern_number
 :4		jsr sleep_for_some_time
@@ -1931,11 +1963,11 @@ show_intermission
 @		lda trig0		; FIRE #0
 		bne @-
 
-		ldx #$ff
+di_X	ldx #$ff
 		stx CH
 
 		; Reenable scroll on the first line of the title
-		lda ptr3+1
+		lda scroll_tmp
 		sta DL_TOP_SCROL
 		
 		rts

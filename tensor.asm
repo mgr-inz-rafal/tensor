@@ -330,20 +330,20 @@ MAP_02_NAME
 		dta d'    jaskinia    '*
 		dta d'PONUREGO KINTARO'*
 		dta d'36'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'     w'*,b(5+64*3),d'lka      '*
+		dta d'  DOBROWOLSKA   '*
 		dta d'37'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'    prze'*,b(11+64*3),b(1+64*3),d'cz    '*
+		dta d'  MASZTALERSKA  '*
 		dta d'38'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'    anomalia    '*
+		dta d'    RZYGULIN    '*
 		dta d'39'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'      ch'*,b(5+64*3),d'r      '*
+		dta d'   BEMBNIST'*,b(5+64*2),d'W   '*
 		dta d'40'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'     zau'*,b(11+64*3),d'ek     '*
+		dta d' Z'*,b(11+64*2),d'EJ TEKTONIKI '*
 		dta d'41'
 		dta d'abcdefghijklmnop'*
 		dta d'QRSTUVWXYZABCDEF'*

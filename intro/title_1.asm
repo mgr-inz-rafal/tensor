@@ -4,6 +4,9 @@
 /***************************************/
 
 	icl "title_1.h"
+	
+MODUL 		equ 6000
+MUSICPLAYER	equ 8000
 
 	org $f0
 
@@ -46,9 +49,25 @@ pmg	.ds $0300
 	eif
 	eif
 
+synchro
+		lda PAL
+		cmp #1
+		bne synchr1
+		lda #145	; PAL
+		jmp synchr2
+synchr1 lda #120	; NTSC
+synchr2	cmp VCOUNT
+		bne synchr2
+		rts
+
 main
 ; ---	init PMG
 
+	lda #00
+	ldx #$00
+	ldy #$60
+	jsr RASTERMUSICTRACKER	;Init
+	
 	ift USESPRITES
 	mva >pmg pmbase		;missiles and players data address
 	mva #$03 pmcntl		;enable players and missiles
@@ -89,6 +108,7 @@ null	jmp DLI.dli1		;CPU is busy here, so no more routines allowed
 
 
 stop
+	jsr RASTERMUSICTRACKER+9 ; Stop music
 	mva #$00 pmcntl		;PMG disabled
 	tax
 	sta:rne hposp0,x+
@@ -430,6 +450,7 @@ c8	lda #$A6
 	mwa #DLI.dli_start dliv	;set the first address of DLI interrupt
 
 ;this area is for yours routines
+	jsr RASTERMUSICTRACKER+3
 
 quit
 	lda regA
@@ -558,3 +579,10 @@ USESPRITES = 1
 	.def ?old_dli = *
 .ENDM
 
+		org MODUL
+		opt h-
+		ins "title_music.rmt"
+		opt h+
+		
+		org MUSICPLAYER
+		icl "rmtplayr.a65"

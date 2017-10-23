@@ -345,17 +345,17 @@ MAP_02_NAME
 		dta d'     zau'*,b(11+64*3),d'ek     '*
 		dta d' Z'*,b(11+64*2),d'EJ TEKTONIKI '*
 		dta d'41'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'  termy '*,b(10+64*3),d'ywego  '*
+		dta d'      BOGA      '*
 		dta d'42'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d' buda sanacyjna '*
+		dta d' NAD PRZEPA'*,b(2+64*2),d'CI'*,b(4+64*2),d' '*
 		dta d'43'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'     podkop     '*
+		dta d' DR. KAMI'*,b(15+64*2),d'SKIEJ '*
 		dta d'44'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'   paul morty   '*
+		dta d'KOHORTY GERIATRY'*
 		dta d'45'
 		dta d'abcdefghijklmnop'*
 		dta d'QRSTUVWXYZABCDEF'*

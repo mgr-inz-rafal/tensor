@@ -3,7 +3,15 @@
 /*  Mode: DLI (char mode)              */
 /***************************************/
 
-	icl "title_1.h"
+		org MODUL
+		opt h-
+		ins "title_music.rmt"
+		opt h+
+		
+		org MUSICPLAYER
+		icl "rmtplayr.a65"
+
+		icl "title_1.h"
 	
 MODUL 		equ 6000
 MUSICPLAYER	equ 8000
@@ -461,7 +469,7 @@ quit
 .endp
 
 ; ---
-	run main
+	ini main
 ; ---
 
 	opt l-
@@ -579,10 +587,3 @@ USESPRITES = 1
 	.def ?old_dli = *
 .ENDM
 
-		org MODUL
-		opt h-
-		ins "title_music.rmt"
-		opt h+
-		
-		org MUSICPLAYER
-		icl "rmtplayr.a65"

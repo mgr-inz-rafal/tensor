@@ -19,7 +19,7 @@ PMGDECOOFFSET 	equ 12
 DIGITOFFSET		equ 6
 SHADOWOFFSET 	equ 60
 TITLEOFFSET 	equ 60+20
-MAPCOUNT 		equ 49
+MAPCOUNT 		equ 51
 MUSICPLAYER		equ $9000
 MAPSIZE			equ	12
 SCWIDTH 		equ 20
@@ -369,6 +369,12 @@ MAP_02_NAME
 		dta d'abcdefghijklmnop'*
 		dta d'QRSTUVWXYZABCDEF'*
 		dta d'49'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'50'
+		dta d'abcdefghijklmnop'*
+		dta d'QRSTUVWXYZABCDEF'*
+		dta d'51'
 MAP_NAME_LAST
 		dta b($9b)
 		

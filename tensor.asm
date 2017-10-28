@@ -46,6 +46,7 @@ CS_FADEOUT		equ 0	; Credits are fading out
 CS_FADEIN		equ 1	; Credits are fading in
 CS_SHOW			equ	2	; Credits are being shown
 
+.zpvar	.byte	show_congrats
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
 .zpvar	.byte	scroll_tmp
@@ -430,7 +431,7 @@ pmg	.ds $0300
 	.ds $500
 	eif
 	eif
-
+	
 	.ALIGN $0400
 ant	ANTIC_PROGRAM scr,ant
 
@@ -1523,7 +1524,7 @@ clear_intermission_screen
 		tya
 @		sta SCRMEM,y
 		iny
-		cpy #105+22
+		cpy #8*20
 		bne @-
 		rts
 		
@@ -1916,7 +1917,15 @@ setup_intermission_colors
 		sta CLR2
 		lda #$b9
 		sta CLR3
+		rts
 		
+draw_happy_docent
+		ldy #0
+@		lda scr_head,y
+		sta SCRMEM,y
+		iny
+		cpy #8*20
+		bne @-
 		rts
 		
 show_intermission
@@ -1939,29 +1948,48 @@ show_intermission
 		
 		jsr setup_intermission_colors
 
-		; Enable DLI
-		lda <dli_routine
-		sta VDSLST
-		lda >dli_routine
-		sta VDSLST+1
-		lda #192
-		sta NMIEN
+		#if .word curmap = #MAP_LAST
+			; Enable DLI
+			lda <dli_routine_final
+			sta VDSLST
+			lda >dli_routine_final
+			sta VDSLST+1
+			lda #192
+			sta NMIEN
 
-		ldx <DLINTERMISSION
-		ldy >DLINTERMISSION
-		stx SDLSTL
-		sty SDLSTL+1
+			ldx <DLINTERMISSIONFINAL
+			ldy >DLINTERMISSIONFINAL
+			stx SDLSTL
+			sty SDLSTL+1
+		#else
+			; Enable DLI
+			lda <dli_routine
+			sta VDSLST
+			lda >dli_routine
+			sta VDSLST+1
+			lda #192
+			sta NMIEN
+
+			ldx <DLINTERMISSION
+			ldy >DLINTERMISSION
+			stx SDLSTL
+			sty SDLSTL+1
+		#end
 		
 		jsr clear_intermission_screen
 		jsr draw_decoration
 :4		jsr sleep_for_some_time
-		jsr draw_header
-		lda stop_intermission
-		bne di_X
-:4		jsr sleep_for_some_time
-		jsr draw_cavern_number
-:4		jsr sleep_for_some_time
-		jsr draw_level_name
+		#if .word curmap <> #MAP_LAST
+			jsr draw_header
+			lda stop_intermission
+			bne di_X
+:4			jsr sleep_for_some_time
+			jsr draw_cavern_number
+:4			jsr sleep_for_some_time
+			jsr draw_level_name
+		#else
+			jsr draw_happy_docent
+		#end
 
 @		lda trig0		; FIRE #0
 		bne @-
@@ -2042,6 +2070,7 @@ init_game
 		jsr SETVBV
 		
 		mva instafall old_instafall
+		mwa #MAP_LAST curmap		; TODO: Remove after happy docent is integrated
 		jsr show_intermission
 
 		#if .byte first_run = #0
@@ -2083,6 +2112,7 @@ init_game
 		stx ludek_offset
 		stx ludek_face
 		inx
+		stx show_congrats
 		stx repaint
 		sta ignorestick
 		lda #PL_CHR
@@ -2814,6 +2844,14 @@ DL_TOP_SCROL
 DL_BOT_SCROL			
 			dta b(%10111)
 			dta b($41),a(DLINTERMISSION)
+DLINTERMISSIONFINAL
+	dta $70,$70,$70
+	dta $47,a(SCRMEM), $07
+     	dta $87
+	:2 dta $07
+	dta $87
+	:2 dta $07
+	dta $41,a(DLINTERMISSIONFINAL)
 
 ; Sprites
 .align		$1000
@@ -2931,6 +2969,16 @@ dli_routine
 dli_end		
 		plr
 		rti
+
+dli_routine_final
+		phr
+		
+		lda >DIGITS_FONT
+		add #2
+		sta CHBASE
+		
+		plr
+		rti
 		
 flip_credits
 		inc credits_flips
@@ -2992,6 +3040,17 @@ FOURTY_EMPTY_CHARS
 	dta b(0)
 	org instafall
 	dta b(1)
+	org $4777
+scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 42 00 03 04 05 06 87 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 08 09 0a 0b 0c 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 4d 00 0e 0f 10 d1 d2 00 93 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 00 d4 15 d4 00 00 00 00 00 00 00 00 00 00 00
+ 	.he 00 00 00 00 00 16 17 18 99 9a 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 00 1b 5c 9d 00 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 00 1e 1f a0 00 00 00 00 00 00 00 00 00 00 00
+
+	
 	
 ; Notes
 ;

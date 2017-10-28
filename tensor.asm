@@ -1743,16 +1743,9 @@ draw_decoration
 		add #8
 		sta HPOSP3
 :5		jsr synchro
-
-		lda STRIG0
-		beq @+
-
 		iny
 		cpy #90
 		bne @-
-		
-		rts
-@		inc stop_intermission
 		rts
 
 decoration_sine_table
@@ -1961,8 +1954,6 @@ show_intermission
 		
 		jsr clear_intermission_screen
 		jsr draw_decoration
-		lda stop_intermission
-		bne di_X
 :4		jsr sleep_for_some_time
 		jsr draw_header
 		lda stop_intermission

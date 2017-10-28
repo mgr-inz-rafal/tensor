@@ -1899,14 +1899,25 @@ sprite_decoration_data_3
 		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
 
 setup_intermission_colors
-		lda #$04
-		sta PCOLR0
-		lda #$0a
-		sta PCOLR1
-		lda #$08
-		sta PCOLR2
-		lda #$04
-		sta PCOLR3
+		#if .word curmap = #MAP_LAST
+			lda #$54
+			sta PCOLR0
+			lda #$5a
+			sta PCOLR1
+			lda #$58
+			sta PCOLR2
+			lda #$54
+			sta PCOLR3
+		#else
+			lda #$04
+			sta PCOLR0
+			lda #$0a
+			sta PCOLR1
+			lda #$08
+			sta PCOLR2
+			lda #$04
+			sta PCOLR3
+		#end
 		
 		lda #$eb
 		sta CLR0
@@ -1938,7 +1949,6 @@ draw_happy_docent
 		sta $201
 		lda #$c0
 		sta $d40e
-
 		ldy #0
 @		lda scr_head,y
 		sta SCRMEM,y
@@ -1955,9 +1965,15 @@ show_intermission
 		lda #0
 		sta stop_intermission
 
-		ldx #<MODUL
-		ldy #>MODUL
-		lda #$36
+		#if .word curmap = #MAP_LAST
+			ldx #<MODUL
+			ldy #>MODUL
+			lda #$74
+		#else
+			ldx #<MODUL
+			ldy #>MODUL
+			lda #$36
+		#end
 		jsr RASTERMUSICTRACKER
 
 		lda #0
@@ -2027,6 +2043,17 @@ di_X	ldx #$ff
 		; Reenable scroll on the first line of the title
 		lda scroll_tmp
 		sta DL_TOP_SCROL
+
+		#if .word curmap = #MAP_LAST
+			pla
+			pla
+			pla
+			pla
+			enable_antic
+			mwa #MAP_01 curmap
+			mwa #MAP_01_NAME curmapname
+			jmp main
+		#end
 		
 		rts
 		
@@ -2094,7 +2121,7 @@ init_game
 		jsr SETVBV
 		
 		mva instafall old_instafall
-		mwa #MAP_LAST curmap		; TODO: Remove after happy docent is integrated
+;		mwa #MAP_LAST curmap		; TODO: Remove after happy docent is integrated
 		jsr show_intermission
 
 		#if .byte first_run = #0

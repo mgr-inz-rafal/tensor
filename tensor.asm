@@ -46,7 +46,6 @@ CS_FADEOUT		equ 0	; Credits are fading out
 CS_FADEIN		equ 1	; Credits are fading in
 CS_SHOW			equ	2	; Credits are being shown
 
-.zpvar	.byte	show_congrats
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
 .zpvar	.byte	scroll_tmp
@@ -1920,9 +1919,30 @@ setup_intermission_colors
 		rts
 		
 draw_happy_docent
+		lda #$16 ;-wlosy
+		sta $2c4
+		lda #$06 ;-diament
+		sta $2c5
+		lda #$36 ;-serce
+		sta $2c6
+		lda #$fa ;-kielich
+		sta $2c7
+		lda #0
+		sta $2c8
+		sta $d40e
+		lda #$2e
+		sta $022f
+		lda <pr1
+		sta $200
+		lda >pr1
+		sta $201
+		lda #$c0
+		sta $d40e
+
 		ldy #0
 @		lda scr_head,y
 		sta SCRMEM,y
+:5		jsr synchro
 		iny
 		cpy #8*20
 		bne @-
@@ -1949,6 +1969,10 @@ show_intermission
 		jsr setup_intermission_colors
 
 		#if .word curmap = #MAP_LAST
+			lda >DIGITS_FONT
+			add #2
+			sta CHBAS
+		
 			; Enable DLI
 			lda <dli_routine_final
 			sta VDSLST
@@ -2112,7 +2136,6 @@ init_game
 		stx ludek_offset
 		stx ludek_face
 		inx
-		stx show_congrats
 		stx repaint
 		sta ignorestick
 		lda #PL_CHR
@@ -2971,13 +2994,48 @@ dli_end
 		rti
 
 dli_routine_final
-		phr
-		
-		lda >DIGITS_FONT
-		add #2
-		sta CHBASE
-		
-		plr
+pr1	
+		sta pr1_a+1
+		lda #$64 ;-miecz
+		sta $d017
+		lda #$c6 ;-maska
+		sta $d018
+		lda #$16 ;-wlosy
+		sta $d019
+		lda #$3a ;-twarz
+		:5 sta $d40a
+		sta $d016
+		lda #$38 ;-twarz cien (38)
+		pha
+		;:2 sta $d40a
+		sta $d019
+		lda #$86 ;-okulary
+		:12 sta $d40a
+		sta $d019
+		pla ;-twarz cien
+		sta $d018
+		lda <pr2
+		sta $200
+		lda >pr2
+		sta $201
+pr1_a	lda #$ff
+		rti
+	
+pr2		sta pr2_a+1
+		lda #$3a ;-twarz
+		sta $d017
+		pha
+		:3 sta $d40a
+		lda #$34 ;-jezyk
+		sta $d017
+		pla
+		:10 sta $d40a
+		sta $d017
+		lda <pr1
+		sta $200
+		lda >pr1
+		sta $201
+pr2_a	lda #$ff
 		rti
 		
 flip_credits

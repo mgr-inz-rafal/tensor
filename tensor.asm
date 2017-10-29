@@ -357,23 +357,23 @@ MAP_02_NAME
 		dta d'   paul morty   '*
 		dta d'KOHORTY GERIATRY'*
 		dta d'45'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'ponure podziemne'*
+		dta d'OPACTWO PRZEMOCY'*
 		dta d'46'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'   przepastne   '*
+		dta d'    BEZDRO'*,b(10+64*2),d'A    '*
 		dta d'47'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d' podziemny targ '*
+		dta d'Z RYBAMI I SEREM'*
 		dta d'48'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'    kryj'*,b(5+64*3),d'wka    '*
+		dta d' KORUPCJONIST'*,b(5+64*2),d'W '*
 		dta d'49'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d'  zalany tunel  '*
+		dta d'   SZMUGLER'*,b(5+64*2),d'W   '*
 		dta d'50'
-		dta d'abcdefghijklmnop'*
-		dta d'QRSTUVWXYZABCDEF'*
+		dta d' dwa anihilanty '*
+		dta d'ZNAMION KALECTWA'*
 		dta d'51'
 MAP_NAME_LAST
 		dta b($9b)

@@ -9,8 +9,8 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
-CREDITCOLSTART	equ $20
-CREDITCOLEND	equ	$2f
+CREDITCOLSTART	equ $00
+CREDITCOLEND	equ	CREDITCOLSTART+$0f
 LEVELFLIPDELAY	equ %00000011
 AMYGDALFLIPDEL	equ %00000111
 SOURCEDECO 		equ $ff-8*3
@@ -167,35 +167,17 @@ TITLE_PART_1
 	dta b(62)
 :38	dta b(125)
 	dta b(93)
-	dta b(124)
-	dta d' Docent Ireneusz Trzaskowski lubi     ',b(124)
-	dta b(124)
-	dta d' kosmos. Bywa tam cz',b(68),d'sto i robi r',b(80),b(88),d'ne ',b(124)
-	dta b(124)
-	dta d' rzeczy. Obecnie realizuje proces     ',b(124)
-	dta b(124)
-	dta d' zbierania mistycznych '
-	dta d'MIGDA'*
-	dta b(76+128),b(79+128)
-	dta d'W X4'*
-	dta d' z  ',b(124)
-	dta b(124)
-	dta d' pieczar na Jowiszu. Pomaga mu w tym  ',b(124)
+	dta b(124),d' Docent Ireneusz Trzaskowski poszukuje',b(124)
+	dta b(124),d'na  Jowiszu  mistycznych ',b(31),d'MIGDA',b(11),b(5),d'W X4',b(30),b(124)
+	
+	dta b(124),d'Nie skacze, nie strzela, ale za pomoc',b(81),b(124)
+	dta b(124),b(31),d'Tensora Miotu  Grawitacyjnego',b(30),d' miesza',b(124)
+	dta b(124),d'przestrzeni',b(81),d' i powoduje  opad  rzeczy.',b(124)
 TITLE_PART_2
-	dta b(124)
-	dta d' '
-	dta d'Tensor Miotu Grawitacyjnego'*
-	dta d' oraz Ty, ',b(124)
-	dta b(124)
-	dta d' zacny Atarowcu. Penetruj rygorys-    ',b(124)
-	dta b(124)
-	dta d' tycznie, z ka',b(88),d'dego kierunku, aby     ',b(124)
-	dta b(124)
-	dta d' ',b(88),d'aden '
-	dta d'MIGDA'*
-	dta b(76+128)
-	dta d' X4'*
-	dta d' nie zostal sam...    ',b(124)
+	dta b(124),d'Pom',b(80),b(88),d' mu  wypr',b(80),b(88),d'ni',b(86),d' wszelkie pieczary.',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'Kierunek ',b(28),d' FIRE zmienia grawitacj',b(68),d'.   ',b(124)
+	dta b(124),d'D',b(88),d'oj w d',b(80),b(123),d' przyspiesza ospa',b(123),d'e spadki. ',b(124)
 	dta b(63)
 :38	dta b(74)
 	dta b(29)
@@ -212,7 +194,32 @@ TITLE_AMYGDALA_SPEED
 	dta d'       '*,b(124)
 TITLE_PART_3
 	dta b(91)
-:33	dta b(125)
+:1	dta b(125)
+	dta b(126)
+
+	; http://github.com/mgr-inz-rafal/tensor
+	dta b(15)
+	dta b(83)
+	dta b(79)
+	dta b(90)
+	dta b(76)
+	dta b(65)
+	dta b(84)
+	dta b(67)
+	dta b(69)
+	dta b(96)
+	dta b(27)
+	dta b(59)
+	dta b(60)
+	dta b(61)
+	dta b(120)
+	dta b(89)
+	dta b(8)
+	dta b(7)
+
+	dta b(127)
+:12	dta b(125)
+
 	dta b(126)
 	dta b(72)
 	dta b(73)
@@ -945,9 +952,9 @@ x20	lda #$2D
 	lda >TITLE_FONT
 	sta CHBASE
 	
-	lda #$00
+	lda #$bd
 	sta color2
-	lda #$0f
+	lda #$50
 	sta color1
 
 	ldy #$69
@@ -3156,8 +3163,8 @@ scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00
 ; 32-63		- margin color 2
 
 ; TODO:
-; - Check player gravity only after movement
-; - Integrate logo with OS from Vidol
-; - Add detailed instruction (instafall on demand and so on)
+; - DONE: 		Add detailed instruction (instafall on demand and so on)
 ; - DONE: 		Decreasing cavern number on the title screen is slower than increasing it
 ; - OBSOLETE:	Integrate next raster optimization from Vidol
+; - OBSOLETE:	Check player gravity only after movement
+; - OBSOLETE:	Integrate logo with OS from Vidol

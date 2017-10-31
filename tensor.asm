@@ -198,7 +198,7 @@ TITLE_PART_3
 	dta b(126)
 
 	; http://github.com/mgr-inz-rafal/tensor
-	dta b(15)
+	dta b(66)
 	dta b(83)
 	dta b(79)
 	dta b(90)

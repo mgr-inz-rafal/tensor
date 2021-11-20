@@ -1,0 +1,1 @@
+mads.exe tensor.asm -o:tensor.xex -l:tensor.lst -t:tensor.lab

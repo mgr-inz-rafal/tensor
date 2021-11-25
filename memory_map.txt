@@ -1,0 +1,50 @@
+Main game, before cart edition:
+
+$2000 - Tensor logo graphics
+
+$2DC0 - Music
+
+$3D3C - Data (LUTs, strings, etc.) - (carefully calculated so that the section following it ends at $4FFF)
+
+$4777 - Tensor logo graphics PMG data
+
+$5000 - Title screen DL (aligned!)
+
+$508A - Main code section (starts with Tensor logo raster program)
+
+$557F - Tensor code
+
+$59D4 - Margin LUTs and PMG data for adding colors to margin
+
+$5BCE - Tensor code continues
+
+$5E87 - Map rotation code unrolled (until $657A, for a total of 1779 bytes)
+
+$657A - Tensor code continues
+
+$6B30 - Intermission DL + Final intermission DL
+
+... Some free space
+
+$7000 - PMG data
+
+$7400 - Screen buffers
+
+... Some free space
+
+$7800 - Fonts (title, game, game2, digits, credits)
+
+$9000 - RMT player
+
+$94EF - Map data (until $B07F, for a total of ~7kb)
+
+$B10F - Margin data
+
+$B207 - DLI routines + auxiliary code
+
+$B400 - Data for the credits line on title screen
+
+
+
+
+

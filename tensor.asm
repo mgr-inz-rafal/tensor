@@ -26,25 +26,26 @@ SCWIDTH 		equ 20
 MARGIN 			equ	(SCWIDTH-MAPSIZE)/2
 TOPMARG			equ 16
 LFTMARG			equ 80
-MV_IDLE			equ 0	; Element not moving
-MV_MRGH			equ	1	; Element is moving right
-MV_MLFT			equ	2	; Element is moving left
-MV_MUP			equ	3	; Element is moving up
-MV_MBTM			equ	4	; Element is moving bottom
-MV_CTRD			equ 4	; Single move distance when falling down
-MV_CTR			equ 8	; Single move distance when moving left or right
-C_PLAYR			equ	$5d	; Player color
-C_OBSTA			equ	$76	; Obstacles
-C_WALL1			equ	$54	; Wall #1
-C_WALL2			equ	$14	; Wall #2
-GS_GRAV			equ	0	; Making sure everything is on the ground
-GS_PLAY			equ	1	; Player movement
-GS_FIN			equ	2	; Level completed
-ROT_CTR			equ	20	; Delay between rotations
-PL_CHR			equ 1	; Player character
-CS_FADEOUT		equ 0	; Credits are fading out
-CS_FADEIN		equ 1	; Credits are fading in
-CS_SHOW			equ	2	; Credits are being shown
+MV_IDLE			equ 0	  ; Element not moving
+MV_MRGH			equ	1	  ; Element is moving right
+MV_MLFT			equ	2	  ; Element is moving left
+MV_MUP			equ	3	  ; Element is moving up
+MV_MBTM			equ	4	  ; Element is moving bottom
+MV_CTRD			equ 4	  ; Single move distance when falling down
+MV_CTR			equ 8	  ; Single move distance when moving left or right
+C_PLAYR			equ	$5d	  ; Player color
+C_OBSTA			equ	$76	  ; Obstacles
+C_WALL1			equ	$54	  ; Wall #1
+C_WALL2			equ	$14	  ; Wall #2
+GS_GRAV			equ	0	  ; Making sure everything is on the ground
+GS_PLAY			equ	1	  ; Player movement
+GS_FIN			equ	2	  ; Level completed
+ROT_CTR			equ	20	  ; Delay between rotations
+PL_CHR			equ 1	  ; Player character
+CS_FADEOUT		equ 0	  ; Credits are fading out
+CS_FADEIN		equ 1	  ; Credits are fading in
+CS_SHOW			equ	2	  ; Credits are being shown
+MAP_STORAGE		equ $d800 ; Maps stored under the OS
 
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
@@ -130,7 +131,7 @@ HEIGHT	= 30
 
 ; ---	Load data and move under OS
 	org $2000
-.rept MAPCOUNT-1 #+2
+.rept MAPCOUNT #+1
 	ins "maps\v:1.map"
 .endr
 MAPS_END equ *
@@ -143,9 +144,9 @@ COPY_UNDER_OS
 	sta PORTB
 
 ; Copy target
-	lda <$d800
+	lda <MAP_STORAGE
 	sta $80
-	lda >$d800
+	lda >MAP_STORAGE
 	sta $81
 
 ; Copy source
@@ -1292,7 +1293,7 @@ game_loop
 		cpx #0
 		bne gl_0
 		#if .byte reducer = #$ff/2-4
-			adw curmap #MAP_02-MAP_01
+			adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 			adw curmapname #MAP_02_NAME-MAP_01_NAME
 			mva #GS_FIN gstate
 		#end
@@ -2106,7 +2107,7 @@ di_X	ldx #$ff
 			pla
 			pla
 			enable_antic
-			mwa #MAP_01 curmap
+			mwa #MAP_BUFFER_START curmap
 			mwa #MAP_01_NAME curmapname
 			jmp main
 		#end
@@ -2582,9 +2583,52 @@ show_margin
 		sta hposp1
 
 		rts
+
+load_map_from_storage
+		ldy #MAP_02_NAME-MAP_01_NAME-2
+		lda (curmapname),y
+		sec
+		sbc #$10
+		asl
+		sta ptr1
+		asl
+		asl
+		clc
+		adc ptr1
+		sta ptr1
+		iny
+		lda (curmapname),y
+		sec
+		sbc #$10
+		clc
+		adc ptr1
+		tay
+		dey
+
+		mwa #MAP_STORAGE ptr0
+lmfs_1	cpy #0
+		beq lmfs_0
+		adw ptr0 #MAP_BUFFER_END-MAP_BUFFER_START
+		dey
+		jmp lmfs_1
+
+lmfs_0
+		jsr os_gone
+
+ 		ldy #MAPSIZE*MAPSIZE-1
+@		lda (ptr0),y
+ 		sta MAP_BUFFER_START,y
+ 		dey
+ 		cpy #0-1
+ 		bne @-
+
+		jsr os_back
+		rts
 		
 show_geometry
+		jsr load_map_from_storage
 		mwa #(SCRMEM+MARGIN) ptr0
+		mwa #MAP_BUFFER_START curmap
 		ldx #0
 @		ldy #0
 @		lda (curmap),y
@@ -2871,11 +2915,11 @@ set_next_starting_level
 		and #LEVELFLIPDELAY
 		cmp #LEVELFLIPDELAY
 		bne @+
-		adw curmap #MAP_02-MAP_01
+		adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 		adw curmapname #MAP_02_NAME-MAP_01_NAME
 		nop
 		#if .word curmapname = #MAP_NAME_LAST
-			sbw curmap #MAP_02-MAP_01
+			sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 			sbw curmapname #MAP_02_NAME-MAP_01_NAME
 		#end
 		jsr paint_level_number
@@ -2886,11 +2930,11 @@ set_previous_starting_level
 		and #LEVELFLIPDELAY
 		cmp #LEVELFLIPDELAY
 		bne @-
-		sbw curmap #MAP_02-MAP_01
+		sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 		sbw curmapname #MAP_02_NAME-MAP_01_NAME
 		nop
 		#if .word curmapname = #MAP_01_NAME-(MAP_02_NAME-MAP_01_NAME)
-			adw curmap #MAP_02-MAP_01
+			adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 			adw curmapname #MAP_02_NAME-MAP_01_NAME
 		#end
 		jsr paint_level_number
@@ -2922,6 +2966,7 @@ pas_0
 		rts
 
 os_gone
+		jsr synchro
 		sei
 		lda #0
 		sta NMIEN
@@ -2930,6 +2975,7 @@ os_gone
 		rts
 
 os_back
+		jsr synchro
 		lda #$ff
 		sta PORTB
 		lda #$40
@@ -3012,7 +3058,7 @@ CREDITS_FONT
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"
 
-MAP_01
+MAP_BUFFER_START
 	ins "maps\v1.map"
 
 		  ; dta d'%%%%%%%%%%% '
@@ -3027,9 +3073,9 @@ MAP_01
 		  ; dta d' %         %'		
 		  ; dta d' %         %'		
 		  ; dta d' %%%%%%%%%%%'
-
-MAP_02
+MAP_BUFFER_END
 MAP_LAST
+
 SCREEN_MARGIN_DATA
 		ins "data\ekran.dat"
 SCREEN_MARGIN_DATA_END
@@ -3192,7 +3238,7 @@ FOURTY_EMPTY_CHARS
 .endp
 
 	org curmap
-	dta a(MAP_01)
+	dta a(MAP_BUFFER_START)
 	org curmapname
 	dta a(MAP_01_NAME)
 	org first_run

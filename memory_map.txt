@@ -48,3 +48,7 @@ $B400 - Data for the credits line on title screen
 
 
 
+
+Main changes to cart edition:
+
+* Map data moved under the OS to $D800

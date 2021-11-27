@@ -130,7 +130,10 @@ HEIGHT	= 30
 
 ; ---	Load data and move under OS
 	org $2000
-	ins "data\dupa.dat"
+.rept MAPCOUNT-1 #+2
+	ins "maps\v:1.map"
+.endr
+MAPS_END equ *
 
 COPY_UNDER_OS
 	sei
@@ -139,13 +142,32 @@ COPY_UNDER_OS
 	lda #$fe
 	sta PORTB
 
+; Copy target
+	lda <$d800
+	sta $80
+	lda >$d800
+	sta $81
+
+; Copy source
+	lda <$2000
+	sta $82
+	lda >$2000
+	sta $83
+
 	ldy #0
-@	lda $2000,y
-	sta $C000,y
-	iny
-	cpy #15
+@	lda ($82),y
+	sta ($80),y
+	inw $80
+	inw $82
+
+	lda $82
+	cmp <MAPS_END
+	bne @-
+	lda $83
+	cmp >MAPS_END
 	bne @-
 
+COPY_DONE
 	lda #$ff
 	sta PORTB
 	lda #$40
@@ -2205,8 +2227,8 @@ init_game
 		rts
 
 rotate_clockwise
-;		jsr os_gone
-;		jsr os_back
+		; jsr os_gone
+		; jsr os_back
 		lda rotation_warmup
 		cmp #0
 		beq @+
@@ -3007,9 +3029,6 @@ MAP_01
 		  ; dta d' %%%%%%%%%%%'
 
 MAP_02
-; .rept MAPCOUNT-1 #+2
-; 	ins "maps\v:1.map"
-; .endr
 MAP_LAST
 SCREEN_MARGIN_DATA
 		ins "data\ekran.dat"

@@ -128,6 +128,33 @@ HEIGHT	= 30
 ; ---	BASIC switch OFF
 	org $2000\ mva #$ff portb\ rts\ ini $2000
 
+; ---	Load data and move under OS
+	org $2000
+	ins "data\dupa.dat"
+
+COPY_UNDER_OS
+	sei
+	lda #0
+	sta NMIEN
+	lda #$fe
+	sta PORTB
+
+	ldy #0
+@	lda $2000,y
+	sta $C000,y
+	iny
+	cpy #15
+	bne @-
+
+	lda #$ff
+	sta PORTB
+	lda #$40
+	sta NMIEN
+	cli
+
+	rts
+	ini COPY_UNDER_OS
+
 ; ---	MAIN PROGRAM
 	org $2000
 scr	ins "data\tensor5.raw" +0,+0,3520
@@ -2178,6 +2205,8 @@ init_game
 		rts
 
 rotate_clockwise
+;		jsr os_gone
+;		jsr os_back
 		lda rotation_warmup
 		cmp #0
 		beq @+
@@ -2869,7 +2898,23 @@ pas_0
 		cpy #AMYGDALA_SPEED_TEXT_01_END-AMYGDALA_SPEED_TEXT_01
 		bne @-
 		rts
-		
+
+os_gone
+		sei
+		lda #0
+		sta NMIEN
+		lda #$fe
+		sta PORTB
+		rts
+
+os_back
+		lda #$ff
+		sta PORTB
+		lda #$40
+		sta NMIEN
+		cli
+		rts
+
 AMYGDALA_SPEED_TEXT_01
 		dta d'WARTKO'*
 AMYGDALA_SPEED_TEXT_01_END
@@ -2962,9 +3007,9 @@ MAP_01
 		  ; dta d' %%%%%%%%%%%'
 
 MAP_02
-.rept MAPCOUNT-1 #+2
-	ins "maps\v:1.map"
-.endr
+; .rept MAPCOUNT-1 #+2
+; 	ins "maps\v:1.map"
+; .endr
 MAP_LAST
 SCREEN_MARGIN_DATA
 		ins "data\ekran.dat"

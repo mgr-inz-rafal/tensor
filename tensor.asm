@@ -3199,10 +3199,8 @@ SCRMEM_BUFFER
 
 .align	$400
 FONT_SLOT_1
-:1024   dta b(0)
-FONT_SLOT_2
-:1024   dta b(0)
-FONT_SLOT_END
+FONT_SLOT_2 equ FONT_SLOT_1+1024
+FONT_SLOT_END equ FONT_SLOT_2+1024
 		
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"

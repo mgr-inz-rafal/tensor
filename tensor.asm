@@ -46,6 +46,8 @@ CS_FADEOUT		equ 0	  ; Credits are fading out
 CS_FADEIN		equ 1	  ; Credits are fading in
 CS_SHOW			equ	2	  ; Credits are being shown
 MAP_STORAGE		equ $d800 ; Maps stored under the OS
+FONTS_STORAGE	equ $c000 ; 4 fonts
+LAST_FONT_STORAGE equ $FFFA-1-1024 ; 5th font
 
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
@@ -129,12 +131,13 @@ HEIGHT	= 30
 ; ---	BASIC switch OFF
 	org $2000\ mva #$ff portb\ rts\ ini $2000
 
-; ---	Load data and move under OS
+; ---	Load map data and move under OS
 	org $2000
 .rept MAPCOUNT #+1
 	ins "maps\v:1.map"
 .endr
 MAPS_END equ *
+MAPS_END_IN_STORAGE equ MAPS_END + MAP_STORAGE - $2000
 
 COPY_UNDER_OS
 	sei
@@ -162,10 +165,10 @@ COPY_UNDER_OS
 	inw $82
 
 	lda $82
-	cmp <MAPS_END
+	cmp <FONTS_END
 	bne @-
 	lda $83
-	cmp >MAPS_END
+	cmp >FONTS_END
 	bne @-
 
 COPY_DONE
@@ -177,6 +180,109 @@ COPY_DONE
 
 	rts
 	ini COPY_UNDER_OS
+
+; ---	Load first 4 fonts and move under OS
+	org $2000
+TITLE_FONT equ *-$2000 + FONTS_STORAGE
+		ins "fonts\BZZZ1.FNT"
+GAME_FONT equ *-$2000 + FONTS_STORAGE		
+		ins "fonts\fontek.fnt"
+GAME_FONT_2 equ *-$2000 + FONTS_STORAGE		
+		ins "fonts\fontek2.fnt"
+DIGITS_FONT equ *-$2000 + FONTS_STORAGE		
+		ins "fonts\digits.fnt"
+FONTS_END equ *
+
+COPY_UNDER_OS_FONTS
+	sei
+	lda #0
+	sta NMIEN
+	lda #$fe
+	sta PORTB
+
+; Copy target
+	lda <FONTS_STORAGE
+	sta $80
+	lda >FONTS_STORAGE
+	sta $81
+
+; Copy source
+	lda <$2000
+	sta $82
+	lda >$2000
+	sta $83
+
+	ldy #0
+@	lda ($82),y
+	sta ($80),y
+	inw $80
+	inw $82
+
+	lda $82
+	cmp <FONTS_END
+	bne @-
+	lda $83
+	cmp >FONTS_END
+	bne @-
+
+COPY_FONTS_DONE
+	lda #$ff
+	sta PORTB
+	lda #$40
+	sta NMIEN
+	cli
+
+	rts
+	ini COPY_UNDER_OS_FONTS
+
+; ---	Load last font and move under OS
+	org $2000
+CREDITS_FONT equ *-$2000 + LAST_FONT_STORAGE
+		ins "fonts\credits3.fnt"
+LAST_FONT_END equ *
+LAST_FONT_END_IN_STORAGE equ LAST_FONT_END + LAST_FONT_STORAGE - $2000
+
+COPY_UNDER_OS_LAST_FONT
+	sei
+	lda #0
+	sta NMIEN
+	lda #$fe
+	sta PORTB
+
+; Copy target
+	lda <LAST_FONT_STORAGE
+	sta $80
+	lda >LAST_FONT_STORAGE
+	sta $81
+
+; Copy source
+	lda <$2000
+	sta $82
+	lda >$2000
+	sta $83
+
+	ldy #0
+@	lda ($82),y
+	sta ($80),y
+	inw $80
+	inw $82
+
+	lda $82
+	cmp <LAST_FONT_END
+	bne @-
+	lda $83
+	cmp >LAST_FONT_END
+	bne @-
+
+COPY_LAST_FONT_DONE
+	lda #$ff
+	sta PORTB
+	lda #$40
+	sta NMIEN
+	cli
+
+	rts
+	ini COPY_UNDER_OS_LAST_FONT
 
 ; ---	MAIN PROGRAM
 	org $2000
@@ -2228,8 +2334,8 @@ init_game
 		rts
 
 rotate_clockwise
-		; jsr os_gone
-		; jsr os_back
+		jsr os_gone
+		jsr os_back
 		lda rotation_warmup
 		cmp #0
 		beq @+
@@ -3042,18 +3148,10 @@ SCRMEM_BUFFER
 :SCWIDTH*MAPSIZE	dta b(0)
 
 .align	$400
-TITLE_FONT
-		ins "fonts\BZZZ1.FNT"
-.align	$400
-GAME_FONT
-		ins "fonts\fontek.fnt"
-.align	$400
-GAME_FONT_2
-		ins "fonts\fontek2.fnt"
-DIGITS_FONT
-		ins "fonts\digits.fnt"
-CREDITS_FONT
-		ins "fonts\credits3.fnt"
+FONT_SLOT_1
+:1024   dta b(0)
+FONT_SLOT_2
+:1024   dta b(0)
 		
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"

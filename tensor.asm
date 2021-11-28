@@ -165,10 +165,10 @@ COPY_UNDER_OS
 	inw $82
 
 	lda $82
-	cmp <FONTS_END
+	cmp <MAPS_END
 	bne @-
 	lda $83
-	cmp >FONTS_END
+	cmp >MAPS_END
 	bne @-
 
 COPY_DONE
@@ -183,12 +183,12 @@ COPY_DONE
 
 ; ---	Load first 4 fonts and move under OS
 	org $2000
+CREDITS_FONT equ *-$2000 + FONTS_STORAGE		
+		ins "fonts\credits3.fnt"
 TITLE_FONT equ *-$2000 + FONTS_STORAGE
 		ins "fonts\BZZZ1.FNT"
 GAME_FONT equ *-$2000 + FONTS_STORAGE		
 		ins "fonts\fontek.fnt"
-GAME_FONT_2 equ *-$2000 + FONTS_STORAGE		
-		ins "fonts\fontek2.fnt"
 DIGITS_FONT equ *-$2000 + FONTS_STORAGE		
 		ins "fonts\digits.fnt"
 FONTS_END equ *
@@ -237,8 +237,8 @@ COPY_FONTS_DONE
 
 ; ---	Load last font and move under OS
 	org $2000
-CREDITS_FONT equ *-$2000 + LAST_FONT_STORAGE
-		ins "fonts\credits3.fnt"
+GAME_FONT_2 equ *-$2000 + LAST_FONT_STORAGE
+		ins "fonts\fontek2.fnt"
 LAST_FONT_END equ *
 LAST_FONT_END_IN_STORAGE equ LAST_FONT_END + LAST_FONT_STORAGE - $2000
 
@@ -542,10 +542,10 @@ MAP_NAME_LAST
 		dta b($9b)
 		
 FONT_MAPPER
-		dta b(>GAME_FONT)			; North
-		dta b(>GAME_FONT+2)			; West
-		dta b(>GAME_FONT_2)			; South
-		dta b(>GAME_FONT_2+2)		; East
+		dta b(>FONT_SLOT_1)			; North
+		dta b(>FONT_SLOT_1+2)		; West
+		dta b(>FONT_SLOT_2)			; South
+		dta b(>FONT_SLOT_2+2)		; East
 LUDEK_DATA
 		dta b($62)
 		dta b($16)
@@ -604,6 +604,13 @@ main
 	dey
 	cpy #0
 	bne @-
+
+	ldx <TITLE_FONT
+	ldy >TITLE_FONT
+	jsr load_font_from_storage_slot_1
+	ldx <CREDITS_FONT
+	ldy >CREDITS_FONT
+	jsr load_font_from_storage_slot_2
 	
 	mwa #TITLE_PART_1 ptr0
 	mwa #TITLE_PART_2 ptr1
@@ -620,8 +627,6 @@ main
 	lda #0
 	sta mapnumber
 	sta showsummary
-	lda >TITLE_FONT
-	sta CHBAS
 	jsr paint_title_text
 	jsr paint_level_number
 	jsr paint_amygdala_speed
@@ -1105,7 +1110,7 @@ x20	lda #$2D
 	bne @-
 
 ; At this point we are at the beginning of the instruction section
-	lda >TITLE_FONT
+	lda >FONT_SLOT_1
 	sta CHBASE
 	
 	lda #$bd
@@ -1120,7 +1125,7 @@ x20	lda #$2D
 :4	jsr wait18cycle
 	
 ; At this point we are at the beginning of the credits section
-	lda >CREDITS_FONT
+	lda >FONT_SLOT_2
 	sta CHBASE
 	
 	lda credits_state
@@ -2123,6 +2128,12 @@ draw_happy_docent
 		
 show_intermission
 		jsr sleep_for_short_time
+		ldx <DIGITS_FONT
+		ldy >DIGITS_FONT
+		jsr load_font_from_storage_slot_1
+		ldx <TITLE_FONT
+		ldy >TITLE_FONT
+		jsr load_font_from_storage_slot_2
 		enable_antic
 
 		lda #0
@@ -2148,7 +2159,7 @@ show_intermission
 		jsr setup_intermission_colors
 
 		#if .word curmap = #MAP_LAST
-			lda >DIGITS_FONT
+			lda >FONT_SLOT_1
 			add #2
 			sta CHBAS
 		
@@ -2263,10 +2274,10 @@ set_amygdala
 sa_0		
 		ldy #0
 @		lda (ptr0),y
-		sta GAME_FONT+8+8,y
-		sta GAME_FONT_2+8+8,y
-		sta GAME_FONT+8+8+64*8,y
-		sta GAME_FONT_2+8+8+64*8,y
+		sta FONT_SLOT_1+8+8,y
+		sta FONT_SLOT_2+8+8,y
+		sta FONT_SLOT_1+8+8+64*8,y
+		sta FONT_SLOT_2+8+8+64*8,y
 		iny
 		cpy #8
 		bne @-
@@ -2286,6 +2297,13 @@ init_game
 		mva instafall old_instafall
 ;		mwa #MAP_LAST curmap		; TODO: Remove after happy docent is integrated
 		jsr show_intermission
+
+		ldx <GAME_FONT
+		ldy >GAME_FONT
+		jsr load_font_from_storage_slot_1
+		ldx <GAME_FONT_2
+		ldy >GAME_FONT_2
+		jsr load_font_from_storage_slot_2
 
 		#if .byte first_run = #0
 			mva #1 first_run
@@ -2689,6 +2707,38 @@ show_margin
 		sta hposp1
 
 		rts
+
+load_font_from_storage_slot_1
+		stx ptr0
+		sty ptr0+1
+		mwa #FONT_SLOT_1 ptr1
+		ldy #0
+		jsr os_gone
+lffss_1	lda (ptr0),y
+		sta (ptr1),y
+		#if .word ptr1 = #FONT_SLOT_2
+			jsr os_back
+			rts
+		#end
+		inw ptr0
+		inw ptr1
+		jmp lffss_1
+
+load_font_from_storage_slot_2
+		stx ptr0
+		sty ptr0+1
+		mwa #FONT_SLOT_2 ptr1
+		ldy #0
+		jsr os_gone
+lffss_2	lda (ptr0),y
+		sta (ptr1),y
+		#if .word ptr1 = #FONT_SLOT_END
+			jsr os_back
+			rts
+		#end
+		inw ptr0
+		inw ptr1
+		jmp lffss_2
 
 load_map_from_storage
 		ldy #MAP_02_NAME-MAP_01_NAME-2
@@ -3152,6 +3202,7 @@ FONT_SLOT_1
 :1024   dta b(0)
 FONT_SLOT_2
 :1024   dta b(0)
+FONT_SLOT_END
 		
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"
@@ -3186,13 +3237,13 @@ dli_routine
 		lda VCOUNT
 		cmp #$20	; Header
 		bne @+
-		lda >TITLE_FONT
+		lda >FONT_SLOT_2
 		sta CHBASE
 		jmp dli_end
 		
 @		cmp #$2C	; Digits
 		bne @+
-		lda >DIGITS_FONT
+		lda >FONT_SLOT_1
 		sta CHBASE
 		ldy #$eb-2
 		sta WSYNC
@@ -3231,7 +3282,7 @@ dli_routine
 		sty COLOR1
 		jmp dli_end
 		
-@		lda >TITLE_FONT
+@		lda >FONT_SLOT_2
 		sta CHBASE
 		
 dli_end		

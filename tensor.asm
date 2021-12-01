@@ -2145,13 +2145,11 @@ show_intermission
 		lda #0
 		sta stop_intermission
 
+		ldx #<MODUL
+		ldy #>MODUL
 		#if .word curmap = #MAP_LAST
-			ldx #<MODUL
-			ldy #>MODUL
 			lda #$74
 		#else
-			ldx #<MODUL
-			ldy #>MODUL
 			lda #$36
 		#end
 		jsr RASTERMUSICTRACKER

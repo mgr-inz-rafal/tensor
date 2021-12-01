@@ -99,6 +99,7 @@ LAST_FONT_STORAGE equ $FFFA-1-1024 ; 5th font
 .zpvar	.byte	ludek_face	; 0 - L, 1 - R
 .zpvar  .byte   ntsc
 .zpvar  .byte   ntsc_music_conductor
+.zpvar  .byte	rmt_player_halt
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -654,11 +655,12 @@ main
 	jsr detect_ntsc
 	lda #6
 	sta ntsc_music_conductor
+	lda #1
+	sta rmt_player_halt
 
-	lda #00
 	ldx #<MODUL
 	ldy #>MODUL
-	jsr RASTERMUSICTRACKER	;Init
+	jsr INIT_MUSIC
 	
 	jmp raster_program_end
 
@@ -1205,7 +1207,7 @@ xx2
 @	jmp skp
 
 stop
-	jsr RASTERMUSICTRACKER+9 ; Stop music
+	jsr STOP_MUSIC
 	mva #$00 pmcntl		;PMG disabled
 	tax
 	sta:rne hposp0,x+
@@ -2152,7 +2154,7 @@ show_intermission
 		#else
 			lda #$36
 		#end
-		jsr RASTERMUSICTRACKER
+		jsr INIT_MUSIC
 
 		lda #0
 		sta $d008 
@@ -2320,7 +2322,7 @@ init_game
 		#end
 		ldx #<MODUL
 		ldy #>MODUL
-		jsr RASTERMUSICTRACKER
+		jsr INIT_MUSIC
 
 		lda RANDOM
 		and #%00000111
@@ -3160,7 +3162,22 @@ os_back
 		cli
 		rts
 
+STOP_MUSIC
+		jsr RASTERMUSICTRACKER+9
+		rts
+
+INIT_MUSIC
+		phr
+		dec rmt_player_halt
+		jsr STOP_MUSIC
+		plr
+		jsr RASTERMUSICTRACKER
+		inc rmt_player_halt
+		rts
+
 CONDUCT_MUSIC
+		lda rmt_player_halt
+		beq CM_3
 		lda ntsc
 		cmp #0
 		beq CM_1
@@ -3171,7 +3188,7 @@ CM_2	lda #6
 		sta ntsc_music_conductor
 		rts
 CM_1	jsr RASTERMUSICTRACKER+3
-		rts
+CM_3	rts
 
 AMYGDALA_SPEED_TEXT_01
 		dta d'WARTKO'*

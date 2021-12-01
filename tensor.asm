@@ -98,6 +98,7 @@ LAST_FONT_STORAGE equ $FFFA-1-1024 ; 5th font
 .zpvar	.byte	ludek_offset
 .zpvar	.byte	ludek_face	; 0 - L, 1 - R
 .zpvar  .byte   ntsc
+.zpvar  .byte   ntsc_music_conductor
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -651,6 +652,8 @@ main
 ////////////////////
 
 	jsr detect_ntsc
+	lda #6
+	sta ntsc_music_conductor
 
 	lda #00
 	ldx #<MODUL
@@ -1216,7 +1219,7 @@ skp
 
 // -----------------------------------------------------------
 
-	jsr RASTERMUSICTRACKER+3
+	jsr CONDUCT_MUSIC
 	inc delayer
 	jmp LOOP
 
@@ -2235,7 +2238,7 @@ di_X	ldx #$ff
 		rts
 		
 vbi_routine
-		jsr RASTERMUSICTRACKER+3
+		jsr CONDUCT_MUSIC
 		dec rotation_warmup
 		lda rotation_warmup
 		cmp #$ff
@@ -3157,6 +3160,19 @@ os_back
 		lda #$40
 		sta NMIEN
 		cli
+		rts
+
+CONDUCT_MUSIC
+		lda ntsc
+		cmp #0
+		beq CM_1
+		dec ntsc_music_conductor
+		beq CM_2
+		jmp CM_1
+CM_2	lda #6
+		sta ntsc_music_conductor
+		rts
+CM_1	jsr RASTERMUSICTRACKER+3
 		rts
 
 AMYGDALA_SPEED_TEXT_01

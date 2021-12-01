@@ -97,6 +97,7 @@ LAST_FONT_STORAGE equ $FFFA-1-1024 ; 5th font
 .zpvar	.byte	direction	; 0 - N, 1 - W, 2 - S, 3 - E
 .zpvar	.byte	ludek_offset
 .zpvar	.byte	ludek_face	; 0 - L, 1 - R
+.zpvar  .byte   ntsc
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -648,6 +649,8 @@ main
 ////////////////////
 // RASTER PROGRAM //
 ////////////////////
+
+	jsr detect_ntsc
 
 	lda #00
 	ldx #<MODUL
@@ -3026,6 +3029,23 @@ synchr1 lda #120	; NTSC
 synchr2	cmp VCOUNT
 		bne synchr2
 @		rts
+
+; thanks to mono
+detect_ntsc
+		sei
+	  	lda #0
+		sta ntsc
+sync1 	ldx VCOUNT
+      	bpl sync1
+sync2 	txa
+      	ldx VCOUNT
+      	bmi sync2
+
+      	cmp #[312+262]/2/2		
+	  	bcs dn_1
+		inc ntsc
+dn_1  	cli
+		rts
 
 paint_title_text
 		ldy #0

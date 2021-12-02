@@ -2112,16 +2112,17 @@ setup_intermission_colors
 		rts
 		
 draw_happy_docent
-		lda #$16 ;-wlosy
-		sta $2c4
+		ldy ntsc
+		lda FINAL_SCREEN_COLOR_1,y
+		sta CLR0
 		lda #$06 ;-diament
-		sta $2c5
-		lda #$36 ;-serce
-		sta $2c6
-		lda #$fa ;-kielich
-		sta $2c7
+		sta CLR1
+		lda FINAL_SCREEN_COLOR_2,y
+		sta CLR2
+		lda FINAL_SCREEN_COLOR_3,y
+		sta CLR3
 		lda #0
-		sta $2c8
+		sta CLR4
 		sta $d40e
 		lda #$2e
 		sta $022f
@@ -3274,6 +3275,12 @@ INTERMISSION_COLOR_11
 	dta b($eb-6), b($fb-6)
 MARGIN_COLOR
 	dta b($90), b($90)
+FINAL_SCREEN_COLOR_1
+	dta b($16), b($26) ; wlosy
+FINAL_SCREEN_COLOR_2
+	dta b($36), b($46) ; serce
+FINAL_SCREEN_COLOR_3
+	dta b($fa), b($2b) ; kielich
 
 ; Sprites
 .align		$1000

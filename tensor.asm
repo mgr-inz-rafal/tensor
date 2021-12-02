@@ -684,7 +684,9 @@ c0	lda #$00
 	sta sizep1
 	sta sizep2
 	sta sizep3
-c1	lda #$0A
+c1	ldy ntsc
+	lda LOGO_COLOR_1,y
+	lda #$0A
 	sta color1
 	lda #$02
 	sta chrctl
@@ -706,7 +708,8 @@ x5	lda #$69
 	sta hposm2
 x6	lda #$89
 	sta hposm3
-c4	lda #$10
+c4	ldy ntsc
+	lda LOGO_COLOR_2,y
 	sta colpm0
 	sta colpm1
 	sta colpm2
@@ -939,29 +942,30 @@ x18	lda #$7D
 	lda zc+0
 	sta hposp3
 	lda cl+0
-	:2 nop
 	sta hposp3
-	ldy #$70
+	ldy ntsc
+	lda LOGO_COLOR_3,y
+	tay
+;	ldy #$70
 	ldx #$00
 	jsr _rts
-	:2 nop
 
 line32
 	jsr wait18cycle
 	lda zc+0
-	stx color2
+	stx color2 ; X=0
 	sta hposp3
 	lda cl+0
 	sta hposp3
 	cmp 0
-	stx color2
+	stx color2 ; X=0
 	jsr _rts
 	cmp 0
 
 line33
 	jsr wait18cycle
 	lda zc+0
-	stx color2
+	stx color2 ; X=0
 	sta hposp3
 	lda cl+0
 	sta hposp3
@@ -1121,9 +1125,10 @@ x20	lda #$2D
 	lda >FONT_SLOT_1
 	sta CHBASE
 	
-	lda #$bd
+	ldy ntsc
+	lda COLOR_1_INSTRUCTION_TEXT,y
 	sta color2
-	lda #$50
+	lda COLOR_2_INSTRUCTION_TEXT,y
 	sta color1
 
 	ldy #$69
@@ -3232,6 +3237,17 @@ DLINTERMISSIONFINAL
 	dta b($07)
 	dta b($07)
 	dta $41,a(DLINTERMISSIONFINAL)
+
+COLOR_1_INSTRUCTION_TEXT
+	dta b($bd), b($dd)
+COLOR_2_INSTRUCTION_TEXT
+	dta b($50), b($60)
+LOGO_COLOR_1
+	dta b($0A), b($1A)
+LOGO_COLOR_2
+	dta b($10), b($20)
+LOGO_COLOR_3
+	dta b($70), b($80)
 
 ; Sprites
 .align		$1000

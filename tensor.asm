@@ -299,28 +299,28 @@ MODUL
 bit_mirror_lut
 		dta b(0),b(128),b(64),b(192),b(32),b(160),b(96),b(224),b(16),b(144),b(80),b(208),b(48),b(176),b(112),b(240),b(8),b(136),b(72),b(200),b(40),b(168),b(104),b(232),b(24),b(152),b(88),b(216),b(56),b(184),b(120),b(248),b(4),b(132),b(68),b(196),b(36),b(164),b(100),b(228),b(20),b(148),b(84),b(212),b(52),b(180),b(116),b(244),b(12),b(140),b(76),b(204),b(44),b(172),b(108),b(236),b(28),b(156),b(92),b(220),b(60),b(188),b(124),b(252),b(2),b(130),b(66),b(194),b(34),b(162),b(98),b(226),b(18),b(146),b(82),b(210),b(50),b(178),b(114),b(242),b(10),b(138),b(74),b(202),b(42),b(170),b(106),b(234),b(26),b(154),b(90),b(218),b(58),b(186),b(122),b(250),b(6),b(134),b(70),b(198),b(38),b(166),b(102),b(230),b(22),b(150),b(86),b(214),b(54),b(182),b(118),b(246),b(14),b(142),b(78),b(206),b(46),b(174),b(110),b(238),b(30),b(158),b(94),b(222),b(62),b(190),b(126),b(254),b(1),b(129),b(65),b(193),b(33),b(161),b(97),b(225),b(17),b(145),b(81),b(209),b(49),b(177),b(113),b(241),b(9),b(137),b(73),b(201),b(41),b(169),b(105),b(233),b(25),b(153),b(89),b(217),b(57),b(185),b(121),b(249),b(5),b(133),b(69),b(197),b(37),b(165),b(101),b(229),b(21),b(149),b(85),b(213),b(53),b(181),b(117),b(245),b(13),b(141),b(77),b(205),b(45),b(173),b(109),b(237),b(29),b(157),b(93),b(221),b(61),b(189),b(125),b(253),b(3),b(131),b(67),b(195),b(35),b(163),b(99),b(227),b(19),b(147),b(83),b(211),b(51),b(179),b(115),b(243),b(11),b(139),b(75),b(203),b(43),b(171),b(107),b(235),b(27),b(155),b(91),b(219),b(59),b(187),b(123),b(251),b(7),b(135),b(71),b(199),b(39),b(167),b(103),b(231),b(23),b(151),b(87),b(215),b(55),b(183),b(119),b(247),b(15),b(143),b(79),b(207),b(47),b(175),b(111),b(239),b(31),b(159),b(95),b(223),b(63),b(191),b(127),b(255)
 AMYGDALA_DATA_0	; Kielich
-	dta b(0),b(124),b(116),b(116),b(116),b(40),b(16),b(116),b($fa)
+	dta b(0),b(124),b(116),b(116),b(116),b(40),b(16),b(116),b($fa),b($2b)
 
 AMYGDALA_DATA_1	; Maska
-	dta b(0),b(130),b(254),b(146),b(214),b(124),b(68),b(56),b($c6)
+	dta b(0),b(130),b(254),b(146),b(214),b(124),b(68),b(56),b($c6),b($d6)
 
 AMYGDALA_DATA_2	; Diament
-	dta b(0),b(124),b(142),b(250),b(116),b(40),b(16),b(0),b($06)
+	dta b(0),b(124),b(142),b(250),b(116),b(40),b(16),b(0),b($06),b($06)
 
 AMYGDALA_DATA_3	; Serce
-	dta b(0),b(108),b(190),b(250),b(116),b(56),b(16),b(0),b($36)
+	dta b(0),b(108),b(190),b(250),b(116),b(56),b(16),b(0),b($36),b($46)
 
 AMYGDALA_DATA_4	; Swiecznik
-	dta b(16),b(24),b(48),b(16),b(68),b(56),b(16),b(56),b($ea)
+	dta b(16),b(24),b(48),b(16),b(68),b(56),b(16),b(56),b($ea),b($fa)
 
 AMYGDALA_DATA_5	; Miecz
-	dta b(0),b(192),b(160),b(84),b(44),b(24),b(52),b(2),b($64)
+	dta b(0),b(192),b(160),b(84),b(44),b(24),b(52),b(2),b($64),b($74)
 
 AMYGDALA_DATA_6	; Pierscionek
-	dta b(0),b(60),b(24),b(52),b(82),b(64),b(66),b(52),b($a6)
+	dta b(0),b(60),b(24),b(52),b(82),b(64),b(66),b(52),b($a6),b($b6)
 
 AMYGDALA_DATA_7	; Robak
-	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($34)
+	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($34),b($44)
 	
 TITLE_PART_1
 	dta b(62)
@@ -684,7 +684,9 @@ c0	lda #$00
 	sta sizep1
 	sta sizep2
 	sta sizep3
-c1	lda #$0A
+c1	ldy ntsc
+	lda LOGO_COLOR_1,y
+	lda #$0A
 	sta color1
 	lda #$02
 	sta chrctl
@@ -706,7 +708,8 @@ x5	lda #$69
 	sta hposm2
 x6	lda #$89
 	sta hposm3
-c4	lda #$10
+c4	ldy ntsc
+	lda LOGO_COLOR_2,y
 	sta colpm0
 	sta colpm1
 	sta colpm2
@@ -939,29 +942,30 @@ x18	lda #$7D
 	lda zc+0
 	sta hposp3
 	lda cl+0
-	:2 nop
 	sta hposp3
-	ldy #$70
+	ldy ntsc
+	lda LOGO_COLOR_3,y
+	tay
+;	ldy #$70
 	ldx #$00
 	jsr _rts
-	:2 nop
 
 line32
 	jsr wait18cycle
 	lda zc+0
-	stx color2
+	stx color2 ; X=0
 	sta hposp3
 	lda cl+0
 	sta hposp3
 	cmp 0
-	stx color2
+	stx color2 ; X=0
 	jsr _rts
 	cmp 0
 
 line33
 	jsr wait18cycle
 	lda zc+0
-	stx color2
+	stx color2 ; X=0
 	sta hposp3
 	lda cl+0
 	sta hposp3
@@ -1121,9 +1125,10 @@ x20	lda #$2D
 	lda >FONT_SLOT_1
 	sta CHBASE
 	
-	lda #$bd
+	ldy ntsc
+	lda COLOR_1_INSTRUCTION_TEXT,y
 	sta color2
-	lda #$50
+	lda COLOR_2_INSTRUCTION_TEXT,y
 	sta color1
 
 	ldy #$69
@@ -2075,14 +2080,15 @@ sprite_decoration_data_3
 		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
 
 setup_intermission_colors
+		ldy ntsc
 		#if .word curmap = #MAP_LAST
-			lda #$54
+			lda INTERMISSION_COLOR_1,y
 			sta PCOLR0
-			lda #$5a
+			lda INTERMISSION_COLOR_2,y
 			sta PCOLR1
-			lda #$58
+			lda INTERMISSION_COLOR_3,y
 			sta PCOLR2
-			lda #$54
+			lda INTERMISSION_COLOR_4,y
 			sta PCOLR3
 		#else
 			lda #$04
@@ -2095,27 +2101,28 @@ setup_intermission_colors
 			sta PCOLR3
 		#end
 		
-		lda #$eb
+		lda INTERMISSION_COLOR_5,y
 		sta CLR0
-		lda #$85
+		lda INTERMISSION_COLOR_6,y
 		sta CLR1
-		lda #$b5
+		lda INTERMISSION_COLOR_7,y
 		sta CLR2
-		lda #$b9
+		lda INTERMISSION_COLOR_8,y
 		sta CLR3
 		rts
 		
 draw_happy_docent
-		lda #$16 ;-wlosy
-		sta $2c4
+		ldy ntsc
+		lda FINAL_SCREEN_COLOR_1,y
+		sta CLR0
 		lda #$06 ;-diament
-		sta $2c5
-		lda #$36 ;-serce
-		sta $2c6
-		lda #$fa ;-kielich
-		sta $2c7
+		sta CLR1
+		lda FINAL_SCREEN_COLOR_2,y
+		sta CLR2
+		lda FINAL_SCREEN_COLOR_3,y
+		sta CLR3
 		lda #0
-		sta $2c8
+		sta CLR4
 		sta $d40e
 		lda #$2e
 		sta $022f
@@ -2287,7 +2294,11 @@ sa_0
 		iny
 		cpy #8
 		bne @-
-		lda (ptr0),y
+		ldx ntsc
+		cpx #1
+		bne @+
+		iny
+@		lda (ptr0),y
 		sta amygdala_color
 		rts
 
@@ -2586,17 +2597,18 @@ init_sprites
 		lda #0
 		sta SIZEP0
 
-		lda #C_PLAYR
+		ldy ntsc
+		lda PLAYER_COLOR,y
 		sta PCOLR3
 		sta PCOLR2
 		
-		lda #C_WALL2
+		lda WALL_1_COLOR,y
 		sta CLR0
 		lda amygdala_color
 		sta CLR1
-		lda #C_OBSTA
+		lda OBSTACLE_COLOR,y
 		sta CLR2
-		lda #C_WALL1
+		lda WALL_2_COLOR,y
 		sta CLR3
 		lda #$00
 		sta CLR4
@@ -2640,7 +2652,7 @@ show_margin
 		; Sprites for more colors
 		; Vidol - begin
 		lda #$00
-		sta $2c8
+		sta CLR4
 		sta $d01b ;!!!
 
 		lda #3
@@ -2648,9 +2660,10 @@ show_margin
 		sta $d009;-szerokosc
 		sta $d00c
 
-	lda #$90
-	sta $02c1
-	sta $02c0
+	ldy ntsc
+	lda MARGIN_COLOR,y
+	sta PCOLR1
+	sta PCOLR0
 
 	lda #0
 	sta $026f
@@ -3233,6 +3246,55 @@ DLINTERMISSIONFINAL
 	dta b($07)
 	dta $41,a(DLINTERMISSIONFINAL)
 
+COLOR_1_INSTRUCTION_TEXT
+	dta b($bd), b($dd)
+COLOR_2_INSTRUCTION_TEXT
+	dta b($50), b($60)
+LOGO_COLOR_1
+	dta b($0A), b($1A)
+LOGO_COLOR_2
+	dta b($10), b($20)
+LOGO_COLOR_3
+	dta b($70), b($80)
+INTERMISSION_COLOR_1
+	dta b($54), b($64)
+INTERMISSION_COLOR_2
+	dta b($5a), b($6a)
+INTERMISSION_COLOR_3
+	dta b($58), b($68)
+INTERMISSION_COLOR_4
+	dta b($54), b($64)
+INTERMISSION_COLOR_5
+	dta b($eb), b($fb)
+INTERMISSION_COLOR_6
+	dta b($85), b($95)
+INTERMISSION_COLOR_7
+	dta b($b5), b($c5)
+INTERMISSION_COLOR_8
+	dta b($b9), b($c9)
+INTERMISSION_COLOR_9
+	dta b($eb-2), b($fb-2)
+INTERMISSION_COLOR_10
+	dta b($eb-4), b($fb-4)
+INTERMISSION_COLOR_11
+	dta b($eb-6), b($fb-6)
+MARGIN_COLOR
+	dta b($90), b($90)
+FINAL_SCREEN_COLOR_1
+	dta b($16), b($26) ; wlosy
+FINAL_SCREEN_COLOR_2
+	dta b($36), b($46) ; serce
+FINAL_SCREEN_COLOR_3
+	dta b($fa), b($2b) ; kielich
+PLAYER_COLOR
+	dta b(C_PLAYR), b(C_PLAYR+$10)
+WALL_1_COLOR
+	dta b(C_WALL2), b(C_WALL2+$10) ; Margin color depends on this guy :-/
+OBSTACLE_COLOR
+	dta b(C_OBSTA), b(C_OBSTA+$10)
+WALL_2_COLOR
+	dta b(C_WALL1), b(C_WALL1+$10)
+
 ; Sprites
 .align		$1000
 pmg_base
@@ -3294,9 +3356,9 @@ dli_routine
 		bne @+
 		lda >FONT_SLOT_1
 		sta CHBASE
-		ldy #$eb-2
-		sta WSYNC
-		sta WSYNC
+		ldy ntsc
+		lda INTERMISSION_COLOR_9,y
+		tay
 		sta WSYNC
 		sta WSYNC
 		sta WSYNC
@@ -3309,10 +3371,14 @@ dli_routine
 		
 @		cmp #$34	; Digits - lower part
 		bne @+
-		ldy #$eb-4
+		ldy ntsc
+		lda INTERMISSION_COLOR_10,y
+		tay
 		sta WSYNC
 		sty COLOR0
-		ldy #$eb-6
+		ldy ntsc
+		lda INTERMISSION_COLOR_11,y
+		tay
 		sta WSYNC
 		sta WSYNC
 		sta WSYNC

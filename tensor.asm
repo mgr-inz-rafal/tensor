@@ -2646,7 +2646,7 @@ show_margin
 		; Sprites for more colors
 		; Vidol - begin
 		lda #$00
-		sta $2c8
+		sta CLR4
 		sta $d01b ;!!!
 
 		lda #3
@@ -2654,9 +2654,10 @@ show_margin
 		sta $d009;-szerokosc
 		sta $d00c
 
-	lda #$90
-	sta $02c1
-	sta $02c0
+	ldy ntsc
+	lda MARGIN_COLOR,y
+	sta PCOLR1
+	sta PCOLR0
 
 	lda #0
 	sta $026f
@@ -3265,6 +3266,14 @@ INTERMISSION_COLOR_7
 	dta b($b5), b($c5)
 INTERMISSION_COLOR_8
 	dta b($b9), b($c9)
+INTERMISSION_COLOR_9
+	dta b($eb-2), b($fb-2)
+INTERMISSION_COLOR_10
+	dta b($eb-4), b($fb-4)
+INTERMISSION_COLOR_11
+	dta b($eb-6), b($fb-6)
+MARGIN_COLOR
+	dta b($90), b($90)
 
 ; Sprites
 .align		$1000
@@ -3327,9 +3336,9 @@ dli_routine
 		bne @+
 		lda >FONT_SLOT_1
 		sta CHBASE
-		ldy #$eb-2
-		sta WSYNC
-		sta WSYNC
+		ldy ntsc
+		lda INTERMISSION_COLOR_9,y
+		tay
 		sta WSYNC
 		sta WSYNC
 		sta WSYNC
@@ -3342,10 +3351,14 @@ dli_routine
 		
 @		cmp #$34	; Digits - lower part
 		bne @+
-		ldy #$eb-4
+		ldy ntsc
+		lda INTERMISSION_COLOR_10,y
+		tay
 		sta WSYNC
 		sty COLOR0
-		ldy #$eb-6
+		ldy ntsc
+		lda INTERMISSION_COLOR_11,y
+		tay
 		sta WSYNC
 		sta WSYNC
 		sta WSYNC

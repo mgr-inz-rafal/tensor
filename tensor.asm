@@ -2080,14 +2080,15 @@ sprite_decoration_data_3
 		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
 
 setup_intermission_colors
+		ldy ntsc
 		#if .word curmap = #MAP_LAST
-			lda #$54
+			lda INTERMISSION_COLOR_1,y
 			sta PCOLR0
-			lda #$5a
+			lda INTERMISSION_COLOR_2,y
 			sta PCOLR1
-			lda #$58
+			lda INTERMISSION_COLOR_3,y
 			sta PCOLR2
-			lda #$54
+			lda INTERMISSION_COLOR_4,y
 			sta PCOLR3
 		#else
 			lda #$04
@@ -2100,13 +2101,13 @@ setup_intermission_colors
 			sta PCOLR3
 		#end
 		
-		lda #$eb
+		lda INTERMISSION_COLOR_5,y
 		sta CLR0
-		lda #$85
+		lda INTERMISSION_COLOR_6,y
 		sta CLR1
-		lda #$b5
+		lda INTERMISSION_COLOR_7,y
 		sta CLR2
-		lda #$b9
+		lda INTERMISSION_COLOR_8,y
 		sta CLR3
 		rts
 		
@@ -3248,6 +3249,22 @@ LOGO_COLOR_2
 	dta b($10), b($20)
 LOGO_COLOR_3
 	dta b($70), b($80)
+INTERMISSION_COLOR_1
+	dta b($54), b($64)
+INTERMISSION_COLOR_2
+	dta b($5a), b($6a)
+INTERMISSION_COLOR_3
+	dta b($58), b($68)
+INTERMISSION_COLOR_4
+	dta b($54), b($64)
+INTERMISSION_COLOR_5
+	dta b($eb), b($fb)
+INTERMISSION_COLOR_6
+	dta b($85), b($95)
+INTERMISSION_COLOR_7
+	dta b($b5), b($c5)
+INTERMISSION_COLOR_8
+	dta b($b9), b($c9)
 
 ; Sprites
 .align		$1000

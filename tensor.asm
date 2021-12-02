@@ -2597,17 +2597,18 @@ init_sprites
 		lda #0
 		sta SIZEP0
 
-		lda #C_PLAYR
+		ldy ntsc
+		lda PLAYER_COLOR,y
 		sta PCOLR3
 		sta PCOLR2
 		
-		lda #C_WALL2
+		lda WALL_1_COLOR,y
 		sta CLR0
 		lda amygdala_color
 		sta CLR1
-		lda #C_OBSTA
+		lda OBSTACLE_COLOR,y
 		sta CLR2
-		lda #C_WALL1
+		lda WALL_2_COLOR,y
 		sta CLR3
 		lda #$00
 		sta CLR4
@@ -3285,6 +3286,14 @@ FINAL_SCREEN_COLOR_2
 	dta b($36), b($46) ; serce
 FINAL_SCREEN_COLOR_3
 	dta b($fa), b($2b) ; kielich
+PLAYER_COLOR
+	dta b(C_PLAYR), b(C_PLAYR+$10)
+WALL_1_COLOR
+	dta b(C_WALL2), b(C_WALL2+$10) ; Margin color depends on this guy :-/
+OBSTACLE_COLOR
+	dta b(C_OBSTA), b(C_OBSTA+$10)
+WALL_2_COLOR
+	dta b(C_WALL1), b(C_WALL1+$10)
 
 ; Sprites
 .align		$1000

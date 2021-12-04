@@ -2382,33 +2382,9 @@ rotate_clockwise
 		and #%00000011
 		sta direction
 @		jsr set_font
-.rept MAPSIZE, #, SCWIDTH-MARGIN-1-#
-		lda SCRMEM+SCWIDTH*:1+4
-		sta SCRMEM_BUFFER+SCWIDTH*0+:2
-		lda SCRMEM+SCWIDTH*:1+5
-		sta SCRMEM_BUFFER+SCWIDTH*1+:2
-		lda SCRMEM+SCWIDTH*:1+6
-		sta SCRMEM_BUFFER+SCWIDTH*2+:2
-		lda SCRMEM+SCWIDTH*:1+7
-		sta SCRMEM_BUFFER+SCWIDTH*3+:2
-		lda SCRMEM+SCWIDTH*:1+8
-		sta SCRMEM_BUFFER+SCWIDTH*4+:2
-		lda SCRMEM+SCWIDTH*:1+9
-		sta SCRMEM_BUFFER+SCWIDTH*5+:2
-		lda SCRMEM+SCWIDTH*:1+10
-		sta SCRMEM_BUFFER+SCWIDTH*6+:2
-		lda SCRMEM+SCWIDTH*:1+11
-		sta SCRMEM_BUFFER+SCWIDTH*7+:2
-		lda SCRMEM+SCWIDTH*:1+12
-		sta SCRMEM_BUFFER+SCWIDTH*8+:2
-		lda SCRMEM+SCWIDTH*:1+13
-		sta SCRMEM_BUFFER+SCWIDTH*9+:2
-		lda SCRMEM+SCWIDTH*:1+14
-		sta SCRMEM_BUFFER+SCWIDTH*10+:2
-		lda SCRMEM+SCWIDTH*:1+15
-		sta SCRMEM_BUFFER+SCWIDTH*11+:2
-.endr
-		jsr show_backup_buffer
+
+		jsr remember_original_map
+
 		rts
 		
 rotate_counter_clockwise
@@ -2430,63 +2406,54 @@ rotate_counter_clockwise
 		sta credits_timer
 		mwy #LEFT_FRAME_0_FROM ptr0
 		mwy #LEFT_FRAME_0_TO ptr1
-		mwy #LEFT_FRAME_0_EMPTY ptr2
 		jsr do_rotation_step
 
 		lda #0
 		sta credits_timer
 		mwy #LEFT_FRAME_1_FROM ptr0
 		mwy #LEFT_FRAME_1_TO ptr1
-		mwy #LEFT_FRAME_1_EMPTY ptr2
 		jsr do_rotation_step
 
 		lda #0
 		sta credits_timer
 		mwy #LEFT_FRAME_2_FROM ptr0
 		mwy #LEFT_FRAME_2_TO ptr1
-		mwy #LEFT_FRAME_2_EMPTY ptr2
 		jsr do_rotation_step
 
 		lda #0
 		sta credits_timer
 		mwy #LEFT_FRAME_3_FROM ptr0
 		mwy #LEFT_FRAME_3_TO ptr1
-		mwy #LEFT_FRAME_3_EMPTY ptr2
 		jsr do_rotation_step
 
 		lda #0
 		sta credits_timer
 		mwy #LEFT_FRAME_4_FROM ptr0
 		mwy #LEFT_FRAME_4_TO ptr1
-		mwy #LEFT_FRAME_4_EMPTY ptr2
 		jsr do_rotation_step
 
 		lda #0
 		sta credits_timer
 		mwy #LEFT_FRAME_5_FROM ptr0
 		mwy #LEFT_FRAME_5_TO ptr1
-		mwy #LEFT_FRAME_5_EMPTY ptr2
 		jsr do_rotation_step
 
 		lda #0
 		sta credits_timer
 		mwy #LEFT_FRAME_6_FROM ptr0
 		mwy #LEFT_FRAME_6_TO ptr1
-		mwy #LEFT_FRAME_6_EMPTY ptr2
 		jsr do_rotation_step
 
 		lda #0
 		sta credits_timer
 		mwy #LEFT_FRAME_7_FROM ptr0
 		mwy #LEFT_FRAME_7_TO ptr1
-		mwy #LEFT_FRAME_7_EMPTY ptr2
 		jsr do_rotation_step
 
 		lda #0
 		sta credits_timer
 		mwy #LEFT_FRAME_8_FROM ptr0
 		mwy #LEFT_FRAME_8_TO ptr1
-		mwy #LEFT_FRAME_8_EMPTY ptr2
 		jsr do_rotation_step
 
 		rts
@@ -2509,7 +2476,7 @@ RCC_2	ldy credits_timer
 		jmp RCC_2
 
 RCC_1	jsr show_backup_buffer
-:7	 	jsr synchro
+:40	 	jsr synchro
 		rts
 
 show_backup_buffer

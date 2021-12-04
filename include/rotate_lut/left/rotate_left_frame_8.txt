@@ -289,6 +289,3 @@ LEFT_FRAME_8_TO
     dta b(233)
     dta b(234)
     dta b(235)
-    dta($ff)
-LEFT_FRAME_8_EMPTY
-    dta($ff)

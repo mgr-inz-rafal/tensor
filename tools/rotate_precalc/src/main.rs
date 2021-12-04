@@ -51,10 +51,7 @@ fn rotate(map: &[&str], angle: f64, rotation: &mut RotateDef) -> Vec<String> {
                         + MID_POINT;
 
                     get(&map, rx, ry).map_or_else(
-                        || {
-                            rotation.empty.push((x as u8, y as u8));
-                            ' '
-                        },
+                        || ' ',
                         |new_tile| {
                             rotation.from.push((rx.round() as u8, ry.round() as u8));
                             rotation.to.push((x as u8, y as u8));
@@ -72,14 +69,13 @@ fn rotate(map: &[&str], angle: f64, rotation: &mut RotateDef) -> Vec<String> {
 struct RotateDef {
     from: Vec<(u8, u8)>,
     to: Vec<(u8, u8)>,
-    empty: Vec<(u8, u8)>,
 }
 
 fn to_offset(x: &u8, y: &u8) -> u8 {
     y * 20 + x + 4
 }
 
-fn write_data<'a, I>(file: &mut File, header: &str, data: I, index: usize)
+fn write_data<'a, I>(file: &mut File, header: &str, data: I, index: usize, terminator: bool)
 where
     I: Iterator<Item = &'a (u8, u8)>,
 {
@@ -89,7 +85,9 @@ where
         file.write_all(format!("    dta b({})\n", to_offset(x, y)).as_bytes())
             .unwrap()
     });
-    file.write_all("    dta($ff)\n".as_bytes()).unwrap();
+    if terminator {
+        file.write_all("    dta($ff)\n".as_bytes()).unwrap()
+    };
 }
 
 fn main() {
@@ -150,9 +148,8 @@ fn main() {
 
     rotations.iter().enumerate().for_each(|(index, rotation)| {
         let mut file = File::create(format!("rotate_left_frame_{}.txt", index)).unwrap();
-        write_data(&mut file, "FROM", rotation.from.iter(), index);
-        write_data(&mut file, "TO", rotation.to.iter(), index);
-        write_data(&mut file, "EMPTY", rotation.empty.iter(), index);
+        write_data(&mut file, "FROM", rotation.from.iter(), index, true);
+        write_data(&mut file, "TO", rotation.to.iter(), index, false);
     });
 }
 

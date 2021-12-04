@@ -3501,6 +3501,13 @@ FOURTY_EMPTY_CHARS
 				rts
 .endp
 
+ROTATE_LUT_BEGIN
+.rept 9 #
+	icl "include\rotate_lut\left\rotate_left_frame_:1.txt"
+.endr
+ROTATE_LUT_END
+ROTATE_LUT_SIZE	equ ROTATE_LUT_END-ROTATE_LUT_BEGIN
+
 	org curmap
 	dta a(MAP_BUFFER_START)
 	org curmapname

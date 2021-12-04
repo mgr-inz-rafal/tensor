@@ -2509,7 +2509,7 @@ RCC_2	ldy credits_timer
 		jmp RCC_2
 
 RCC_1	jsr show_backup_buffer
-:3	 	jsr synchro
+:7	 	jsr synchro
 		rts
 
 show_backup_buffer
@@ -2531,13 +2531,19 @@ remember_original_map
 		rts
 
 clear_backup_buffer
-		ldy #SCWIDTH*MAPSIZE-1
+		mwx #SCRMEM_BUFFER ptr3
+		ldx #MAPSIZE
+CBB_2	ldy #MAPSIZE+3
 @		lda #0
-		sta SCRMEM_BUFFER,y
+		sta (ptr3),y
 		dey
-		cpy #0-1
+		cpy #3
 		bne @-
-		rts
+		dex
+		beq CBB_1
+		adw ptr3 #SCWIDTH
+		jmp CBB_2
+CBB_1	rts
 		
 stick_right
 		lda mvstate
@@ -3632,3 +3638,4 @@ scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00
 ; - OBSOLETE:	Integrate next raster optimization from Vidol
 ; - OBSOLETE:	Check player gravity only after movement
 ; - OBSOLETE:	Integrate logo with OS from Vidol
+; - 			Remove $(ff) from _TO in rotation LUT

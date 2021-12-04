@@ -2440,6 +2440,47 @@ rotate_clockwise
 		jsr do_rotation_step
 
 		rts
+
+LEFT_ROTATION_TABLE_FROM
+		dta a(LEFT_FRAME_0_FROM)
+		dta a(LEFT_FRAME_1_FROM)
+		dta a(LEFT_FRAME_2_FROM)
+		dta a(LEFT_FRAME_3_FROM)
+		dta a(LEFT_FRAME_4_FROM)
+		dta a(LEFT_FRAME_5_FROM)
+		dta a(LEFT_FRAME_6_FROM)
+		dta a(LEFT_FRAME_7_FROM)
+		dta a(LEFT_FRAME_8_FROM)
+LEFT_ROTATION_TABLE_TO
+		dta a(LEFT_FRAME_0_TO)
+		dta a(LEFT_FRAME_1_TO)
+		dta a(LEFT_FRAME_2_TO)
+		dta a(LEFT_FRAME_3_TO)
+		dta a(LEFT_FRAME_4_TO)
+		dta a(LEFT_FRAME_5_TO)
+		dta a(LEFT_FRAME_6_TO)
+		dta a(LEFT_FRAME_7_TO)
+		dta a(LEFT_FRAME_8_TO)
+RIGHT_ROTATION_TABLE_FROM
+		dta a(RIGHT_FRAME_0_FROM)
+		dta a(RIGHT_FRAME_1_FROM)
+		dta a(RIGHT_FRAME_2_FROM)
+		dta a(RIGHT_FRAME_3_FROM)
+		dta a(RIGHT_FRAME_4_FROM)
+		dta a(RIGHT_FRAME_5_FROM)
+		dta a(RIGHT_FRAME_6_FROM)
+		dta a(RIGHT_FRAME_7_FROM)
+		dta a(RIGHT_FRAME_8_FROM)
+RIGHT_ROTATION_TABLE_TO
+		dta a(RIGHT_FRAME_0_TO)
+		dta a(RIGHT_FRAME_1_TO)
+		dta a(RIGHT_FRAME_2_TO)
+		dta a(RIGHT_FRAME_3_TO)
+		dta a(RIGHT_FRAME_4_TO)
+		dta a(RIGHT_FRAME_5_TO)
+		dta a(RIGHT_FRAME_6_TO)
+		dta a(RIGHT_FRAME_7_TO)
+		dta a(RIGHT_FRAME_8_TO)
 		
 rotate_counter_clockwise
 		lda rotation_warmup
@@ -2456,61 +2497,26 @@ rotate_counter_clockwise
 
 		jsr remember_original_map
 
-		lda #0
-		sta credits_timer
-		mwy #LEFT_FRAME_0_FROM ptr0
-		mwy #LEFT_FRAME_0_TO ptr1
+		ldx #9
+		mwy #LEFT_ROTATION_TABLE_FROM ptr2
+		mwy #LEFT_ROTATION_TABLE_TO ptr3
+RCC_6	ldy #0
+		sty credits_timer
+		mwa (ptr2),y ptr0
+		ldy #0
+		mwa (ptr3),y ptr1
+		txa
+		pha
 		jsr do_rotation_step
+		pla
+		tax
+		dex
+		beq RCC_5
+		adw ptr2 #2
+		adw ptr3 #2
+		jmp RCC_6
 
-		lda #0
-		sta credits_timer
-		mwy #LEFT_FRAME_1_FROM ptr0
-		mwy #LEFT_FRAME_1_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #LEFT_FRAME_2_FROM ptr0
-		mwy #LEFT_FRAME_2_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #LEFT_FRAME_3_FROM ptr0
-		mwy #LEFT_FRAME_3_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #LEFT_FRAME_4_FROM ptr0
-		mwy #LEFT_FRAME_4_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #LEFT_FRAME_5_FROM ptr0
-		mwy #LEFT_FRAME_5_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #LEFT_FRAME_6_FROM ptr0
-		mwy #LEFT_FRAME_6_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #LEFT_FRAME_7_FROM ptr0
-		mwy #LEFT_FRAME_7_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #LEFT_FRAME_8_FROM ptr0
-		mwy #LEFT_FRAME_8_TO ptr1
-		jsr do_rotation_step
-
-		rts
+RCC_5	rts
 
 do_rotation_step
 		jsr clear_backup_buffer
@@ -2552,17 +2558,17 @@ remember_original_map
 		rts
 
 clear_backup_buffer
-		mwx #SCRMEM_BUFFER ptr3
+		mwx #SCRMEM_BUFFER movable
 		ldx #MAPSIZE
 CBB_2	ldy #MAPSIZE+3
 @		lda #0
-		sta (ptr3),y
+		sta (movable),y
 		dey
 		cpy #3
 		bne @-
 		dex
 		beq CBB_1
-		adw ptr3 #SCWIDTH
+		adw movable #SCWIDTH
 		jmp CBB_2
 CBB_1	rts
 		

@@ -2368,16 +2368,7 @@ init_game
 		enable_antic
 		rts
 
-rotate_clockwise
-		jsr os_gone
-		jsr os_back
-		lda rotation_warmup
-		cmp #0
-		beq @+
-		rts
-@		mva #ROT_CTR rotation_warmup
-
-		dec direction
+rotate_internal_1
 		lda direction
 		and #%00000011
 		sta direction
@@ -2386,9 +2377,10 @@ rotate_clockwise
 		jsr remember_original_map
 
 		ldx #9
-		mwy #RIGHT_ROTATION_TABLE_FROM ptr2
-		mwy #RIGHT_ROTATION_TABLE_TO ptr3
-RC_6	ldy #0
+		rts
+
+rotate_internal_2
+RI_1	ldy #0
 		sty credits_timer
 		mwa (ptr2),y ptr0
 		ldy #0
@@ -2399,12 +2391,25 @@ RC_6	ldy #0
 		pla
 		tax
 		dex
-		beq RC_5
+		beq RI_2
 		adw ptr2 #2
 		adw ptr3 #2
-		jmp RC_6
+		jmp RI_1
+RI_2	rts
 
-RC_5	rts
+rotate_clockwise
+		lda rotation_warmup
+		cmp #0
+		beq @+
+		rts
+@		mva #ROT_CTR rotation_warmup
+
+		dec direction
+		jsr rotate_internal_1
+		mwy #RIGHT_ROTATION_TABLE_FROM ptr2
+		mwy #RIGHT_ROTATION_TABLE_TO ptr3
+		jsr rotate_internal_2
+		rts
 
 LEFT_ROTATION_TABLE_FROM
 		dta a(LEFT_FRAME_0_FROM)
@@ -2453,35 +2458,13 @@ rotate_counter_clockwise
 		beq @+
 		rts
 @		mva #ROT_CTR rotation_warmup
-		
-		inc direction
-		lda direction
-		and #%00000011
-		sta direction
-@		jsr set_font
 
-		jsr remember_original_map
-
-		ldx #9
+		INC direction
+		jsr rotate_internal_1
 		mwy #LEFT_ROTATION_TABLE_FROM ptr2
 		mwy #LEFT_ROTATION_TABLE_TO ptr3
-RCC_6	ldy #0
-		sty credits_timer
-		mwa (ptr2),y ptr0
-		ldy #0
-		mwa (ptr3),y ptr1
-		txa
-		pha
-		jsr do_rotation_step
-		pla
-		tax
-		dex
-		beq RCC_5
-		adw ptr2 #2
-		adw ptr3 #2
-		jmp RCC_6
-
-RCC_5	rts
+		jsr rotate_internal_2
+		rts
 
 do_rotation_step
 		jsr clear_backup_buffer

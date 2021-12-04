@@ -653,6 +653,7 @@ main
 ////////////////////
 
 	jsr detect_ntsc
+	jsr clear_pmg
 	lda #6
 	sta ntsc_music_conductor
 	lda #1
@@ -3122,6 +3123,17 @@ sync2 	txa
 dn_1  	cli
 		rts
 
+clear_pmg
+		mwa #pmg_m0 ptr0
+		ldy #0
+		lda #0
+CP_1	sta (ptr0),y
+		inw ptr0
+		#if .word ptr0 = #pmg_end
+			rts
+		#end
+		jmp CP_1
+
 paint_title_text
 		ldy #0
 @		lda (ptr0),y
@@ -3357,21 +3369,23 @@ WALL_2_COLOR
 ; Sprites
 .align		$1000
 pmg_base
-:1024 dta b(0)
 pmg_m0			equ pmg_base+$180
 pmg_p0			equ pmg_base+$200
 pmg_p1			equ pmg_base+$280
 pmg_p2			equ pmg_base+$300
 pmg_p3			equ pmg_base+$380
+pmg_end			equ pmg_base+$400
 
-; TODO[RC]: Do this w/o dta b(0)
+	org pmg_end
+
 SCRMEM
-:SCWIDTH*MAPSIZE	dta b(0)
-SCRMEM_BUFFER
-:SCWIDTH*MAPSIZE	dta b(0)
-SCRMEM_BACKUP
-:SCWIDTH*MAPSIZE	dta b(0)
+SCRMEM_BUFFER equ SCRMEM+SCWIDTH*MAPSIZE
+SCRMEM_BACKUP equ SCRMEM_BUFFER+SCWIDTH*MAPSIZE
+SCRMEM_END equ SCRMEM_BACKUP+SCWIDTH*MAPSIZE
 
+; TODO[RC]: Here we can also fit some data (before font slots)
+
+	org SCRMEM_END
 .align	$400
 FONT_SLOT_1
 FONT_SLOT_2 equ FONT_SLOT_1+1024

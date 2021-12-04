@@ -1,4 +1,4 @@
-use std::{fmt::Display, fs::File, io::Write, os::unix::prelude::FileExt, thread, time::Duration};
+use std::{fmt::Display, fs::File, io::Write, thread, time::Duration};
 
 use crossterm::{cursor, style, terminal, ExecutableCommand};
 
@@ -71,19 +71,30 @@ struct RotateDef {
     empty: Vec<(i8, i8)>,
 }
 
+fn write_data<'a, I: Iterator<Item = &'a (i8, i8)>>(file: &mut File, header: &str, data: I) {
+    file.write_all(
+        format!("---------------------- {} ----------------------\n", header).as_bytes(),
+    )
+    .unwrap();
+    data.for_each(|(x, y)| {
+        file.write_all(format!("    dta b({}), b({})\n", x, y).as_bytes())
+            .unwrap()
+    });
+}
+
 fn main() {
-    let m01 = "############";
-    let m02 = "#        # #";
-    let m03 = "#       #  #";
-    let m04 = "#      #   #";
-    let m05 = "#     #    #";
-    let m06 = "######     #";
-    let m07 = "#    #     #";
-    let m08 = "#    #     #";
-    let m09 = "#    #     #";
-    let m10 = "#          #";
-    let m11 = "#          #";
-    let m12 = "############";
+    // let m01 = "############";
+    // let m02 = "#        # #";
+    // let m03 = "#       #  #";
+    // let m04 = "#      #   #";
+    // let m05 = "#     #    #";
+    // let m06 = "######     #";
+    // let m07 = "#    #     #";
+    // let m08 = "#    #     #";
+    // let m09 = "#    #     #";
+    // let m10 = "#          #";
+    // let m11 = "#          #";
+    // let m12 = "############";
 
     let m01 = "####        ";
     let m02 = "#  #        ";
@@ -102,7 +113,6 @@ fn main() {
 
     let mut rotations = vec![];
 
-    let mut current_frame = 0;
     for i in (10..=90).step_by(10) {
         let mut stdout = std::io::stdout();
         stdout
@@ -116,7 +126,6 @@ fn main() {
             .unwrap();
 
         let mut rotation = RotateDef::default();
-        current_frame += 1;
 
         let rotated_map = rotate(&map, i as f64, &mut rotation);
         rotations.push(rotation);
@@ -133,28 +142,8 @@ fn main() {
 
     rotations.iter().enumerate().for_each(|(index, rotation)| {
         let mut file = File::create(format!("rotate_left_frame_{}.txt", index)).unwrap();
-        file.write_all("---------------------- from ----------------------\n".as_bytes())
-            .unwrap();
-        rotation.from.iter().for_each(|(x, y)| {
-            file.write_all(format!("    dta b({}), b({})\n", x, y).as_bytes())
-                .unwrap()
-        });
-        file.write_all("----------------------  to  ----------------------\n".as_bytes())
-            .unwrap();
-        rotation.to.iter().for_each(|(x, y)| {
-            file.write_all(format!("    dta b({}), b({})\n", x, y).as_bytes())
-                .unwrap()
-        });
-        file.write_all("---------------------- empty----------------------\n".as_bytes())
-            .unwrap();
-        rotation.empty.iter().for_each(|(x, y)| {
-            file.write_all(format!("    dta b({}), b({})\n", x, y).as_bytes())
-                .unwrap()
-        });
+        write_data(&mut file, "from", rotation.from.iter());
+        write_data(&mut file, "to", rotation.to.iter());
+        write_data(&mut file, "empty", rotation.empty.iter());
     });
-
-    let mut file = File::create("rotate_left_lut.txt").unwrap();
-
-    file.write_all(format!("\nframe {}\n", current_frame).as_bytes())
-        .unwrap();
 }

@@ -2411,47 +2411,6 @@ rotate_clockwise
 		mwy #RIGHT_ROTATION_TABLE_TO ptr3
 		jsr rotate_internal_2
 		rts
-
-LEFT_ROTATION_TABLE_FROM
-		dta a(LEFT_FRAME_0_FROM)
-		dta a(LEFT_FRAME_1_FROM)
-		dta a(LEFT_FRAME_2_FROM)
-		dta a(LEFT_FRAME_3_FROM)
-		dta a(LEFT_FRAME_4_FROM)
-		dta a(LEFT_FRAME_5_FROM)
-		dta a(LEFT_FRAME_6_FROM)
-		dta a(LEFT_FRAME_7_FROM)
-		dta a(LEFT_FRAME_8_FROM)
-LEFT_ROTATION_TABLE_TO
-		dta a(LEFT_FRAME_0_TO)
-		dta a(LEFT_FRAME_1_TO)
-		dta a(LEFT_FRAME_2_TO)
-		dta a(LEFT_FRAME_3_TO)
-		dta a(LEFT_FRAME_4_TO)
-		dta a(LEFT_FRAME_5_TO)
-		dta a(LEFT_FRAME_6_TO)
-		dta a(LEFT_FRAME_7_TO)
-		dta a(LEFT_FRAME_8_TO)
-RIGHT_ROTATION_TABLE_FROM
-		dta a(RIGHT_FRAME_0_FROM)
-		dta a(RIGHT_FRAME_1_FROM)
-		dta a(RIGHT_FRAME_2_FROM)
-		dta a(RIGHT_FRAME_3_FROM)
-		dta a(RIGHT_FRAME_4_FROM)
-		dta a(RIGHT_FRAME_5_FROM)
-		dta a(RIGHT_FRAME_6_FROM)
-		dta a(RIGHT_FRAME_7_FROM)
-		dta a(RIGHT_FRAME_8_FROM)
-RIGHT_ROTATION_TABLE_TO
-		dta a(RIGHT_FRAME_0_TO)
-		dta a(RIGHT_FRAME_1_TO)
-		dta a(RIGHT_FRAME_2_TO)
-		dta a(RIGHT_FRAME_3_TO)
-		dta a(RIGHT_FRAME_4_TO)
-		dta a(RIGHT_FRAME_5_TO)
-		dta a(RIGHT_FRAME_6_TO)
-		dta a(RIGHT_FRAME_7_TO)
-		dta a(RIGHT_FRAME_8_TO)
 		
 rotate_counter_clockwise
 		lda rotation_warmup
@@ -3369,6 +3328,47 @@ WALL_2_COLOR
 ; Sprites
 .align		$1000
 pmg_base
+LEFT_ROTATION_TABLE_FROM
+		dta a(LEFT_FRAME_0_FROM)
+		dta a(LEFT_FRAME_1_FROM)
+		dta a(LEFT_FRAME_2_FROM)
+		dta a(LEFT_FRAME_3_FROM)
+		dta a(LEFT_FRAME_4_FROM)
+		dta a(LEFT_FRAME_5_FROM)
+		dta a(LEFT_FRAME_6_FROM)
+		dta a(LEFT_FRAME_7_FROM)
+		dta a(LEFT_FRAME_8_FROM)
+LEFT_ROTATION_TABLE_TO
+		dta a(LEFT_FRAME_0_TO)
+		dta a(LEFT_FRAME_1_TO)
+		dta a(LEFT_FRAME_2_TO)
+		dta a(LEFT_FRAME_3_TO)
+		dta a(LEFT_FRAME_4_TO)
+		dta a(LEFT_FRAME_5_TO)
+		dta a(LEFT_FRAME_6_TO)
+		dta a(LEFT_FRAME_7_TO)
+		dta a(LEFT_FRAME_8_TO)
+RIGHT_ROTATION_TABLE_FROM
+		dta a(RIGHT_FRAME_0_FROM)
+		dta a(RIGHT_FRAME_1_FROM)
+		dta a(RIGHT_FRAME_2_FROM)
+		dta a(RIGHT_FRAME_3_FROM)
+		dta a(RIGHT_FRAME_4_FROM)
+		dta a(RIGHT_FRAME_5_FROM)
+		dta a(RIGHT_FRAME_6_FROM)
+		dta a(RIGHT_FRAME_7_FROM)
+		dta a(RIGHT_FRAME_8_FROM)
+RIGHT_ROTATION_TABLE_TO
+		dta a(RIGHT_FRAME_0_TO)
+		dta a(RIGHT_FRAME_1_TO)
+		dta a(RIGHT_FRAME_2_TO)
+		dta a(RIGHT_FRAME_3_TO)
+		dta a(RIGHT_FRAME_4_TO)
+		dta a(RIGHT_FRAME_5_TO)
+		dta a(RIGHT_FRAME_6_TO)
+		dta a(RIGHT_FRAME_7_TO)
+		dta a(RIGHT_FRAME_8_TO)
+; TODO[RC]: Still some place available here
 pmg_m0			equ pmg_base+$180
 pmg_p0			equ pmg_base+$200
 pmg_p1			equ pmg_base+$280

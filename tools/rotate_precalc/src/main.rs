@@ -75,11 +75,17 @@ fn to_offset(x: &u8, y: &u8) -> u8 {
     y * 20 + x + 4
 }
 
-fn write_data<'a, I>(file: &mut File, header: &str, data: I, index: usize, terminator: bool)
-where
+fn write_data<'a, I>(
+    file: &mut File,
+    header: &str,
+    data: I,
+    index: usize,
+    terminator: bool,
+    direction: &str,
+) where
     I: Iterator<Item = &'a (u8, u8)>,
 {
-    file.write_all(format!("LEFT_FRAME_{}_{}\n", index, header).as_bytes())
+    file.write_all(format!("{}_FRAME_{}_{}\n", direction.to_uppercase(), index, header).as_bytes())
         .unwrap();
     data.for_each(|(x, y)| {
         file.write_all(format!("    dta b({})\n", to_offset(x, y)).as_bytes())
@@ -119,38 +125,95 @@ fn main() {
 
     let map = vec![m01, m02, m03, m04, m05, m06, m07, m08, m09, m10, m11, m12];
 
-    let mut rotations = vec![];
+    // Counter clockwise
+    {
+        let mut rotations = vec![];
 
-    for i in (10..=90).step_by(10) {
-        let mut stdout = std::io::stdout();
-        stdout
-            .execute(terminal::Clear(terminal::ClearType::All))
-            .unwrap()
-            .execute(cursor::MoveTo(20, 0))
-            .unwrap()
-            .execute(style::Print(format!("angle: {}", i)))
-            .unwrap();
+        for i in (10..=90).step_by(10) {
+            let mut stdout = std::io::stdout();
+            stdout
+                .execute(terminal::Clear(terminal::ClearType::All))
+                .unwrap()
+                .execute(cursor::MoveTo(20, 0))
+                .unwrap()
+                .execute(style::Print(format!("angle: {}", i)))
+                .unwrap();
 
-        let mut rotation = RotateDef::default();
+            let mut rotation = RotateDef::default();
 
-        let rotated_map = rotate(&map, i as f64, &mut rotation);
-        rotations.push(rotation);
+            let rotated_map = rotate(&map, i as f64, &mut rotation);
+            rotations.push(rotation);
 
-        draw(map.iter(), 0);
-        draw(rotated_map.into_iter(), 20);
+            draw(map.iter(), 0);
+            draw(rotated_map.into_iter(), 20);
 
-        if i == 90 || i == 180 || i == 360 || i == 270 {
-            //thread::sleep(Duration::from_secs(5));
-        } else {
-            thread::sleep(Duration::from_millis(1000 / 50));
+            if i == 90 || i == 180 || i == 360 || i == 270 {
+                //thread::sleep(Duration::from_secs(5));
+            } else {
+                //thread::sleep(Duration::from_millis(1000));
+            }
         }
+
+        rotations.iter().enumerate().for_each(|(index, rotation)| {
+            let direction = "left";
+            let mut file =
+                File::create(format!("rotate_{}_frame_{}.txt", direction, index)).unwrap();
+            write_data(
+                &mut file,
+                "FROM",
+                rotation.from.iter(),
+                index,
+                true,
+                direction,
+            );
+            write_data(&mut file, "TO", rotation.to.iter(), index, false, direction);
+        });
     }
 
-    rotations.iter().enumerate().for_each(|(index, rotation)| {
-        let mut file = File::create(format!("rotate_left_frame_{}.txt", index)).unwrap();
-        write_data(&mut file, "FROM", rotation.from.iter(), index, true);
-        write_data(&mut file, "TO", rotation.to.iter(), index, false);
-    });
+    // Clockwise
+    {
+        let mut rotations = vec![];
+
+        for i in (-90..=-10).rev().step_by(10) {
+            let mut stdout = std::io::stdout();
+            stdout
+                .execute(terminal::Clear(terminal::ClearType::All))
+                .unwrap()
+                .execute(cursor::MoveTo(20, 0))
+                .unwrap()
+                .execute(style::Print(format!("angle: {}", i)))
+                .unwrap();
+
+            let mut rotation = RotateDef::default();
+
+            let rotated_map = rotate(&map, i as f64, &mut rotation);
+            rotations.push(rotation);
+
+            draw(map.iter(), 0);
+            draw(rotated_map.into_iter(), 20);
+
+            if i == 90 || i == 180 || i == 360 || i == 270 {
+                //thread::sleep(Duration::from_secs(5));
+            } else {
+                //thread::sleep(Duration::from_millis(1000));
+            }
+        }
+
+        rotations.iter().enumerate().for_each(|(index, rotation)| {
+            let direction = "right";
+            let mut file =
+                File::create(format!("rotate_{}_frame_{}.txt", direction, index)).unwrap();
+            write_data(
+                &mut file,
+                "FROM",
+                rotation.from.iter(),
+                index,
+                true,
+                direction,
+            );
+            write_data(&mut file, "TO", rotation.to.iter(), index, false, direction);
+        });
+    }
 }
 
 #[cfg(test)]

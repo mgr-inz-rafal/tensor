@@ -2385,6 +2385,60 @@ rotate_clockwise
 
 		jsr remember_original_map
 
+		lda #0
+		sta credits_timer
+		mwy #RIGHT_FRAME_0_FROM ptr0
+		mwy #RIGHT_FRAME_0_TO ptr1
+		jsr do_rotation_step
+
+		lda #0
+		sta credits_timer
+		mwy #RIGHT_FRAME_1_FROM ptr0
+		mwy #RIGHT_FRAME_1_TO ptr1
+		jsr do_rotation_step
+
+		lda #0
+		sta credits_timer
+		mwy #RIGHT_FRAME_2_FROM ptr0
+		mwy #RIGHT_FRAME_2_TO ptr1
+		jsr do_rotation_step
+
+		lda #0
+		sta credits_timer
+		mwy #RIGHT_FRAME_3_FROM ptr0
+		mwy #RIGHT_FRAME_3_TO ptr1
+		jsr do_rotation_step
+
+		lda #0
+		sta credits_timer
+		mwy #RIGHT_FRAME_4_FROM ptr0
+		mwy #RIGHT_FRAME_4_TO ptr1
+		jsr do_rotation_step
+
+		lda #0
+		sta credits_timer
+		mwy #RIGHT_FRAME_5_FROM ptr0
+		mwy #RIGHT_FRAME_5_TO ptr1
+		jsr do_rotation_step
+
+		lda #0
+		sta credits_timer
+		mwy #RIGHT_FRAME_6_FROM ptr0
+		mwy #RIGHT_FRAME_6_TO ptr1
+		jsr do_rotation_step
+
+		lda #0
+		sta credits_timer
+		mwy #RIGHT_FRAME_7_FROM ptr0
+		mwy #RIGHT_FRAME_7_TO ptr1
+		jsr do_rotation_step
+
+		lda #0
+		sta credits_timer
+		mwy #RIGHT_FRAME_8_FROM ptr0
+		mwy #RIGHT_FRAME_8_TO ptr1
+		jsr do_rotation_step
+
 		rts
 		
 rotate_counter_clockwise
@@ -2476,7 +2530,7 @@ RCC_2	ldy credits_timer
 		jmp RCC_2
 
 RCC_1	jsr show_backup_buffer
-:40	 	jsr synchro
+:6	 	jsr synchro
 		rts
 
 show_backup_buffer
@@ -3560,6 +3614,9 @@ FOURTY_EMPTY_CHARS
 ROTATE_LUT_BEGIN
 .rept 9 #
 	icl "include\rotate_lut\left\rotate_left_frame_:1.txt"
+.endr
+.rept 9 #
+	icl "include\rotate_lut\right\rotate_right_frame_:1.txt"
 .endr
 ROTATE_LUT_END
 ROTATE_LUT_SIZE	equ ROTATE_LUT_END-ROTATE_LUT_BEGIN

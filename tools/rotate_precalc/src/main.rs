@@ -1,4 +1,4 @@
-use std::{fmt::Display, fs::File, io::Write, thread, time::Duration};
+use std::{fmt::Display, fs::File, io::Write};
 
 use crossterm::{cursor, style, terminal, ExecutableCommand};
 
@@ -96,6 +96,51 @@ fn write_data<'a, I>(
     };
 }
 
+fn do_precalc<I>(map: &[&str], range: I, direction: &str)
+where
+    I: Iterator<Item = i32>,
+{
+    let mut rotations = vec![];
+
+    for i in range.step_by(10) {
+        let mut stdout = std::io::stdout();
+        stdout
+            .execute(terminal::Clear(terminal::ClearType::All))
+            .unwrap()
+            .execute(cursor::MoveTo(20, 0))
+            .unwrap()
+            .execute(style::Print(format!("angle: {}", i)))
+            .unwrap();
+
+        let mut rotation = RotateDef::default();
+
+        let rotated_map = rotate(&map, i as f64, &mut rotation);
+        rotations.push(rotation);
+
+        draw(map.iter(), 0);
+        draw(rotated_map.into_iter(), 20);
+
+        // if i == 90 || i == 180 || i == 360 || i == 270 {
+        //     thread::sleep(Duration::from_secs(5));
+        // } else {
+        //     thread::sleep(Duration::from_millis(1000));
+        // }
+    }
+
+    rotations.iter().enumerate().for_each(|(index, rotation)| {
+        let mut file = File::create(format!("rotate_{}_frame_{}.txt", direction, index)).unwrap();
+        write_data(
+            &mut file,
+            "FROM",
+            rotation.from.iter(),
+            index,
+            true,
+            direction,
+        );
+        write_data(&mut file, "TO", rotation.to.iter(), index, false, direction);
+    });
+}
+
 fn main() {
     // let m01 = "############";
     // let m02 = "#        # #";
@@ -125,95 +170,8 @@ fn main() {
 
     let map = vec![m01, m02, m03, m04, m05, m06, m07, m08, m09, m10, m11, m12];
 
-    // Counter clockwise
-    {
-        let mut rotations = vec![];
-
-        for i in (10..=90).step_by(10) {
-            let mut stdout = std::io::stdout();
-            stdout
-                .execute(terminal::Clear(terminal::ClearType::All))
-                .unwrap()
-                .execute(cursor::MoveTo(20, 0))
-                .unwrap()
-                .execute(style::Print(format!("angle: {}", i)))
-                .unwrap();
-
-            let mut rotation = RotateDef::default();
-
-            let rotated_map = rotate(&map, i as f64, &mut rotation);
-            rotations.push(rotation);
-
-            draw(map.iter(), 0);
-            draw(rotated_map.into_iter(), 20);
-
-            if i == 90 || i == 180 || i == 360 || i == 270 {
-                //thread::sleep(Duration::from_secs(5));
-            } else {
-                //thread::sleep(Duration::from_millis(1000));
-            }
-        }
-
-        rotations.iter().enumerate().for_each(|(index, rotation)| {
-            let direction = "left";
-            let mut file =
-                File::create(format!("rotate_{}_frame_{}.txt", direction, index)).unwrap();
-            write_data(
-                &mut file,
-                "FROM",
-                rotation.from.iter(),
-                index,
-                true,
-                direction,
-            );
-            write_data(&mut file, "TO", rotation.to.iter(), index, false, direction);
-        });
-    }
-
-    // Clockwise
-    {
-        let mut rotations = vec![];
-
-        for i in (-90..=-10).rev().step_by(10) {
-            let mut stdout = std::io::stdout();
-            stdout
-                .execute(terminal::Clear(terminal::ClearType::All))
-                .unwrap()
-                .execute(cursor::MoveTo(20, 0))
-                .unwrap()
-                .execute(style::Print(format!("angle: {}", i)))
-                .unwrap();
-
-            let mut rotation = RotateDef::default();
-
-            let rotated_map = rotate(&map, i as f64, &mut rotation);
-            rotations.push(rotation);
-
-            draw(map.iter(), 0);
-            draw(rotated_map.into_iter(), 20);
-
-            if i == 90 || i == 180 || i == 360 || i == 270 {
-                //thread::sleep(Duration::from_secs(5));
-            } else {
-                //thread::sleep(Duration::from_millis(1000));
-            }
-        }
-
-        rotations.iter().enumerate().for_each(|(index, rotation)| {
-            let direction = "right";
-            let mut file =
-                File::create(format!("rotate_{}_frame_{}.txt", direction, index)).unwrap();
-            write_data(
-                &mut file,
-                "FROM",
-                rotation.from.iter(),
-                index,
-                true,
-                direction,
-            );
-            write_data(&mut file, "TO", rotation.to.iter(), index, false, direction);
-        });
-    }
+    do_precalc(&map, 10..=90, "left");
+    do_precalc(&map, (-90..=-10).rev(), "right");
 }
 
 #[cfg(test)]

@@ -2385,61 +2385,26 @@ rotate_clockwise
 
 		jsr remember_original_map
 
-		lda #0
-		sta credits_timer
-		mwy #RIGHT_FRAME_0_FROM ptr0
-		mwy #RIGHT_FRAME_0_TO ptr1
+		ldx #9
+		mwy #RIGHT_ROTATION_TABLE_FROM ptr2
+		mwy #RIGHT_ROTATION_TABLE_TO ptr3
+RC_6	ldy #0
+		sty credits_timer
+		mwa (ptr2),y ptr0
+		ldy #0
+		mwa (ptr3),y ptr1
+		txa
+		pha
 		jsr do_rotation_step
+		pla
+		tax
+		dex
+		beq RC_5
+		adw ptr2 #2
+		adw ptr3 #2
+		jmp RC_6
 
-		lda #0
-		sta credits_timer
-		mwy #RIGHT_FRAME_1_FROM ptr0
-		mwy #RIGHT_FRAME_1_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #RIGHT_FRAME_2_FROM ptr0
-		mwy #RIGHT_FRAME_2_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #RIGHT_FRAME_3_FROM ptr0
-		mwy #RIGHT_FRAME_3_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #RIGHT_FRAME_4_FROM ptr0
-		mwy #RIGHT_FRAME_4_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #RIGHT_FRAME_5_FROM ptr0
-		mwy #RIGHT_FRAME_5_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #RIGHT_FRAME_6_FROM ptr0
-		mwy #RIGHT_FRAME_6_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #RIGHT_FRAME_7_FROM ptr0
-		mwy #RIGHT_FRAME_7_TO ptr1
-		jsr do_rotation_step
-
-		lda #0
-		sta credits_timer
-		mwy #RIGHT_FRAME_8_FROM ptr0
-		mwy #RIGHT_FRAME_8_TO ptr1
-		jsr do_rotation_step
-
-		rts
+RC_5	rts
 
 LEFT_ROTATION_TABLE_FROM
 		dta a(LEFT_FRAME_0_FROM)

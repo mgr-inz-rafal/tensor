@@ -3616,4 +3616,4 @@ scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00
 ; - OBSOLETE:	Integrate next raster optimization from Vidol
 ; - OBSOLETE:	Check player gravity only after movement
 ; - OBSOLETE:	Integrate logo with OS from Vidol
-; - 			Remove $(ff) from _TO in rotation LUT
+; - DONE:		Remove $(ff) from _TO in rotation LUT

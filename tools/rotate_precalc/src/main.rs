@@ -52,12 +52,12 @@ fn rotate(map: &[&str], angle: f64, rotation: &mut RotateDef) -> Vec<String> {
 
                     get(&map, rx, ry).map_or_else(
                         || {
-                            rotation.empty.push((x as i8, y as i8));
+                            rotation.empty.push((x as u8, y as u8));
                             ' '
                         },
                         |new_tile| {
-                            rotation.from.push((rx.round() as i8, ry.round() as i8));
-                            rotation.to.push((x as i8, y as i8));
+                            rotation.from.push((rx.round() as u8, ry.round() as u8));
+                            rotation.to.push((x as u8, y as u8));
 
                             new_tile
                         },
@@ -70,18 +70,23 @@ fn rotate(map: &[&str], angle: f64, rotation: &mut RotateDef) -> Vec<String> {
 
 #[derive(Default)]
 struct RotateDef {
-    from: Vec<(i8, i8)>,
-    to: Vec<(i8, i8)>,
-    empty: Vec<(i8, i8)>,
+    from: Vec<(u8, u8)>,
+    to: Vec<(u8, u8)>,
+    empty: Vec<(u8, u8)>,
 }
 
-fn write_data<'a, I: Iterator<Item = &'a (i8, i8)>>(file: &mut File, header: &str, data: I) {
-    file.write_all(
-        format!("---------------------- {} ----------------------\n", header).as_bytes(),
-    )
-    .unwrap();
+fn to_offset(x: &u8, y: &u8) -> u8 {
+    y * 20 + x + 4
+}
+
+fn write_data<'a, I>(file: &mut File, header: &str, data: I, index: usize)
+where
+    I: Iterator<Item = &'a (u8, u8)>,
+{
+    file.write_all(format!("LEFT_FRAME_{}_{}\n", index, header).as_bytes())
+        .unwrap();
     data.for_each(|(x, y)| {
-        file.write_all(format!("    dta b({}), b({})\n", x, y).as_bytes())
+        file.write_all(format!("    dta b({})\n", to_offset(x, y)).as_bytes())
             .unwrap()
     });
     file.write_all("    dta($ff)\n".as_bytes()).unwrap();
@@ -145,8 +150,25 @@ fn main() {
 
     rotations.iter().enumerate().for_each(|(index, rotation)| {
         let mut file = File::create(format!("rotate_left_frame_{}.txt", index)).unwrap();
-        write_data(&mut file, "from", rotation.from.iter());
-        write_data(&mut file, "to", rotation.to.iter());
-        write_data(&mut file, "empty", rotation.empty.iter());
+        write_data(&mut file, "FROM", rotation.from.iter(), index);
+        write_data(&mut file, "TO", rotation.to.iter(), index);
+        write_data(&mut file, "EMPTY", rotation.empty.iter(), index);
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use test_case::test_case;
+
+    use crate::to_offset;
+
+    #[test_case(0,  0  => 4)]
+    #[test_case(1,  0  => 5)]
+    #[test_case(11, 0  => 15)]
+    #[test_case(0,  1  => 24)]
+    #[test_case(11, 1  => 35)]
+    #[test_case(11, 11 => 235)]
+    fn calculates_offset(x: u8, y: u8) -> u8 {
+        to_offset(&x, &y)
+    }
 }

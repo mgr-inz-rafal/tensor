@@ -26,17 +26,14 @@ fn get(map: &[&str], x: f64, y: f64) -> Option<char> {
     let ix = x.round() as i32;
     let iy = y.round() as i32;
 
-    
-    if ix < 0 || ix > 11 || iy < 0 || iy > 11 {
-        return None;
-    };
+    (!(ix < 0 || ix > 11 || iy < 0 || iy > 11)).then(|| {
+        let ix = ix as usize;
+        let iy = iy as usize;
 
-    let ix = ix as usize;
-    let iy = iy as usize;
-
-    let row = map.get(iy).unwrap();
-    let char = row.chars().nth(ix).unwrap();
-    Some(char)
+        let row = map.get(iy).unwrap();
+        let char = row.chars().nth(ix).unwrap();
+        char
+    })
 }
 
 fn rotate(map: &[&str], angle: f64, rotation: &mut RotateDef) -> Vec<String> {
@@ -87,6 +84,7 @@ fn write_data<'a, I: Iterator<Item = &'a (i8, i8)>>(file: &mut File, header: &st
         file.write_all(format!("    dta b({}), b({})\n", x, y).as_bytes())
             .unwrap()
     });
+    file.write_all("    dta($ff)\n".as_bytes()).unwrap();
 }
 
 fn main() {

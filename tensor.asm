@@ -668,9 +668,7 @@ c0	lda #$00
 	sta sizep1
 	sta sizep2
 	sta sizep3
-c1	ldy ntsc
-	lda LOGO_COLOR_1,y
-	lda #$0A
+c1	lda LOGO_COLOR_1
 	sta color1
 	lda #$02
 	sta chrctl
@@ -692,8 +690,7 @@ x5	lda #$69
 	sta hposm2
 x6	lda #$89
 	sta hposm3
-c4	ldy ntsc
-	lda LOGO_COLOR_2,y
+c4	lda LOGO_COLOR_2
 	sta colpm0
 	sta colpm1
 	sta colpm2
@@ -926,13 +923,12 @@ x18	lda #$7D
 	lda zc+0
 	sta hposp3
 	lda cl+0
+	nop
 	sta hposp3
-	ldy ntsc
-	lda LOGO_COLOR_3,y
-	tay
-;	ldy #$70
+	ldy LOGO_COLOR_3
 	ldx #$00
 	jsr _rts
+	:2 nop
 
 line32
 	jsr wait18cycle
@@ -1109,10 +1105,9 @@ x20	lda #$2D
 	lda >FONT_SLOT_1
 	sta CHBASE
 	
-	ldy ntsc
-	lda COLOR_1_INSTRUCTION_TEXT,y
+	lda COLOR_1_INSTRUCTION_TEXT
 	sta color2
-	lda COLOR_2_INSTRUCTION_TEXT,y
+	lda COLOR_2_INSTRUCTION_TEXT
 	sta color1
 
 	ldy #$69
@@ -2063,15 +2058,14 @@ sprite_decoration_data_3
 		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
 
 setup_intermission_colors
-		ldy ntsc
 		#if .word curmap = #MAP_LAST
-			lda INTERMISSION_COLOR_1,y
+			lda INTERMISSION_COLOR_1
 			sta PCOLR0
-			lda INTERMISSION_COLOR_2,y
+			lda INTERMISSION_COLOR_2
 			sta PCOLR1
-			lda INTERMISSION_COLOR_3,y
+			lda INTERMISSION_COLOR_3
 			sta PCOLR2
-			lda INTERMISSION_COLOR_4,y
+			lda INTERMISSION_COLOR_4
 			sta PCOLR3
 		#else
 			lda #$04
@@ -2084,25 +2078,24 @@ setup_intermission_colors
 			sta PCOLR3
 		#end
 		
-		lda INTERMISSION_COLOR_5,y
+		lda INTERMISSION_COLOR_5
 		sta CLR0
-		lda INTERMISSION_COLOR_6,y
+		lda INTERMISSION_COLOR_6
 		sta CLR1
-		lda INTERMISSION_COLOR_7,y
+		lda INTERMISSION_COLOR_7
 		sta CLR2
-		lda INTERMISSION_COLOR_8,y
+		lda INTERMISSION_COLOR_8
 		sta CLR3
 		rts
 		
 draw_happy_docent
-		ldy ntsc
-		lda FINAL_SCREEN_COLOR_1,y
+		lda FINAL_SCREEN_COLOR_1
 		sta CLR0
 		lda #$06 ;-diament
 		sta CLR1
-		lda FINAL_SCREEN_COLOR_2,y
+		lda FINAL_SCREEN_COLOR_2
 		sta CLR2
-		lda FINAL_SCREEN_COLOR_3,y
+		lda FINAL_SCREEN_COLOR_3
 		sta CLR3
 		lda #0
 		sta CLR4
@@ -2602,18 +2595,17 @@ init_sprites
 		lda #0
 		sta SIZEP0
 
-		ldy ntsc
-		lda PLAYER_COLOR,y
+		lda PLAYER_COLOR
 		sta PCOLR3
 		sta PCOLR2
 		
-		lda WALL_1_COLOR,y
+		lda WALL_1_COLOR
 		sta CLR0
 		lda amygdala_color
 		sta CLR1
-		lda OBSTACLE_COLOR,y
+		lda OBSTACLE_COLOR
 		sta CLR2
-		lda WALL_2_COLOR,y
+		lda WALL_2_COLOR
 		sta CLR3
 		lda #$00
 		sta CLR4
@@ -2665,8 +2657,7 @@ show_margin
 		sta $d009;-szerokosc
 		sta $d00c
 
-	ldy ntsc
-	lda MARGIN_COLOR,y
+	lda MARGIN_COLOR
 	sta PCOLR1
 	sta PCOLR0
 
@@ -3065,6 +3056,14 @@ sync2 	txa
       	cmp #[312+262]/2/2		
 	  	bcs dn_1
 		inc ntsc
+
+		ldy #0
+DNTSC_1	lda COLOR_TABLE_START_NTSC,y
+		sta COLOR_TABLE_START,y
+		iny 
+		cpy #COLOR_COUNT
+		bne DNTSC_1
+
 dn_1  	cli
 		rts
 
@@ -3262,48 +3261,88 @@ DLINTERMISSIONFINAL
 	dta b($07)
 	dta $41,a(DLINTERMISSIONFINAL)
 
+COLOR_TABLE_START
+COLOR_1_INSTRUCTION_TEXT
+	dta b($bd)
+COLOR_2_INSTRUCTION_TEXT
+	dta b($50)
+LOGO_COLOR_1
+	dta b($0A)
 LOGO_COLOR_2
-	dta b($10), b($20)
+	dta b($10)
 LOGO_COLOR_3
-	dta b($70), b($80)
+	dta b($70)
 INTERMISSION_COLOR_1
-	dta b($54), b($64)
+	dta b($54)
 INTERMISSION_COLOR_2
-	dta b($5a), b($6a)
+	dta b($5a)
 INTERMISSION_COLOR_3
-	dta b($58), b($68)
+	dta b($58)
 INTERMISSION_COLOR_4
-	dta b($54), b($64)
+	dta b($54)
 INTERMISSION_COLOR_5
-	dta b($eb), b($fb)
+	dta b($eb)
 INTERMISSION_COLOR_6
-	dta b($85), b($95)
+	dta b($85)
 INTERMISSION_COLOR_7
-	dta b($b5), b($c5)
+	dta b($b5)
 INTERMISSION_COLOR_8
-	dta b($b9), b($c9)
+	dta b($b9)
 INTERMISSION_COLOR_9
-	dta b($eb-2), b($fb-2)
+	dta b($eb-2)
 INTERMISSION_COLOR_10
-	dta b($eb-4), b($fb-4)
+	dta b($eb-4)
 INTERMISSION_COLOR_11
-	dta b($eb-6), b($fb-6)
+	dta b($eb-6)
 MARGIN_COLOR
-	dta b($90), b($90)
+	dta b($90)
 FINAL_SCREEN_COLOR_1
-	dta b($16), b($26) ; wlosy
+	dta b($16) ; wlosy
 FINAL_SCREEN_COLOR_2
-	dta b($36), b($46) ; serce
+	dta b($36) ; serce
 FINAL_SCREEN_COLOR_3
-	dta b($fa), b($2b) ; kielich
+	dta b($fa) ; kielich
 PLAYER_COLOR
-	dta b(C_PLAYR), b(C_PLAYR+$10)
+	dta b(C_PLAYR)
 WALL_1_COLOR
-	dta b(C_WALL2), b(C_WALL2+$10) ; Margin color depends on this guy :-/
+	dta b(C_WALL2)
 OBSTACLE_COLOR
-	dta b(C_OBSTA), b(C_OBSTA+$10)
+	dta b(C_OBSTA)
 WALL_2_COLOR
-	dta b(C_WALL1), b(C_WALL1+$10)
+	dta b(C_WALL1)
+COLOR_TABLE_END
+COLOR_COUNT equ 	COLOR_TABLE_END - COLOR_TABLE_START
+
+COLOR_TABLE_START_NTSC
+	dta b($dd)
+COLOR_2_INSTRUCTION_TEXT_NTSC
+	dta b($60)
+LOGO_COLOR_1_NTSC
+	dta b($1A)
+LOGO_COLOR_2_NTSC
+	dta b($20)
+LOGO_COLOR_3_NTSC
+	dta b($80)
+	dta b($64)
+	dta b($6a)
+	dta b($68)
+	dta b($64)
+	dta b($fb)
+	dta b($95)
+	dta b($c5)
+	dta b($c9)
+	dta b($fb-2)
+	dta b($fb-4)
+	dta b($fb-6)
+	dta b($a0)
+	dta b($26) ; wlosy
+	dta b($46) ; serce
+	dta b($1a) ; kielich
+	dta b(C_PLAYR+$10)
+	dta b(C_WALL2+$10)
+	dta b(C_OBSTA+$10)
+	dta b(C_WALL1+$10)
+
 
 ; Sprites
 .align		$1000
@@ -3364,12 +3403,6 @@ AMYGDALA_DATA_3	; Serce
 
 AMYGDALA_DATA_4	; Swiecznik
 	dta b(16),b(24),b(48),b(16),b(68),b(56),b(16),b(56),b($ea),b($fa)
-COLOR_1_INSTRUCTION_TEXT
-	dta b($bd), b($dd)
-COLOR_2_INSTRUCTION_TEXT
-	dta b($50), b($60)
-LOGO_COLOR_1
-	dta b($0A), b($1A)
 PRE_PMG_DATA_END
 
 ; TODO[RC]: Still some place available here
@@ -3438,9 +3471,7 @@ dli_routine
 		bne @+
 		lda >FONT_SLOT_1
 		sta CHBASE
-		ldy ntsc
-		lda INTERMISSION_COLOR_9,y
-		tay
+		ldy INTERMISSION_COLOR_9
 		sta WSYNC
 		sta WSYNC
 		sta WSYNC
@@ -3453,14 +3484,10 @@ dli_routine
 		
 @		cmp #$34	; Digits - lower part
 		bne @+
-		ldy ntsc
-		lda INTERMISSION_COLOR_10,y
-		tay
+		ldy INTERMISSION_COLOR_10
 		sta WSYNC
 		sty COLOR0
-		ldy ntsc
-		lda INTERMISSION_COLOR_11,y
-		tay
+		ldy INTERMISSION_COLOR_11
 		sta WSYNC
 		sta WSYNC
 		sta WSYNC

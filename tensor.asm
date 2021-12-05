@@ -1513,11 +1513,8 @@ can_move_down
 		ldy #0
 		lda (ptr0),y
 		rts
-		
-can_move_right
-		inc px
-		jsr ppos2scrmem
-		dec px
+
+can_move_internal
 		ldy #0
 		sty collecting
 		lda (ptr0),y
@@ -1530,20 +1527,18 @@ can_move_right
 		lda target
 		rts
 		
+can_move_right
+		inc px
+		jsr ppos2scrmem
+		dec px
+		jsr can_move_internal
+		rts
+		
 can_move_left
 		dec px
 		jsr ppos2scrmem
 		inc px
-		ldy #0
-		sty collecting
-		lda (ptr0),y
-		sta target
-		#if .byte target = #2+64
-			tya
-			mvx #1 collecting
-			rts
-		#end
-		lda target
+		jsr can_move_internal
 		rts
 		
 move_element
@@ -1619,12 +1614,16 @@ me_fin	mva #MV_IDLE mvstate
 		rts
 		
 clear_player_sprite
+		tya
+		pha
 		ldy #0
 		lda #0
 @		sta pmg_p3,y
 		iny
 		cpy #128
 		bne @-
+		pla
+		tay
 		rts
 		
 clear_sprite
@@ -2385,7 +2384,7 @@ rotate_clockwise
 		lda rotation_warmup
 		cmp #0
 		beq @+
-		rts
+		jmp SI_1
 @		mva #ROT_CTR rotation_warmup
 
 		dec direction
@@ -2393,13 +2392,13 @@ rotate_clockwise
 		mwy #RIGHT_ROTATION_TABLE_FROM ptr2
 		mwy #RIGHT_ROTATION_TABLE_TO ptr3
 		jsr rotate_internal_2
-		rts
+		jmp SI_1
 		
 rotate_counter_clockwise
 		lda rotation_warmup
 		cmp #0
 		beq @+
-		rts
+		jmp SI_1
 @		mva #ROT_CTR rotation_warmup
 
 		INC direction
@@ -2407,7 +2406,7 @@ rotate_counter_clockwise
 		mwy #LEFT_ROTATION_TABLE_FROM ptr2
 		mwy #LEFT_ROTATION_TABLE_TO ptr3
 		jsr rotate_internal_2
-		rts
+		jmp SI_1
 
 do_rotation_step
 		jsr clear_backup_buffer
@@ -2462,22 +2461,37 @@ CBB_2	ldy #MAPSIZE+3
 		adw movable #SCWIDTH
 		jmp CBB_2
 CBB_1	rts
-		
-stick_right
+
+stick_internal_return
+		pla
+		pla
+		jmp game_loop_movement
+
+stick_internal
 		lda mvstate
 		cmp #MV_IDLE
-		jne game_loop_movement
+		bne stick_internal_return
 		lda STRIG0
 		cmp #0
 		bne @+
 		jsr clear_player_sprite
-		jsr rotate_clockwise
-		jsr recalc_player_position
+		tya
+		pha
+		txa
+		pha
+		rts
+SI_1	jsr recalc_player_position
 		mva #1 repaint
 		mva #GS_GRAV gstate
 		jmp game_loop
 @		mva ppx px
 		mva ppy py
+		rts
+		
+stick_right
+		ldx <rotate_clockwise-1
+		ldy >rotate_clockwise-1
+		jsr stick_internal
 		jsr can_move_right
 		cmp #0
 		jne game_loop
@@ -2486,20 +2500,9 @@ stick_right
 		jmp game_loop
 		
 stick_left
-		lda mvstate
-		cmp #MV_IDLE
-		jne game_loop_movement
-		lda STRIG0
-		cmp #0
-		bne @+
-		jsr clear_player_sprite
-		jsr rotate_counter_clockwise
-		jsr recalc_player_position
-		mva #1 repaint
-		mva #GS_GRAV gstate
-		jmp game_loop
-@		mva ppx px
-		mva ppy py
+		ldx <rotate_counter_clockwise-1
+		ldy >rotate_counter_clockwise-1
+		jsr stick_internal
 		jsr can_move_left
 		cmp #0
 		jne game_loop

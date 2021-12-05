@@ -2365,7 +2365,7 @@ rotate_internal_1
 rotate_internal_2
 RI_1	ldy #0
 		sty credits_timer
-		mwa (ptr2),y ptr0
+		mwa (ptr2),y stop_intermission
 		ldy #0
 		mwa (ptr3),y ptr1
 		txa
@@ -2411,7 +2411,7 @@ rotate_counter_clockwise
 do_rotation_step
 		jsr clear_backup_buffer
 RCC_2	ldy credits_timer
-		lda (ptr0),y
+		lda (stop_intermission),y
 		cmp #$ff
 		beq RCC_1
 		tay

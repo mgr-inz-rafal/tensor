@@ -2,6 +2,8 @@ use std::{fmt::Display, fs::File, io::Write};
 
 use crossterm::{cursor, style, terminal, ExecutableCommand};
 
+include!(concat!(env!("OUT_DIR"), "/tables.rs"));
+
 fn draw<'a, I, S>(map: I, starting_line: usize)
 where
     I: Iterator<Item = S>,
@@ -91,7 +93,10 @@ fn main() {
 
     let map = vec![m01, m02, m03, m04, m05, m06, m07, m08, m09, m10, m11, m12];
 
-    let strip = build_strip(&map, 0);
+    let strip = build_strip(&map, 5);
+    dbg!(&strip);
+    //let strip = rotate_right(&strip, 2);
+    dbg!(&strip);
 }
 
 fn calc_indices(index: usize) -> (usize, usize) {
@@ -102,6 +107,7 @@ fn calc_indices(index: usize) -> (usize, usize) {
 struct StripElement {
     tile: char,
     original_position: (usize, usize),
+    new_position: (usize, usize),
 }
 
 impl StripElement {
@@ -109,6 +115,7 @@ impl StripElement {
         Self {
             tile,
             original_position: (x, y),
+            new_position: Default::default(),
         }
     }
 }

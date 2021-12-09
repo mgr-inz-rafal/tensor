@@ -98,28 +98,43 @@ fn calc_indices(index: usize) -> (usize, usize) {
     (index, 12 - index - 1)
 }
 
-fn build_strip(map: &Vec<String>, index: usize) -> String {
+#[derive(Debug)]
+struct StripElement {
+    tile: char,
+    original_position: (usize, usize),
+}
+
+impl StripElement {
+    fn new(tile: char, x: usize, y: usize) -> Self {
+        Self {
+            tile,
+            original_position: (x, y),
+        }
+    }
+}
+
+fn build_strip(map: &Vec<String>, index: usize) -> Vec<StripElement> {
     let mut ret = vec![];
 
     let (s, e) = calc_indices(index);
     for i in s..=e {
-        ret.push(get(&map, i, index));
+        ret.push(StripElement::new(get(&map, i, index), i, index));
     }
     for i in s + 1..=e {
-        ret.push(get(&map, e, i));
+        ret.push(StripElement::new(get(&map, e, i), e, i));
     }
     for i in (s..e).rev() {
-        ret.push(get(&map, i, e));
+        ret.push(StripElement::new(get(&map, i, e), i, e));
     }
     for i in (s + 1..e).rev() {
-        ret.push(get(&map, index, i));
+        ret.push(StripElement::new(get(&map, index, i), index, i));
     }
-
-    ret.into_iter().collect()
+    ret
 }
 
 #[cfg(test)]
 mod tests {
+    use itertools::Itertools;
     use test_case::test_case;
 
     use crate::calc_indices;
@@ -154,6 +169,9 @@ mod tests {
         let map = get_test_map();
         let strip = build_strip(&map, index);
         strip
+            .iter()
+            .map(|strip_element| strip_element.tile)
+            .collect()
     }
 
     #[test_case(0 => (0, 11))]

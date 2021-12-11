@@ -4,6 +4,12 @@ use crossterm::{cursor, style, terminal, ExecutableCommand};
 
 include!(concat!(env!("OUT_DIR"), "/tables.rs"));
 
+#[derive(Default)]
+struct RotateDef {
+    from: Vec<(u8, u8)>,
+    to: Vec<(u8, u8)>,
+}
+
 fn draw<'a, I, S>(map: I, starting_line: usize)
 where
     I: Iterator<Item = S>,
@@ -105,14 +111,33 @@ fn main() {
     draw(map.iter(), 0);
     let mut step_increment = vec![0.0; RINGS.len()];
     for frame in 0..=8 {
+        let mut rotation = RotateDef::default();
         let mut rotated_map = map.clone();
         for ring_index in 0..RINGS.len() {
             let increment = ((12.0 - (ring_index * 2) as f64) / 9.0) - 0.01;
             step_increment[ring_index] += increment;
             let mut ring: Vec<_> = RINGS[ring_index].iter().cloned().collect();
             ring.rotate_right(step_increment[ring_index] as usize);
-            rotated_map = apply_ring_transform(ring, ring_index, &rotated_map);
+            rotated_map = apply_ring_transform(ring, ring_index, &rotated_map, &mut rotation);
         }
+
+        let mut file = File::create(format!("rotate_{}_frame_{}.txt", "right", frame)).unwrap();
+        write_data(
+            &mut file,
+            "FROM",
+            rotation.from.iter(),
+            frame,
+            true,
+            "right",
+        );
+        write_data(
+            &mut file,
+            "TO",
+            rotation.to.iter(),
+            frame,
+            false,
+            "right",
+        );
 
         draw(rotated_map.iter(), 0);
         println!("\n\n{}", frame);
@@ -124,14 +149,18 @@ fn apply_ring_transform(
     ring_data: Vec<&(usize, usize)>,
     ring_index: usize,
     map: &Vec<String>,
+    rotation: &mut RotateDef,
 ) -> Vec<String> {
     let mut ret = map.clone();
+    let rotate_def = RotateDef::default();
     RINGS[ring_index]
         .iter()
         .zip(ring_data)
         .for_each(|((tx, ty), (fx, fy))| {
             let c = get(&map, *fx, *fy);
             set(&mut ret, *tx, *ty, c);
+            rotation.from.push((*fx as u8, *fy as u8));
+            rotation.to.push((*tx as u8, *ty as u8));
         });
     ret
 }

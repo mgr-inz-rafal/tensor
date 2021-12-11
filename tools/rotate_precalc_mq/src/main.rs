@@ -31,7 +31,7 @@ fn get(map: &Vec<String>, x: usize, y: usize) -> char {
 
 fn set(map: &mut Vec<String>, x: usize, y: usize, c: char) {
     let mut row = map.get(y).unwrap().clone();
-    row.replace_range(x..x+1, &c.to_string());
+    row.replace_range(x..x + 1, &c.to_string());
     let _ = std::mem::replace(&mut map[y], row.to_string());
 }
 
@@ -103,16 +103,31 @@ fn main() {
     let map = vec![m01, m02, m03, m04, m05, m06, m07, m08, m09, m10, m11, m12];
 
     draw(map.iter(), 0);
-    let mut current_step: f64 = 0.0;
-    let increment = 1.33;
-    for i in 0..9 {
-        current_step += increment;
+    let mut current_step_0: f64 = 0.0;
+    let mut current_step_1: f64 = 0.0;
+    let mut current_step_2: f64 = 0.0;
+    for frame in 0..=8 {
+        let increment = 11.0 / 9.0;
+        current_step_0 += increment;
         let mut ring_0: Vec<_> = RING_0.iter().cloned().collect();
-        ring_0.rotate_right(current_step as usize);
+        ring_0.rotate_right(current_step_0 as usize);
         let rotated_map = apply_ring_transform(ring_0, 0, &map);
+
+        let increment = 9.0 / 9.0;
+        current_step_1 += increment;
+        let mut ring_1: Vec<_> = RING_1.iter().cloned().collect();
+        ring_1.rotate_right(current_step_1 as usize);
+        let rotated_map = apply_ring_transform(ring_1, 1, &rotated_map);
+
+        let increment = 7.0 / 9.0;
+        current_step_2 += increment;
+        let mut ring_2: Vec<_> = RING_2.iter().cloned().collect();
+        ring_2.rotate_right(current_step_2 as usize);
+        let rotated_map = apply_ring_transform(ring_2, 2, &rotated_map);
+
         draw(rotated_map.iter(), 0);
-        println!("\n\n{}", current_step);
-        thread::sleep(Duration::from_millis(1000));
+        println!("\n\n{}", frame);
+        thread::sleep(Duration::from_millis(500));
     }
 }
 
@@ -122,7 +137,7 @@ fn apply_ring_transform(
     map: &Vec<String>,
 ) -> Vec<String> {
     let mut ret = map.clone();
-    RING_0
+    RINGS[ring_index]
         .iter()
         .zip(ring_data)
         .for_each(|((tx, ty), (fx, fy))| {

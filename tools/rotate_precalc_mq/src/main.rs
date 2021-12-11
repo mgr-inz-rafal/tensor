@@ -103,27 +103,16 @@ fn main() {
     let map = vec![m01, m02, m03, m04, m05, m06, m07, m08, m09, m10, m11, m12];
 
     draw(map.iter(), 0);
-    let mut current_step_0: f64 = 0.0;
-    let mut current_step_1: f64 = 0.0;
-    let mut current_step_2: f64 = 0.0;
+    let mut step_increment = vec![0.0; RINGS.len()];
     for frame in 0..=8 {
-        let increment = 11.0 / 9.0;
-        current_step_0 += increment;
-        let mut ring_0: Vec<_> = RING_0.iter().cloned().collect();
-        ring_0.rotate_right(current_step_0 as usize);
-        let rotated_map = apply_ring_transform(ring_0, 0, &map);
-
-        let increment = 9.0 / 9.0;
-        current_step_1 += increment;
-        let mut ring_1: Vec<_> = RING_1.iter().cloned().collect();
-        ring_1.rotate_right(current_step_1 as usize);
-        let rotated_map = apply_ring_transform(ring_1, 1, &rotated_map);
-
-        let increment = 7.0 / 9.0;
-        current_step_2 += increment;
-        let mut ring_2: Vec<_> = RING_2.iter().cloned().collect();
-        ring_2.rotate_right(current_step_2 as usize);
-        let rotated_map = apply_ring_transform(ring_2, 2, &rotated_map);
+        let mut rotated_map = map.clone();
+        for ring_index in 0..RINGS.len() {
+            let increment = ((12.0 - (ring_index * 2) as f64) / 9.0) - 0.01;
+            step_increment[ring_index] += increment;
+            let mut ring: Vec<_> = RINGS[ring_index].iter().cloned().collect();
+            ring.rotate_right(step_increment[ring_index] as usize);
+            rotated_map = apply_ring_transform(ring, ring_index, &rotated_map);
+        }
 
         draw(rotated_map.iter(), 0);
         println!("\n\n{}", frame);

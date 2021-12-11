@@ -1,4 +1,4 @@
-use std::{fmt::Display, fs::File, io::Write};
+use std::{fmt::Display, fs::File, io::Write, thread, time::Duration};
 
 use crossterm::{cursor, style, terminal, ExecutableCommand};
 
@@ -10,6 +10,9 @@ where
     S: ToString + Display,
 {
     let mut stdout = std::io::stdout();
+    stdout
+        .execute(terminal::Clear(terminal::ClearType::All))
+        .unwrap();
 
     map.into_iter().enumerate().for_each(|(index, line)| {
         stdout
@@ -24,6 +27,12 @@ fn get(map: &Vec<String>, x: usize, y: usize) -> char {
     let row = map.get(y).unwrap();
     let char = row.chars().nth(x).unwrap();
     char
+}
+
+fn set(map: &mut Vec<String>, x: usize, y: usize, c: char) {
+    let mut row = map.get(y).unwrap().clone();
+    row.replace_range(x..x+1, &c.to_string());
+    let _ = std::mem::replace(&mut map[y], row.to_string());
 }
 
 fn to_offset(x: &u8, y: &u8) -> u8 {
@@ -93,10 +102,34 @@ fn main() {
 
     let map = vec![m01, m02, m03, m04, m05, m06, m07, m08, m09, m10, m11, m12];
 
-    let strip = build_strip(&map, 5);
-    dbg!(&strip);
-    //let strip = rotate_right(&strip, 2);
-    dbg!(&strip);
+    draw(map.iter(), 0);
+    let mut current_step: f64 = 0.0;
+    let increment = 1.33;
+    for i in 0..9 {
+        current_step += increment;
+        let mut ring_0: Vec<_> = RING_0.iter().cloned().collect();
+        ring_0.rotate_right(current_step as usize);
+        let rotated_map = apply_ring_transform(ring_0, 0, &map);
+        draw(rotated_map.iter(), 0);
+        println!("\n\n{}", current_step);
+        thread::sleep(Duration::from_millis(1000));
+    }
+}
+
+fn apply_ring_transform(
+    ring_data: Vec<&(usize, usize)>,
+    ring_index: usize,
+    map: &Vec<String>,
+) -> Vec<String> {
+    let mut ret = map.clone();
+    RING_0
+        .iter()
+        .zip(ring_data)
+        .for_each(|((tx, ty), (fx, fy))| {
+            let c = get(&map, *fx, *fy);
+            set(&mut ret, *tx, *ty, c);
+        });
+    ret
 }
 
 fn calc_indices(index: usize) -> (usize, usize) {

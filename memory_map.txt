@@ -53,5 +53,6 @@ Main changes to cart edition:
 
 * 4 fonts are moved under the OS to $C000
 * Map data moved under the OS to $D800-$F4B0
+* Hi-Score list (80 entries, 8 bytes each) at $F4B1-$F731
 * 5th font is moved under the OS at $FBF9-$FFF9
-* Free mem under OS: $F4B1-$FBF8 (~1.8kb)
+* Free mem under OS: $F732-$FBF8 (~1.2kb)

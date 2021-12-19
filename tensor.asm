@@ -12,7 +12,7 @@
 CREDITCOLSTART	equ $00
 CREDITCOLEND	equ	CREDITCOLSTART+$0f
 LEVELFLIPDELAY	equ %00000011
-AMYGDALFLIPDEL	equ %00000111
+MENU_CURSOR_DELAY equ %00000111
 SOURCEDECO 		equ $ff-8*3
 TARGETDECO 		equ $b0
 PMGDECOOFFSET 	equ 12
@@ -48,6 +48,8 @@ CS_SHOW			equ	2	  ; Credits are being shown
 MAP_STORAGE		equ $d800 ; Maps stored under the OS
 FONTS_STORAGE	equ $c000 ; 4 fonts
 LAST_FONT_STORAGE equ $FFFA-1-1024 ; 5th font
+HI_SCORE_TABLE  equ MAPS_END_IN_STORAGE+1
+MENU_ITEM_OFFSET equ (40/2-12/2)
 
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
@@ -100,6 +102,9 @@ LAST_FONT_STORAGE equ $FFFA-1-1024 ; 5th font
 .zpvar  .byte   ntsc
 .zpvar  .byte   ntsc_music_conductor
 .zpvar  .byte	rmt_player_halt
+.zpvar	.byte   menu_cursor_index
+.zpvar  .word	current_menu
+.zpvar  .word   menu_item_handler
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -527,6 +532,19 @@ AMYGDALA_DATA_6	; Pierscionek
 AMYGDALA_DATA_7	; Robak
 	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($34),b($44)
 
+MENU_SPEC_0
+	dta b(4)
+MENU_ITEM_LABEL_START
+	dta d'Graj      '
+MENU_ITEM_LABEL_END
+	dta a($FFFF)
+	dta d'Opcje     '
+	dta a($FFFF)
+	dta d'Instrukcja'
+	dta a($FFFF)
+	dta d'Wyjscie   '
+	dta a($FFFF)
+
 FONT_MAPPER
 		dta b(>FONT_SLOT_1)			; North
 		dta b(>FONT_SLOT_1+2)		; West
@@ -584,6 +602,19 @@ pmg	.ds $0300
 ant	ANTIC_PROGRAM scr,ant
 
 main
+;;--- BEGIN: Temporary code that fills hi-score table with arbitrary data
+	jsr os_gone
+	mwa #HI_SCORE_TABLE ptr0
+	ldy #0
+ff1	#if .word ptr0 <> #HI_SCORE_TABLE+640
+		lda #'A'
+		sta (ptr0),y
+		inw ptr0
+		jmp ff1
+	#end
+	jsr os_back
+;;--- END: Temporary code that fills hi-score table with arbitrary data
+
 	disable_antic
 	ldy #64
 @	jsr synchro
@@ -598,8 +629,6 @@ main
 	ldy >CREDITS_FONT
 	jsr load_font_from_storage_slot_2
 	
-	mwa #TITLE_PART_1 ptr0
-	mwa #TITLE_PART_2 ptr1
 	lda #CS_FADEIN
 	sta credits_state
 	ldx #0
@@ -613,9 +642,15 @@ main
 	lda #0
 	sta mapnumber
 	sta showsummary
-	jsr paint_title_text
-	jsr paint_level_number
-	jsr paint_amygdala_speed
+
+	ldx <MENU_SPEC_0
+	ldy >MENU_SPEC_0
+	jsr init_menu
+	jsr paint_menu
+	jsr invert_menu_cursor
+	;jsr invert_menu_cursor
+	;jsr paint_level_number
+	;jsr paint_amygdala_speed
 	enable_antic
 
 	ift USESPRITES
@@ -1181,11 +1216,11 @@ raster_program_end
 xx1	
 @	cmp #253
 	bne @+
-	jsr flip_amygdala_speed
+	jsr menu_cursor_down
 	jmp xx2
 @	cmp #254
 	bne xx2
-	jsr flip_amygdala_speed
+	jsr menu_cursor_up
 xx2	
 
 @	jmp skp
@@ -3078,33 +3113,29 @@ CP_1	sta (ptr0),y
 		#end
 		jmp CP_1
 
-paint_title_text
+paint_menu
+		; TODO: Clear the screen
+
 		ldy #0
-@		lda (ptr0),y
-		sta SCRMEM,y
-		iny
-		cpy #240
-		bne @-
+		lda (ptr0),y
+		tax
+		inw ptr0
+
+		mwa #SCRMEM+MENU_ITEM_OFFSET+81 ptr1
 		ldy #0
-@		lda (ptr1),y
-		sta SCRMEM+40*6,y
+pm_0	lda (ptr0),y
+		sta (ptr1),y
 		iny
-		cpy #240
-		bne @-
+		cpy #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START
+		bne pm_0
+		dex
+		cpx #0
+		beq pm_1
+		adw ptr1 #80
+		adw ptr0 #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START+2
 		ldy #0
-@		lda TITLE_PART_3,y
-		sta SCRMEM+40*6*2,y
-		iny
-		cpy #40
-		bne @-
-		ldy #0
-		lda #0
-@		sta SCRMEM+40*13,y
-		iny
-		cpy #40
-		bne @-
-		
-		rts
+		jmp pm_0
+pm_1	rts
 
 paint_level_number
 		ldy #MAP_02_NAME-MAP_01_NAME-2
@@ -3146,31 +3177,6 @@ set_previous_starting_level
 		#end
 		jsr paint_level_number
 		rts
-		
-flip_amygdala_speed
-		lda delayer
-		and #AMYGDALFLIPDEL
-		cmp #AMYGDALFLIPDEL
-		bne @+
-		inc instafall
-		jsr paint_amygdala_speed
-@		rts
-
-paint_amygdala_speed
-		lda instafall
-		and #%00000001
-		beq @+
-		mwa #amygdala_speed_text_01 ptr3
-		jmp pas_0
-@		mwa #amygdala_speed_text_02 ptr3
-pas_0
-		ldy #0
-@		lda (ptr3),y
-		sta SCRMEM+(TITLE_AMYGDALA_SPEED-TITLE_PART_1),y
-		iny
-		cpy #AMYGDALA_SPEED_TEXT_01_END-AMYGDALA_SPEED_TEXT_01
-		bne @-
-		rts
 
 os_gone
 		jsr synchro
@@ -3189,6 +3195,60 @@ os_back
 		sta NMIEN
 		cli
 		rts
+
+init_menu
+		stx ptr0
+		stx current_menu
+		sty ptr0+1
+		sty current_menu+1
+		lda #0
+		sta menu_cursor_index
+		rts
+
+invert_menu_cursor
+		mwa #SCRMEM+MENU_ITEM_OFFSET+37+40 ptr1
+		ldx menu_cursor_index
+imc_2	cpx #0
+		beq imc_1
+		adw ptr1 #80
+		dex
+		jmp imc_2
+imc_1	ldy #0
+imc_0	lda (ptr1),y
+		eor #%10000000
+		sta (ptr1),y
+		iny
+		cpy #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START+8
+		bne imc_0
+		rts
+
+menu_cursor_down
+		lda delayer
+		and #MENU_CURSOR_DELAY
+		cmp #MENU_CURSOR_DELAY
+		bne mcd_0
+		ldy #0
+		lda (current_menu),y
+		sec
+		sbc #1
+		#if .byte @ > menu_cursor_index
+			jsr invert_menu_cursor
+			inc menu_cursor_index
+			jsr invert_menu_cursor
+		#end
+mcd_0	rts
+
+menu_cursor_up
+		lda delayer
+		and #MENU_CURSOR_DELAY
+		cmp #MENU_CURSOR_DELAY
+		bne mcu_0
+		#if menu_cursor_index > #0
+			jsr invert_menu_cursor
+			dec menu_cursor_index
+			jsr invert_menu_cursor
+		#end
+mcu_0	rts
 
 STOP_MUSIC
 		jsr RASTERMUSICTRACKER+9
@@ -3217,13 +3277,6 @@ CM_2	lda #6
 		rts
 CM_1	jsr RASTERMUSICTRACKER+3
 CM_3	rts
-
-AMYGDALA_SPEED_TEXT_01
-		dta d'WARTKO'*
-AMYGDALA_SPEED_TEXT_01_END
-AMYGDALA_SPEED_TEXT_02
-		dta d'OSPALE'*
-
 
 .align		$100
 DLGAME

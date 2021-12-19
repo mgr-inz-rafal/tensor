@@ -1295,7 +1295,8 @@ TEXT_PANEL_ADDRESS
 	dta b($02)
 	dta b($02)
 	dta b($30)
-	dta b($02)
+	dta b($42)
+	dta a(SCRMEM+40*13)
 	dta b($42)
 CREDITS_ADDRESS_DL
 	dta a(CREDITS_BASE+80)

@@ -104,7 +104,6 @@ MENU_ITEM_OFFSET equ (40/2-12/2)
 .zpvar  .byte	rmt_player_halt
 .zpvar	.byte   menu_cursor_index
 .zpvar  .word	current_menu
-.zpvar  .word   menu_item_handler
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -537,13 +536,13 @@ MENU_SPEC_0
 MENU_ITEM_LABEL_START
 	dta d'Graj      '
 MENU_ITEM_LABEL_END
-	dta a($FFFF)
+	dta a($aaaa)
 	dta d'Opcje     '
-	dta a($FFFF)
+	dta a($bbbb)
 	dta d'Instrukcja'
-	dta a($FFFF)
+	dta a($abcd+1)
 	dta d'Wyjscie   '
-	dta a($FFFF)
+	dta a($dddd)
 
 FONT_MAPPER
 		dta b(>FONT_SLOT_1)			; North
@@ -1198,7 +1197,7 @@ raster_program_end
 // -----------------------------------------------------------
 
 	lda trig0		; FIRE #0
-	beq stop
+	jeq handle_menu_item
 
 	lda consol		; START
 	and #1
@@ -3129,7 +3128,6 @@ pm_0	lda (ptr0),y
 		cpy #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START
 		bne pm_0
 		dex
-		cpx #0
 		beq pm_1
 		adw ptr1 #80
 		adw ptr0 #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START+2
@@ -3249,6 +3247,25 @@ menu_cursor_up
 			jsr invert_menu_cursor
 		#end
 mcu_0	rts
+
+handle_menu_item
+		ldx menu_cursor_index
+		inx
+		mwa current_menu ptr0
+		inw ptr0
+hmi_0	dex
+		cpx #0
+		beq hmi_1
+		adw ptr0 #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START+2
+		jmp hmi_0
+hmi_1	adw ptr0 #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START
+		ldy #0
+		lda (ptr0),y
+		pha
+		iny
+		lda (ptr0),y
+		pha
+		rts
 
 STOP_MUSIC
 		jsr RASTERMUSICTRACKER+9

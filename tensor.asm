@@ -13,7 +13,7 @@ CREDITCOLSTART	equ $00
 CREDITCOLEND	equ	CREDITCOLSTART+$0f
 LEVELFLIPDELAY	equ %00000011
 MENU_CURSOR_DELAY equ %00000111
-MENU_SWITCH_DELAY equ %00000111
+MENU_SWITCH_DELAY equ %00001010
 SOURCEDECO 		equ $ff-8*3
 TARGETDECO 		equ $b0
 PMGDECOOFFSET 	equ 12
@@ -71,6 +71,7 @@ MS_INSTRUCTION  equ 2
 .zpvar	.byte	reducer
 .zpvar	.byte	collecting
 .zpvar	.byte	delayer
+.zpvar	.byte	delayer_button
 .zpvar	.byte	showsummary
 .zpvar	.byte	mapnumber
 .zpvar	.word	curmap
@@ -535,18 +536,9 @@ AMYGDALA_DATA_6	; Pierscionek
 AMYGDALA_DATA_7	; Robak
 	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($34),b($44)
 
-MENU_SPEC_0
-	dta b(4)
 MENU_ITEM_LABEL_START
-	dta d'Graj      '
-MENU_ITEM_LABEL_END
-	dta a($aaaa)
-	dta d'Opcje     '
-	dta a($bbbb)
 	dta d'Instrukcja'
-	dta a(show_instruction-1)
-	dta d'Wyjscie   '
-	dta a($dddd)
+MENU_ITEM_LABEL_END
 
 FONT_MAPPER
 		dta b(>FONT_SLOT_1)			; North
@@ -648,8 +640,6 @@ ff1	#if .word ptr0 <> #HI_SCORE_TABLE+640
 
 	lda #MS_MAIN
 	sta menu_state
-	ldx <MENU_SPEC_0
-	ldy >MENU_SPEC_0
 	jsr init_menu
 	mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 	jsr invert_menu_cursor
@@ -1246,7 +1236,7 @@ skp
 // -----------------------------------------------------------
 
 	jsr CONDUCT_MUSIC
-	inc delayer
+	jsr handle_delayers
 	jmp LOOP
 
 ; ---
@@ -3165,9 +3155,9 @@ menu_cursor_down
 			jmp skp
 		#end
 		lda delayer
-		and #MENU_CURSOR_DELAY
-		cmp #MENU_CURSOR_DELAY
 		bne mcd_0
+		lda #MENU_CURSOR_DELAY
+		sta delayer
 		ldy #0
 		lda #3
 		#if .byte @ > menu_cursor_index
@@ -3182,9 +3172,9 @@ menu_cursor_up
 			jmp skp
 		#end
 		lda delayer
-		and #MENU_CURSOR_DELAY
-		cmp #MENU_CURSOR_DELAY
 		bne mcu_0
+		lda #MENU_CURSOR_DELAY
+		sta delayer
 		#if menu_cursor_index > #0
 			jsr invert_menu_cursor
 			dec menu_cursor_index
@@ -3194,9 +3184,7 @@ mcu_0	rts
 
 handle_menu_item
 		#if .byte menu_state = #MS_INSTRUCTION
-			lda #MS_MAIN
-			sta menu_state
-			mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS	
+			jsr hide_instruction
 			jmp skp
 		#end
 
@@ -3212,8 +3200,7 @@ hmi_1
 		rts
 hmi_2	cmp #2
 		bne hmi_3
-		mva #MS_INSTRUCTION menu_state
-		mwa #INSTRUCTION_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		jsr show_instruction
 		jmp skp
 hmi_3
 		pla
@@ -3221,24 +3208,24 @@ hmi_3
 		rts
 
 show_instruction
-		lda delayer
-		and #MENU_SWITCH_DELAY
-		cmp #MENU_SWITCH_DELAY
-		bne hi_0
+		lda delayer_button
+		bne si_0
+		lda #MENU_SWITCH_DELAY
+		sta delayer_button
 		lda #MS_INSTRUCTION
 		sta menu_state
 		mwa #INSTRUCTION_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-		jmp skp
+si_0	jmp skp
 
 hide_instruction
-		lda delayer
-		and #MENU_SWITCH_DELAY
-		cmp #MENU_SWITCH_DELAY
-		bne hi_0
+		lda delayer_button
+		bne si_0
+		lda #MENU_SWITCH_DELAY
+		sta delayer_button
 		lda #MS_MAIN
 		sta menu_state
-		mwa #SCRMEM ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-hi_0	jmp skp
+		mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		jmp skp
 
 STOP_MUSIC
 		jsr RASTERMUSICTRACKER+9
@@ -3267,6 +3254,19 @@ CM_2	lda #6
 		rts
 CM_1	jsr RASTERMUSICTRACKER+3
 CM_3	rts
+
+handle_delayers
+		dec delayer
+		lda delayer
+		cmp #$ff
+		bne @+
+		inc delayer
+@		dec delayer_button
+		lda delayer_button
+		cmp #$ff
+		bne @+
+		ind delayer_button
+@		rts
 
 INSTRUCTION_DATA
 	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'

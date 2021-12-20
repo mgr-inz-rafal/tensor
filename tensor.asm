@@ -651,7 +651,7 @@ ff1	#if .word ptr0 <> #HI_SCORE_TABLE+640
 	ldx <MENU_SPEC_0
 	ldy >MENU_SPEC_0
 	jsr init_menu
-	jsr paint_menu
+	mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 	jsr invert_menu_cursor
 	;jsr invert_menu_cursor
 	;jsr paint_level_number
@@ -1212,12 +1212,12 @@ raster_program_end
 	lda porta
 	cmp #247	; 251
 	bne @+
-	jsr set_next_starting_level
+;	jsr set_next_starting_level
 	jmp xx1
 	
 @	cmp #251
 	bne @+
-	jsr set_previous_starting_level
+;	jsr set_previous_starting_level
 xx1	
 @	cmp #253
 	bne @+
@@ -3120,70 +3120,6 @@ CP_1	sta (ptr0),y
 		#end
 		jmp CP_1
 
-paint_menu
-		; TODO: Clear the screen
-
-		ldy #0
-		lda (ptr0),y
-		tax
-		inw ptr0
-
-		mwa #SCRMEM+MENU_ITEM_OFFSET+81 ptr1
-		ldy #0
-pm_0	lda (ptr0),y
-		sta (ptr1),y
-		iny
-		cpy #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START
-		bne pm_0
-		dex
-		beq pm_1
-		adw ptr1 #80
-		adw ptr0 #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START+2
-		ldy #0
-		jmp pm_0
-pm_1	rts
-
-paint_level_number
-		ldy #MAP_02_NAME-MAP_01_NAME-2
-		lda (curmapname),y
-		eor #%10000000
-		sta SCRMEM+(TITLE_LEVEL_NUMBER-TITLE_PART_1)+1
-		iny
-		lda (curmapname),y
-		eor #%10000000
-		sta SCRMEM+(TITLE_LEVEL_NUMBER-TITLE_PART_1)+2
-		rts
-		
-set_next_starting_level
-		lda delayer
-		and #LEVELFLIPDELAY
-		cmp #LEVELFLIPDELAY
-		bne @+
-		adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
-		adw curmapname #MAP_02_NAME-MAP_01_NAME
-		nop
-		#if .word curmapname = #MAP_NAME_LAST
-			sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
-			sbw curmapname #MAP_02_NAME-MAP_01_NAME
-		#end
-		jsr paint_level_number
-@		rts
-		
-set_previous_starting_level
-		lda delayer
-		and #LEVELFLIPDELAY
-		cmp #LEVELFLIPDELAY
-		bne @-
-		sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
-		sbw curmapname #MAP_02_NAME-MAP_01_NAME
-		nop
-		#if .word curmapname = #MAP_01_NAME-(MAP_02_NAME-MAP_01_NAME)
-			adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
-			adw curmapname #MAP_02_NAME-MAP_01_NAME
-		#end
-		jsr paint_level_number
-		rts
-
 os_gone
 		jsr synchro
 		sei
@@ -3203,16 +3139,12 @@ os_back
 		rts
 
 init_menu
-		stx ptr0
-		stx current_menu
-		sty ptr0+1
-		sty current_menu+1
 		lda #0
 		sta menu_cursor_index
 		rts
 
 invert_menu_cursor
-		mwa #SCRMEM+MENU_ITEM_OFFSET+37+40 ptr1
+		mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37+40 ptr1
 		ldx menu_cursor_index
 imc_2	cpx #0
 		beq imc_1
@@ -3237,9 +3169,7 @@ menu_cursor_down
 		cmp #MENU_CURSOR_DELAY
 		bne mcd_0
 		ldy #0
-		lda (current_menu),y
-		sec
-		sbc #1
+		lda #3
 		#if .byte @ > menu_cursor_index
 			jsr invert_menu_cursor
 			inc menu_cursor_index
@@ -3263,28 +3193,31 @@ menu_cursor_up
 mcu_0	rts
 
 handle_menu_item
-		#if .byte menu_state == #MS_INSTRUCTION
-			jmp hide_instruction
-		#end
-		#if .byte menu_state <> #MS_MAIN
+		#if .byte menu_state = #MS_INSTRUCTION
+			lda #MS_MAIN
+			sta menu_state
+			mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS	
 			jmp skp
 		#end
-		ldx menu_cursor_index
-		inx
-		mwa current_menu ptr0
-		inw ptr0
-hmi_0	dex
-		cpx #0
-		beq hmi_1
-		adw ptr0 #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START+2
-		jmp hmi_0
-hmi_1	adw ptr0 #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START
-		ldy #1
-		lda (ptr0),y
-		pha
-		dey
-		lda (ptr0),y
-		pha
+
+		lda menu_cursor_index
+		cmp #0
+		bne hmi_1
+		; BEGIN_GAME
+		;jmp skp
+hmi_1
+		cmp #1
+		bne hmi_2
+		; OPTIONS
+		rts
+hmi_2	cmp #2
+		bne hmi_3
+		mva #MS_INSTRUCTION menu_state
+		mwa #INSTRUCTION_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		jmp skp
+hmi_3
+		pla
+		pla
 		rts
 
 show_instruction
@@ -3349,6 +3282,21 @@ INSTRUCTION_DATA
 	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
 	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
 	dta d'0123456789012345678901234567890123456789'
+
+MENU_0_DATA
+	dta d'                                        '
+	dta d'                                        '
+	dta d'               Graj                     '
+	dta d'                                        '
+	dta d'               Opcje                    '
+	dta d'                                        '
+	dta d'               Instrukcja               '
+	dta d'                                        '
+	dta d'               Wyjscie                  '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
 
 .align		$100
 DLGAME
@@ -3546,6 +3494,8 @@ SCRMEM_BACKUP equ SCRMEM_BUFFER+SCWIDTH*MAPSIZE
 SCRMEM_END equ SCRMEM_BACKUP+SCWIDTH*MAPSIZE
 
 ; TODO[RC]: Here we can also fit some data (before font slots)
+; but... this might be used for the text on the title screen.
+; Double check before use.
 
 	org SCRMEM_END
 .align	$400

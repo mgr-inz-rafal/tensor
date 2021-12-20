@@ -53,6 +53,7 @@ HI_SCORE_TABLE  equ MAPS_END_IN_STORAGE+1
 MENU_ITEM_OFFSET equ (40/2-12/2)
 MS_MAIN			equ 1
 MS_INSTRUCTION  equ 2
+MAIN_MENU_LABEL_LEN equ 18
 
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
@@ -535,10 +536,6 @@ AMYGDALA_DATA_6	; Pierscionek
 
 AMYGDALA_DATA_7	; Robak
 	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($34),b($44)
-
-MENU_ITEM_LABEL_START
-	dta d'Instrukcja'
-MENU_ITEM_LABEL_END
 
 FONT_MAPPER
 		dta b(>FONT_SLOT_1)			; North
@@ -3146,7 +3143,7 @@ imc_0	lda (ptr1),y
 		eor #%10000000
 		sta (ptr1),y
 		iny
-		cpy #MENU_ITEM_LABEL_END-MENU_ITEM_LABEL_START+8
+		cpy #MAIN_MENU_LABEL_LEN
 		bne imc_0
 		rts
 

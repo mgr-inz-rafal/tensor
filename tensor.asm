@@ -53,6 +53,7 @@ HI_SCORE_TABLE  equ MAPS_END_IN_STORAGE+1
 MENU_ITEM_OFFSET equ (40/2-12/2)
 MS_MAIN			equ 1
 MS_INSTRUCTION  equ 2
+MS_OPTIONS		equ 3
 MAIN_MENU_LABEL_LEN equ 18
 
 .zpvar	.byte	antic_tmp
@@ -3180,7 +3181,7 @@ menu_cursor_up
 mcu_0	rts
 
 handle_menu_item
-		#if .byte menu_state = #MS_INSTRUCTION
+		#if .byte menu_state = #MS_INSTRUCTION .or .byte menu_state = #MS_OPTIONS
 			jsr hide_instruction
 			jmp skp
 		#end
@@ -3193,7 +3194,10 @@ handle_menu_item
 hmi_1
 		cmp #1
 		bne hmi_2
-		; OPTIONS
+		#if .byte menu_state = #MS_MAIN
+			jsr show_options
+			jmp skp
+		#end
 		rts
 hmi_2	cmp #2
 		bne hmi_3
@@ -3203,6 +3207,16 @@ hmi_3
 		pla
 		pla
 		rts
+
+show_options
+		lda delayer_button
+		bne so_0
+		lda #MENU_SWITCH_DELAY
+		sta delayer_button
+		lda #MS_OPTIONS
+		sta menu_state
+		mwa #MENU_1_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+so_0	jmp skp
 
 show_instruction
 		lda delayer_button
@@ -3293,6 +3307,21 @@ MENU_0_DATA
 	dta d'                                        '
 	dta d'                                        '
 	dta d'                                        '
+	dta d'                                        '
+
+MENU_1_DATA
+	dta d'                                        '
+	dta d'      Predkosc opadania migdalow:       '
+	dta d'                WOLNO                   '
+	dta d'                                        '
+	dta d'        Predkosc obrotu pieczary:       '
+	dta d'                SZYBKO                  '
+	dta d'                                        '
+	dta d'                 Jezyk:                 '
+	dta d'               ANGIELKSKI               '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                 Powrot                 '
 	dta d'                                        '
 
 .align		$100

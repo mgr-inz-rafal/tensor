@@ -3135,41 +3135,21 @@ init_menu
 		sta already_inverted
 		rts
 
-; TODO[RC]: Dedup
 invert_menu_cursor
+		mva #80 any_moved
 		mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37 ptr1
 		ldx menu_cursor_index
 		#if .byte menu_state = #MS_MAIN .and .byte menu_cursor_index = #3
 			inx
 			inx
 		#end
-imc_2	cpx #0
-		beq imc_1
-		adw ptr1 #80
-		dex
-		jmp imc_2
-imc_1	ldy #0
-imc_0	lda (ptr1),y
-		eor #%10000000
-		sta (ptr1),y
-		iny
-		cpy #MAIN_MENU_LABEL_LEN
-		bne imc_0
+		jsr invert_menu_cursor_common
 		rts
 
-invert_options_menu_cursor
-		mwa #MENU_1_DATA+MENU_ITEM_OFFSET+37+40 ptr1
-		ldx options_cursor_index
-		#if .byte menu_state = #MS_MAIN .and .byte options_cursor_index = #3
-			inx
-			inx
-		#end
-		#if .byte menu_state = #MS_OPTIONS .and .byte options_cursor_index = #4
-			inx
-		#end
+invert_menu_cursor_common
 iomc_2	cpx #0
 		beq iomc_1
-		adw ptr1 #80+40
+		adw ptr1 any_moved
 		dex
 		jmp iomc_2
 iomc_1	ldy #0
@@ -3181,14 +3161,28 @@ iomc_0	lda (ptr1),y
 		bne iomc_0
 		rts
 
+invert_options_menu_cursor
+		mva #80+40 any_moved
+		mwa #MENU_1_DATA+MENU_ITEM_OFFSET+37+40 ptr1
+		ldx options_cursor_index
+		jsr invert_menu_cursor_common
+		rts
+
+menu_cursor_down_common
+		lda delayer
+		bne mcc_0
+		lda #MENU_CURSOR_DELAY
+		sta delayer
+		ldy #0
+		lda #3
+		rts
+mcc_0	pla
+		pla
+		rts
+
 menu_cursor_down
 		#if .byte menu_state = #MS_MAIN
-			lda delayer
-			bne mcd_0
-			lda #MENU_CURSOR_DELAY
-			sta delayer
-			ldy #0
-			lda #3
+			jsr menu_cursor_down_common
 			#if .byte @ > menu_cursor_index
 				jsr invert_menu_cursor
 				inc menu_cursor_index
@@ -3196,12 +3190,7 @@ menu_cursor_down
 			#end
 		#end
 		#if .byte menu_state = #MS_OPTIONS
-			lda delayer
-			bne mcd_0
-			lda #MENU_CURSOR_DELAY
-			sta delayer
-			ldy #0
-			lda #3
+			jsr menu_cursor_down_common
 			#if .byte @ > options_cursor_index
 				jsr invert_options_menu_cursor
 				inc options_cursor_index
@@ -3210,12 +3199,16 @@ menu_cursor_down
 		#end
 mcd_0	rts
 
+menu_cursor_up_common
+		lda delayer
+		bne mcc_0
+		lda #MENU_CURSOR_DELAY
+		sta delayer
+		rts
+
 menu_cursor_up
 		#if .byte menu_state = #MS_MAIN
-			lda delayer
-			bne mcu_0
-			lda #MENU_CURSOR_DELAY
-			sta delayer
+			jsr menu_cursor_up_common
 			#if menu_cursor_index > #0
 				jsr invert_menu_cursor
 				dec menu_cursor_index
@@ -3223,10 +3216,7 @@ menu_cursor_up
 			#end
 		#end
 		#if .byte menu_state = #MS_OPTIONS
-			lda delayer
-			bne mcu_0
-			lda #MENU_CURSOR_DELAY
-			sta delayer
+			jsr menu_cursor_up_common
 			#if options_cursor_index > #0
 				jsr invert_options_menu_cursor
 				dec options_cursor_index

@@ -109,8 +109,10 @@ MAIN_MENU_LABEL_LEN equ 18
 .zpvar  .byte   ntsc_music_conductor
 .zpvar  .byte	rmt_player_halt
 .zpvar	.byte   menu_cursor_index
+.zpvar	.byte   options_cursor_index
 .zpvar  .word	current_menu
 .zpvar  .byte   menu_state
+.zpvar	.byte	already_inverted
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3129,11 +3131,18 @@ os_back
 init_menu
 		lda #0
 		sta menu_cursor_index
+		sta options_cursor_index
+		sta already_inverted
 		rts
 
+; TODO[RC]: Dedup
 invert_menu_cursor
-		mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37+40 ptr1
+		mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37 ptr1
 		ldx menu_cursor_index
+		#if .byte menu_state = #MS_MAIN .and .byte menu_cursor_index = #3
+			inx
+			inx
+		#end
 imc_2	cpx #0
 		beq imc_1
 		adw ptr1 #80
@@ -3148,35 +3157,81 @@ imc_0	lda (ptr1),y
 		bne imc_0
 		rts
 
-menu_cursor_down
-		#if .byte menu_state <> #MS_MAIN
-			jmp skp
+invert_options_menu_cursor
+		mwa #MENU_1_DATA+MENU_ITEM_OFFSET+37+40 ptr1
+		ldx options_cursor_index
+		#if .byte menu_state = #MS_MAIN .and .byte options_cursor_index = #3
+			inx
+			inx
 		#end
-		lda delayer
-		bne mcd_0
-		lda #MENU_CURSOR_DELAY
-		sta delayer
-		ldy #0
-		lda #3
-		#if .byte @ > menu_cursor_index
-			jsr invert_menu_cursor
-			inc menu_cursor_index
-			jsr invert_menu_cursor
+		#if .byte menu_state = #MS_OPTIONS .and .byte options_cursor_index = #4
+			inx
+		#end
+iomc_2	cpx #0
+		beq iomc_1
+		adw ptr1 #80+40
+		dex
+		jmp iomc_2
+iomc_1	ldy #0
+iomc_0	lda (ptr1),y
+		eor #%10000000
+		sta (ptr1),y
+		iny
+		cpy #MAIN_MENU_LABEL_LEN
+		bne iomc_0
+		rts
+
+menu_cursor_down
+		#if .byte menu_state = #MS_MAIN
+			lda delayer
+			bne mcd_0
+			lda #MENU_CURSOR_DELAY
+			sta delayer
+			ldy #0
+			lda #3
+			#if .byte @ > menu_cursor_index
+				jsr invert_menu_cursor
+				inc menu_cursor_index
+				jsr invert_menu_cursor
+			#end
+		#end
+		#if .byte menu_state = #MS_OPTIONS
+			lda delayer
+			bne mcd_0
+			lda #MENU_CURSOR_DELAY
+			sta delayer
+			ldy #0
+			lda #3
+			#if .byte @ > options_cursor_index
+				jsr invert_options_menu_cursor
+				inc options_cursor_index
+				jsr invert_options_menu_cursor
+			#end
 		#end
 mcd_0	rts
 
 menu_cursor_up
-		#if .byte menu_state <> #MS_MAIN
-			jmp skp
+		#if .byte menu_state = #MS_MAIN
+			lda delayer
+			bne mcu_0
+			lda #MENU_CURSOR_DELAY
+			sta delayer
+			#if menu_cursor_index > #0
+				jsr invert_menu_cursor
+				dec menu_cursor_index
+				jsr invert_menu_cursor
+			#end
 		#end
-		lda delayer
-		bne mcu_0
-		lda #MENU_CURSOR_DELAY
-		sta delayer
-		#if menu_cursor_index > #0
-			jsr invert_menu_cursor
-			dec menu_cursor_index
-			jsr invert_menu_cursor
+		#if .byte menu_state = #MS_OPTIONS
+			lda delayer
+			bne mcu_0
+			lda #MENU_CURSOR_DELAY
+			sta delayer
+			#if options_cursor_index > #0
+				jsr invert_options_menu_cursor
+				dec options_cursor_index
+				jsr invert_options_menu_cursor
+			#end
 		#end
 mcu_0	rts
 
@@ -3216,6 +3271,11 @@ show_options
 		lda #MS_OPTIONS
 		sta menu_state
 		mwa #MENU_1_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		lda already_inverted
+		bne so_1
+		jsr invert_options_menu_cursor
+so_1	lda #1
+		sta already_inverted
 so_0	jmp skp
 
 show_instruction
@@ -3296,26 +3356,26 @@ INSTRUCTION_DATA
 
 MENU_0_DATA
 	dta d'                                        '
-	dta d'                                        '
 	dta d'               Graj                     '
 	dta d'                                        '
 	dta d'               Opcje                    '
 	dta d'                                        '
 	dta d'               Instrukcja               '
 	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
 	dta d'               Wyjscie                  '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
 	dta d'                                        '
 
 MENU_1_DATA
 	dta d'                                        '
-	dta d'      Predkosc opadania migdalow:       '
-	dta d'                WOLNO                   '
+	dta d'      Przyspieszenie grawitacyjne:      '
+	dta d'                POTEZNE                 '		; STONOWANE
 	dta d'                                        '
-	dta d'        Predkosc obrotu pieczary:       '
-	dta d'                SZYBKO                  '
+	dta d'            Obrot pieczary:             '
+	dta d'                WLACZONY                '
 	dta d'                                        '
 	dta d'                 Jezyk:                 '
 	dta d'               ANGIELKSKI               '

@@ -113,6 +113,7 @@ MAIN_MENU_LABEL_LEN equ 18
 .zpvar  .word	current_menu
 .zpvar  .byte   menu_state
 .zpvar	.byte	already_inverted
+.zpvar  .byte	level_rotation
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3226,8 +3227,29 @@ menu_cursor_up
 mcu_0	rts
 
 handle_menu_item
-		#if .byte menu_state = #MS_INSTRUCTION .or .byte menu_state = #MS_OPTIONS
-			jsr hide_instruction
+		#if .byte menu_state = #MS_INSTRUCTION
+			jsr back_to_main_menu
+			jmp skp
+		#end
+		#if .byte menu_state = #MS_OPTIONS
+			lda options_cursor_index
+			cmp #0
+			bne hmi_4
+			jsr flip_failing_speed
+			jmp skp
+hmi_4
+			cmp #1
+			bne hmi_5
+			jsr flip_level_rotation
+			jmp skp
+
+hmi_5		cmp #2
+			bne hmi_6
+			; Language
+			jmp skp
+
+hmi_6		; Back to main menu
+			jsr back_to_main_menu
 			jmp skp
 		#end
 
@@ -3254,10 +3276,7 @@ hmi_3
 		rts
 
 show_options
-		lda delayer_button
-		bne so_0
-		lda #MENU_SWITCH_DELAY
-		sta delayer_button
+		jsr delayer_button_common
 		lda #MS_OPTIONS
 		sta menu_state
 		mwa #MENU_1_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
@@ -3269,20 +3288,14 @@ so_1	lda #1
 so_0	jmp skp
 
 show_instruction
-		lda delayer_button
-		bne si_0
-		lda #MENU_SWITCH_DELAY
-		sta delayer_button
+		jsr delayer_button_common
 		lda #MS_INSTRUCTION
 		sta menu_state
 		mwa #INSTRUCTION_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 si_0	jmp skp
 
-hide_instruction
-		lda delayer_button
-		bne si_0
-		lda #MENU_SWITCH_DELAY
-		sta delayer_button
+back_to_main_menu
+		jsr delayer_button_common
 		lda #MS_MAIN
 		sta menu_state
 		mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
@@ -3362,17 +3375,86 @@ MENU_0_DATA
 MENU_1_DATA
 	dta d'                                        '
 	dta d'      Przyspieszenie grawitacyjne:      '
-	dta d'                POTEZNE                 '		; STONOWANE
+	dta d'               '
+GRAVITY_LABEL
+	dta d' POTEZNE '
+	dta d'                '
 	dta d'                                        '
 	dta d'            Obrot pieczary:             '
-	dta d'                WLACZONY                '
+	dta d'               '
+ROTATION_LABEL
+	dta d' WLACZONY'
+	dta d'                '
 	dta d'                                        '
 	dta d'                 Jezyk:                 '
-	dta d'               ANGIELKSKI               '
+	dta d'               ANGIELSKI                '
 	dta d'                                        '
 	dta d'                                        '
 	dta d'                 Powrot                 '
 	dta d'                                        '
+
+GRAVITY_1
+	dta d'STONOWANE'*
+GRAVITY_2
+	dta d' POTEZNE '*
+ROTATION_1
+	dta d' WLACZONY'*
+ROTATION_2
+	dta d'WYLACZONY'*
+LANG_1
+	dta d'ANGIELSKI'
+LANG_2
+	dta d' POLSKI  '
+
+delayer_button_common
+		lda delayer_button
+		jne dbc_0
+		lda #MENU_SWITCH_DELAY
+		sta delayer_button
+		rts
+dbc_0	pla
+		pla
+		rts
+
+flip_failing_speed
+		jsr delayer_button_common
+
+		lda instafall
+		and #%00000001
+		beq ffs_1
+
+		mwa #GRAVITY_1 ptr0
+		jmp ffs_2
+ffs_1	mwa #GRAVITY_2 ptr0
+
+ffs_2	ldy #0
+@		lda (ptr0),y
+		sta GRAVITY_LABEL,y
+		iny
+		cpy #GRAVITY_2-GRAVITY_1
+		bne @-
+		inc instafall
+ffs_0	rts
+
+flip_level_rotation
+		jsr delayer_button_common
+
+		lda level_rotation
+		and #%00000001
+		beq flr_1
+
+		mwa #ROTATION_1 ptr0
+		jmp flr_2
+flr_1	mwa #ROTATION_2 ptr0
+
+flr_2	ldy #0
+@		lda (ptr0),y
+		sta ROTATION_LABEL,y
+		iny
+		cpy #GRAVITY_2-GRAVITY_1
+		bne @-
+		inc level_rotation
+flr_0	rts
 
 .align		$100
 DLGAME
@@ -3779,6 +3861,8 @@ ROTATE_LUT_SIZE	equ ROTATE_LUT_END-ROTATE_LUT_BEGIN
 	dta b(0)
 	org instafall
 	dta b(1)
+	org level_rotation
+	dta b(0)
 	org $4777
 scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00
 	.he 00 00 00 00 42 00 03 04 05 06 87 00 00 00 00 00 00 00 00 00

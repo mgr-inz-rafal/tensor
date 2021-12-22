@@ -30,7 +30,7 @@ TRACKS		equ 8
 TRACKS		equ 4
 	EIF
 ;*
-PLAYER		equ $9000
+PLAYER		equ MUSICPLAYER
 ;*
 ;* RMT FEATures definitions file
 ;* For optimizations of RMT player routine to concrete RMT modul only!

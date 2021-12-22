@@ -21,7 +21,7 @@ DIGITOFFSET		equ 6
 SHADOWOFFSET 	equ 60
 TITLEOFFSET 	equ 60+20
 MAPCOUNT 		equ 51
-MUSICPLAYER		equ $9000
+MUSICPLAYER		equ $9300
 MAPSIZE			equ	12
 SCWIDTH 		equ 20
 MARGIN 			equ	(SCWIDTH-MAPSIZE)/2
@@ -114,6 +114,8 @@ MAIN_MENU_LABEL_LEN equ 18
 .zpvar  .byte   menu_state
 .zpvar	.byte	already_inverted
 .zpvar  .byte	level_rotation
+.zpvar	.byte   language
+.zpvar  .word   options_screen_ptr
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3134,6 +3136,7 @@ init_menu
 		sta menu_cursor_index
 		sta options_cursor_index
 		sta already_inverted
+		mwa #MENU_1_DATA options_screen_ptr
 		rts
 
 invert_menu_cursor
@@ -3148,24 +3151,29 @@ invert_menu_cursor
 		rts
 
 invert_menu_cursor_common
-iomc_2	cpx #0
-		beq iomc_1
+imc_2	cpx #0
+		beq imc_1
 		adw ptr1 any_moved
 		dex
-		jmp iomc_2
-iomc_1	ldy #0
-iomc_0	lda (ptr1),y
+		jmp imc_2
+imc_1	ldy #0
+imc_0	lda (ptr1),y
 		eor #%10000000
 		sta (ptr1),y
 		iny
 		cpy #MAIN_MENU_LABEL_LEN
-		bne iomc_0
+		bne imc_0
 		rts
 
 invert_options_menu_cursor
 		mva #80+40 any_moved
-		mwa #MENU_1_DATA+MENU_ITEM_OFFSET+37+40 ptr1
-		ldx options_cursor_index
+		lda language
+		and #%00000001
+		beq iomc_0
+		mwa #MENU_1_DATA_EN+MENU_ITEM_OFFSET+37+40 ptr1
+		jmp iomc_1
+iomc_0	mwa #MENU_1_DATA+MENU_ITEM_OFFSET+37+40 ptr1
+iomc_1	ldx options_cursor_index
 		jsr invert_menu_cursor_common
 		rts
 
@@ -3245,7 +3253,7 @@ hmi_4
 
 hmi_5		cmp #2
 			bne hmi_6
-			; Language
+			jsr flip_language
 			jmp skp
 
 hmi_6		; Back to main menu
@@ -3279,13 +3287,14 @@ show_options
 		jsr delayer_button_common
 		lda #MS_OPTIONS
 		sta menu_state
-		mwa #MENU_1_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		ldy #0
+		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 		lda already_inverted
 		bne so_1
 		jsr invert_options_menu_cursor
 so_1	lda #1
 		sta already_inverted
-so_0	jmp skp
+		jmp skp
 
 show_instruction
 		jsr delayer_button_common
@@ -3387,10 +3396,37 @@ ROTATION_LABEL
 	dta d'                '
 	dta d'                                        '
 	dta d'                 Jezyk:                 '
-	dta d'                 POLSKI                 '
+	dta d'               '
+LANGUAGE_LABEL
+	dta d'  POLSKI '
+	dta d'                '
 	dta d'                                        '
 	dta d'                                        '
 	dta d'                 Powrot                 '
+	dta d'                                        '
+
+MENU_1_DATA_EN
+	dta d'                                        '
+	dta d'         Gravity acceleration:          '
+	dta d'               '
+GRAVITY_LABEL_1
+	dta d' MIGHTY  '
+	dta d'                '
+	dta d'                                        '
+	dta d'            Level rotation:             '
+	dta d'               '
+ROTATION_LABEL_1
+	dta d'   ON     '
+	dta d'               '
+	dta d'                                        '
+	dta d'               Language:                '
+	dta d'           '
+LANGUAGE_LABEL_1
+	dta d'     ENGLISH      '*
+	dta d'           '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                  Back                  '
 	dta d'                                        '
 
 GRAVITY_1
@@ -3402,9 +3438,9 @@ ROTATION_1
 ROTATION_2
 	dta d'WYLACZONY'*
 LANG_1
-	dta d' POLSKI  '
+	dta d'  POLSKI '*
 LANG_2
-	dta d'ANGIELSKI'
+	dta d' ENGLISH '*
 
 delayer_button_common
 		lda delayer_button
@@ -3456,6 +3492,36 @@ flr_1	mwa #ROTATION_2 ptr0
 flr_2	jsr flip_menu_option_common
 		inc level_rotation
 flr_0	rts
+
+flip_language
+		jsr delayer_button_common
+
+		mwa #LANGUAGE_LABEL ptr1
+		lda language
+		and #%00000001
+		beq fl_1
+
+		jsr enable_polish
+		jmp fl_2
+fl_1
+		jsr enable_english
+
+fl_2	
+		inc language
+
+fl_0	rts
+
+enable_english
+		mwa #MENU_1_DATA_EN options_screen_ptr
+		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		inc already_inverted
+		rts
+
+enable_polish
+		mwa #MENU_1_DATA options_screen_ptr
+		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		inc already_inverted
+		rts
 
 .align		$100
 DLGAME
@@ -3863,6 +3929,8 @@ ROTATE_LUT_SIZE	equ ROTATE_LUT_END-ROTATE_LUT_BEGIN
 	org instafall
 	dta b(1)
 	org level_rotation
+	dta b(0)
+	org language
 	dta b(0)
 	org $4777
 scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00

@@ -3387,7 +3387,7 @@ ROTATION_LABEL
 	dta d'                '
 	dta d'                                        '
 	dta d'                 Jezyk:                 '
-	dta d'               ANGIELSKI                '
+	dta d'                 POLSKI                 '
 	dta d'                                        '
 	dta d'                                        '
 	dta d'                 Powrot                 '
@@ -3402,9 +3402,9 @@ ROTATION_1
 ROTATION_2
 	dta d'WYLACZONY'*
 LANG_1
-	dta d'ANGIELSKI'
-LANG_2
 	dta d' POLSKI  '
+LANG_2
+	dta d'ANGIELSKI'
 
 delayer_button_common
 		lda delayer_button
@@ -3416,9 +3416,19 @@ dbc_0	pla
 		pla
 		rts
 
+flip_menu_option_common
+		ldy #0
+@		lda (ptr0),y
+		sta (ptr1),y
+		iny
+		cpy #GRAVITY_2-GRAVITY_1
+		bne @-		
+		rts
+
 flip_failing_speed
 		jsr delayer_button_common
 
+		mwa #GRAVITY_LABEL ptr1
 		lda instafall
 		and #%00000001
 		beq ffs_1
@@ -3427,18 +3437,14 @@ flip_failing_speed
 		jmp ffs_2
 ffs_1	mwa #GRAVITY_2 ptr0
 
-ffs_2	ldy #0
-@		lda (ptr0),y
-		sta GRAVITY_LABEL,y
-		iny
-		cpy #GRAVITY_2-GRAVITY_1
-		bne @-
+ffs_2	jsr flip_menu_option_common
 		inc instafall
 ffs_0	rts
 
 flip_level_rotation
 		jsr delayer_button_common
 
+		mwa #ROTATION_LABEL ptr1
 		lda level_rotation
 		and #%00000001
 		beq flr_1
@@ -3447,12 +3453,7 @@ flip_level_rotation
 		jmp flr_2
 flr_1	mwa #ROTATION_2 ptr0
 
-flr_2	ldy #0
-@		lda (ptr0),y
-		sta ROTATION_LABEL,y
-		iny
-		cpy #GRAVITY_2-GRAVITY_1
-		bne @-
+flr_2	jsr flip_menu_option_common
 		inc level_rotation
 flr_0	rts
 

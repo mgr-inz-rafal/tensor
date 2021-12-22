@@ -3512,12 +3512,14 @@ fl_2
 fl_0	rts
 
 enable_english
+		jsr synchro
 		mwa #MENU_1_DATA_EN options_screen_ptr
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 		inc already_inverted
 		rts
 
 enable_polish
+		jsr synchro
 		mwa #MENU_1_DATA options_screen_ptr
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 		inc already_inverted

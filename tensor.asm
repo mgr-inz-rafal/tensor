@@ -3285,6 +3285,7 @@ hmi_3
 
 show_options
 		jsr delayer_button_common
+		jsr synchro
 		lda #MS_OPTIONS
 		sta menu_state
 		ldy #0
@@ -3298,6 +3299,7 @@ so_1	lda #1
 
 show_instruction
 		jsr delayer_button_common
+		jsr synchro
 		lda #MS_INSTRUCTION
 		sta menu_state
 		mwa #INSTRUCTION_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
@@ -3305,6 +3307,7 @@ si_0	jmp skp
 
 back_to_main_menu
 		jsr delayer_button_common
+		jsr synchro
 		lda #MS_MAIN
 		sta menu_state
 		mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
@@ -3433,10 +3436,18 @@ GRAVITY_1
 	dta d'STONOWANE'*
 GRAVITY_2
 	dta d' POTEZNE '*
+GRAVITY_1_EN
+	dta d'FAINT    '*
+GRAVITY_2_EN
+	dta d'MIGHTY   '*
 ROTATION_1
 	dta d' WLACZONY'*
 ROTATION_2
 	dta d'WYLACZONY'*
+ROTATION_1_EN
+	dta d' ON      '*
+ROTATION_2_EN
+	dta d' OFF     '*
 LANG_1
 	dta d'  POLSKI '*
 LANG_2
@@ -3463,15 +3474,29 @@ flip_menu_option_common
 
 flip_failing_speed
 		jsr delayer_button_common
+		jsr synchro
 
+		lda language
+		and #%00000001
+		beq ffs_3
+		mwa #GRAVITY_LABEL_1 ptr1
+		mwa #GRAVITY_1_EN ptr3
+		mwa #GRAVITY_2_EN ppx
+
+		jmp ffs_4
+ffs_3
 		mwa #GRAVITY_LABEL ptr1
+		mwa #GRAVITY_1 ptr3
+		mwa #GRAVITY_2 ppx
+
+ffs_4
 		lda instafall
 		and #%00000001
 		beq ffs_1
 
-		mwa #GRAVITY_1 ptr0
+		mwa ptr3 ptr0
 		jmp ffs_2
-ffs_1	mwa #GRAVITY_2 ptr0
+ffs_1	mwa ppx ptr0
 
 ffs_2	jsr flip_menu_option_common
 		inc instafall
@@ -3479,15 +3504,27 @@ ffs_0	rts
 
 flip_level_rotation
 		jsr delayer_button_common
+		jsr synchro
 
-		mwa #ROTATION_LABEL ptr1
+		lda language
+		and #%00000001
+		beq flr_3
+		mwa #ROTATION_LABEL_1 ptr1
+		mwa #ROTATION_1_EN ptr3
+		mwa #ROTATION_2_EN ppx
+
+		jmp flr_4
+flr_3	mwa #ROTATION_LABEL ptr1
+		mwa #ROTATION_1 ptr3
+		mwa #ROTATION_2 ppx
+flr_4
 		lda level_rotation
 		and #%00000001
 		beq flr_1
 
-		mwa #ROTATION_1 ptr0
+		mwa ptr3 ptr0
 		jmp flr_2
-flr_1	mwa #ROTATION_2 ptr0
+flr_1	mwa ppx ptr0
 
 flr_2	jsr flip_menu_option_common
 		inc level_rotation
@@ -3495,6 +3532,7 @@ flr_0	rts
 
 flip_language
 		jsr delayer_button_common
+		jsr synchro
 
 		mwa #LANGUAGE_LABEL ptr1
 		lda language

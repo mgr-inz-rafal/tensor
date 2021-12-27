@@ -3701,6 +3701,14 @@ enable_polish
 		rts
 
 show_level_selector
+		lda #1 
+		sta rmt_player_halt
+		ldx <TITLE_FONT
+		ldy >TITLE_FONT
+		jsr load_font_from_storage_slot_1
+		lda >FONT_SLOT_1
+		sta CHBAS
+
 		lda #100
 		sta ignorestick
 		ldx <DLLEVELSELECTOR
@@ -3708,10 +3716,17 @@ show_level_selector
 		stx SDLSTL
 		sty SDLSTL+1
 
-		lda #28
+		lda #94
 		sta SCRMEM
-		lda #30
+		lda #95
 		sta SCRMEM+3
+
+		ldy #20
+		lda #0
+@		sta SCRMEM,y
+		dey
+		cpy #3
+		bne @-
 
 		jsr paint_level_number
 		jmp xxxx1

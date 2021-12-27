@@ -115,7 +115,8 @@ MAIN_MENU_LABEL_LEN equ 18
 .zpvar	.byte	already_inverted
 .zpvar  .byte	level_rotation
 .zpvar	.byte   language
-.zpvar  .word   options_screen_ptr
+.zpvar  .word   options_screen_ptr	; TODO[RC]: Can use any of the "in-game" ZP variables
+.zpvar  .word   main_menu_screen_ptr	; TODO[RC]: Can use any of the "in-game" ZP variables
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -592,9 +593,6 @@ ff1	#if .word ptr0 <> #HI_SCORE_TABLE+640
 	jsr init_menu
 	mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 	jsr invert_menu_cursor
-	;jsr invert_menu_cursor
-	;jsr paint_level_number
-	;jsr paint_amygdala_speed
 	enable_antic
 
 	ift USESPRITES
@@ -3089,8 +3087,13 @@ init_menu
 
 invert_menu_cursor
 		mva #80 any_moved
-		mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37-40 ptr1
-		ldx menu_cursor_index
+		lda language
+		and #%00000001
+		beq imcc_0
+		mwa #MENU_0_DATA_EN+MENU_ITEM_OFFSET+37-40 ptr1
+		jmp imcc_1
+imcc_0	mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37-40 ptr1
+imcc_1	ldx menu_cursor_index
 		#if .byte menu_state = #MS_MAIN .and .byte menu_cursor_index = #3
 			inx
 			inx
@@ -3263,13 +3266,9 @@ back_to_main_menu
 		jsr synchro
 		lda #MS_MAIN
 		sta menu_state
-		lda language
-		and #%00000001
-		beq btmm_0
-		mwa #MENU_0_DATA_EN ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-		jmp btmm_1
-btmm_0	mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-btmm_1	jmp skp
+		ldy #0
+		mwa main_menu_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		jmp skp
 
 STOP_MUSIC
 		jsr RASTERMUSICTRACKER+9
@@ -3529,13 +3528,16 @@ fl_0	rts
 
 enable_english
 		jsr synchro
+		mwa #MENU_0_DATA_EN main_menu_screen_ptr
 		mwa #MENU_1_DATA_EN options_screen_ptr
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 		inc already_inverted
+		jsr invert_menu_cursor
 		rts
 
 enable_polish
 		jsr synchro
+		mwa #MENU_0_DATA main_menu_screen_ptr
 		mwa #MENU_1_DATA options_screen_ptr
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 		inc already_inverted

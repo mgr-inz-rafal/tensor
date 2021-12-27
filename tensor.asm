@@ -479,21 +479,33 @@ MAP_02_NAME
 		dta d'51'
 MAP_NAME_LAST
 		dta b($9b)
-		
-AMYGDALA_DATA_5	; Miecz
-	dta b(0),b(192),b(160),b(84),b(44),b(24),b(52),b(2),b($64),b($74)
 
-AMYGDALA_DATA_6	; Pierscionek
-	dta b(0),b(60),b(24),b(52),b(82),b(64),b(66),b(52),b($a6),b($b6)
+INSTRUCTION_DATA
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'0123456789012345678901234567890123456789'
 
-AMYGDALA_DATA_7	; Robak
-	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($34),b($44)
+INSTRUCTION_DATA_EN
+	dta d'ENGLISZijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'012345678901234567890123456789012ENGLISZ'
 
-FONT_MAPPER
-		dta b(>FONT_SLOT_1)			; North
-		dta b(>FONT_SLOT_1+2)		; West
-		dta b(>FONT_SLOT_2)			; South
-		dta b(>FONT_SLOT_2+2)		; East
 LUDEK_DATA
 		dta b($62)
 		dta b($16)
@@ -530,6 +542,104 @@ LUDEK_DATA
 		dta b($38)
 		dta b($18)
 		dta b($38)
+
+AMYGDALA_DATA_5	; Miecz
+	dta b(0),b(192),b(160),b(84),b(44),b(24),b(52),b(2),b($64),b($74)
+
+AMYGDALA_DATA_6	; Pierscionek
+	dta b(0),b(60),b(24),b(52),b(82),b(64),b(66),b(52),b($a6),b($b6)
+
+AMYGDALA_DATA_7	; Robak
+	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($34),b($44)
+
+scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 42 00 03 04 05 06 87 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 08 09 0a 0b 0c 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 4d 00 0e 0f 10 d1 d2 00 93 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 00 d4 15 d4 00 00 00 00 00 00 00 00 00 00 00
+ 	.he 00 00 00 00 00 16 17 18 99 9a 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 00 1b 5c 9d 00 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 00 1e 1f a0 00 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 61+128 62+128 63+128 00+128 64+128 65+128 66+128 67+128 68+128 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 69 6a 6b 6c 6d 6e 6f 79+128 00 00 00 00 00 00 00 00
+	.he 00 00 00 70+128 71+128 72+128 73+128 74+128 75+128 76+128 77+128 78+128 00 00 00 00 00 00 00 00
+
+MENU_0_DATA
+	dta d'               Graj                     '
+	dta d'                                        '
+	dta d'               Opcje                    '
+	dta d'                                        '
+	dta d'               Instrukcja               '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'               Wyjscie                  '
+
+MENU_0_DATA_EN
+	dta d'               Play                     '
+	dta d'                                        '
+	dta d'               Options                  '
+	dta d'                                        '
+	dta d'               Info                     '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'               Exit                     '
+
+MENU_1_DATA
+	dta d'      Przyspieszenie grawitacyjne:      '
+	dta d'           '
+GRAVITY_LABEL
+	dta d'     POTEZNE      '*
+	dta d'           '
+	dta d'                                        '
+	dta d'            Obrot pieczary:             '
+	dta d'               '
+ROTATION_LABEL
+	dta d' WLACZONY'
+	dta d'                '
+	dta d'                                        '
+	dta d'                 Jezyk:                 '
+	dta d'               '
+LANGUAGE_LABEL
+	dta d'  POLSKI '
+	dta d'                '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                 Powrot                 '
+
+MENU_1_DATA_EN
+	dta d'         Gravity acceleration:          '
+	dta d'           '
+GRAVITY_LABEL_1
+	dta d'     MIGHTY       '*
+	dta d'           '
+	dta d'                                        '
+	dta d'            Level rotation:             '
+	dta d'               '
+ROTATION_LABEL_1
+	dta d'   ON     '
+	dta d'               '
+	dta d'                                        '
+	dta d'               Language:                '
+	dta d'           '
+LANGUAGE_LABEL_1
+	dta d'     ENGLISH      '
+	dta d'           '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                  Back                  '
+		
+
+FONT_MAPPER
+		dta b(>FONT_SLOT_1)			; North
+		dta b(>FONT_SLOT_1+2)		; West
+		dta b(>FONT_SLOT_2)			; South
+		dta b(>FONT_SLOT_2+2)		; East
 
 fnt
 	ift USESPRITES
@@ -3309,104 +3419,6 @@ handle_delayers
 		ind delayer_button
 @		rts
 
-; TODO[RC]: Ensure proper alignment, since these addresses
-; are injected directly into the display list
-INSTRUCTION_DATA
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'0123456789012345678901234567890123456789'
-
-INSTRUCTION_DATA_EN
-	dta d'ENGLISZijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'012345678901234567890123456789012ENGLISZ'
-
-MENU_0_DATA
-	dta d'               Graj                     '
-	dta d'                                        '
-	dta d'               Opcje                    '
-	dta d'                                        '
-	dta d'               Instrukcja               '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'               Wyjscie                  '
-
-MENU_0_DATA_EN
-	dta d'               Play                     '
-	dta d'                                        '
-	dta d'               Options                  '
-	dta d'                                        '
-	dta d'               Info                     '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'               Exit                     '
-
-MENU_1_DATA
-	dta d'      Przyspieszenie grawitacyjne:      '
-	dta d'           '
-GRAVITY_LABEL
-	dta d'     POTEZNE      '*
-	dta d'           '
-	dta d'                                        '
-	dta d'            Obrot pieczary:             '
-	dta d'               '
-ROTATION_LABEL
-	dta d' WLACZONY'
-	dta d'                '
-	dta d'                                        '
-	dta d'                 Jezyk:                 '
-	dta d'               '
-LANGUAGE_LABEL
-	dta d'  POLSKI '
-	dta d'                '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                 Powrot                 '
-
-MENU_1_DATA_EN
-	dta d'         Gravity acceleration:          '
-	dta d'           '
-GRAVITY_LABEL_1
-	dta d'     MIGHTY       '*
-	dta d'           '
-	dta d'                                        '
-	dta d'            Level rotation:             '
-	dta d'               '
-ROTATION_LABEL_1
-	dta d'   ON     '
-	dta d'               '
-	dta d'                                        '
-	dta d'               Language:                '
-	dta d'           '
-LANGUAGE_LABEL_1
-	dta d'     ENGLISH      '
-	dta d'           '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                  Back                  '
-
 GRAVITY_1
 	dta d'STONOWANE'*
 GRAVITY_2
@@ -3950,19 +3962,6 @@ ROTATE_LUT_SIZE	equ ROTATE_LUT_END-ROTATE_LUT_BEGIN
 	dta b(0)
 	org language
 	dta b(0)
-	org $4777
-scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 42 00 03 04 05 06 87 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 00 08 09 0a 0b 0c 00 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 4d 00 0e 0f 10 d1 d2 00 93 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 00 00 d4 15 d4 00 00 00 00 00 00 00 00 00 00 00
- 	.he 00 00 00 00 00 16 17 18 99 9a 00 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 00 00 1b 5c 9d 00 00 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 00 00 1e 1f a0 00 00 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 61+128 62+128 63+128 00+128 64+128 65+128 66+128 67+128 68+128 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 69 6a 6b 6c 6d 6e 6f 79+128 00 00 00 00 00 00 00 00
-	.he 00 00 00 70+128 71+128 72+128 73+128 74+128 75+128 76+128 77+128 78+128 00 00 00 00 00 00 00 00
-
 	
 	
 ; Notes

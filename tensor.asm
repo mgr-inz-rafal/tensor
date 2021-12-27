@@ -310,71 +310,12 @@ MODUL
 		opt h-
 		ins "music\TENSOR.rmt"
 		opt h+
-		
+	
 	org $3900-3+1087
-TITLE_PART_1
+TITLE_TOP_BORDER
 	dta b(62)
 :38	dta b(125)
 	dta b(93)
-	dta b(124),d' Docent Ireneusz Trzaskowski poszukuje',b(124)
-	dta b(124),d'na  Jowiszu  mistycznych ',b(31),d'MIGDA',b(11),b(5),d'W X4',b(30),b(124)
-	
-	dta b(124),d'Nie skacze, nie strzela, ale za pomoc',b(81),b(124)
-	dta b(124),b(31),d'Tensora Miotu  Grawitacyjnego',b(30),d' miesza',b(124)
-	dta b(124),d'przestrzeni',b(81),d' i powoduje  opad  rzeczy.',b(124)
-TITLE_PART_2
-	dta b(124),d'Pom',b(80),b(88),d' mu  wypr',b(80),b(88),d'ni',b(86),d' wszelkie pieczary.',b(124)
-	dta b(124),d'                                      ',b(124)
-	dta b(124),d'Kierunek ',b(28),d' FIRE zmienia grawitacj',b(68),d'.   ',b(124)
-	dta b(124),d'D',b(88),d'oj w d',b(80),b(123),d' przyspiesza ospa',b(123),d'e spadki. ',b(124)
-	dta b(63)
-:38	dta b(74)
-	dta b(29)
-	dta b(124)
-	dta b(128)
-	dta b(94+128)
-	dta b(95+128)
-	dta d' - PIECZARA:'*
-TITLE_LEVEL_NUMBER
-	dta d'           '*
-	dta b(32+128),b(64+128)
-	dta d' - '*
-TITLE_AMYGDALA_SPEED
-	dta d'       '*,b(124)
-TITLE_PART_3
-	dta b(91)
-:1	dta b(125)
-	dta b(126)
-
-	; http://github.com/mgr-inz-rafal/tensor
-	dta b(66)
-	dta b(83)
-	dta b(79)
-	dta b(90)
-	dta b(76)
-	dta b(65)
-	dta b(84)
-	dta b(67)
-	dta b(69)
-	dta b(96)
-	dta b(27)
-	dta b(59)
-	dta b(60)
-	dta b(61)
-	dta b(120)
-	dta b(89)
-	dta b(8)
-	dta b(7)
-
-	dta b(127)
-:12	dta b(125)
-
-	dta b(126)
-	dta b(72)
-	dta b(73)
-	dta b(127)
-	dta b(125)
-	dta b(92)
 MAP_01_NAME
 		dta d'kr'*,b(1+64*3),d'pcewo w prawo'*
 		dta d'    I W LEWO    '*
@@ -1273,9 +1214,10 @@ _rts	rts
 	
 	dta b($40)
 	dta b($42)
+	dta a(TITLE_TOP_BORDER)
+	dta b($42)
 TEXT_PANEL_ADDRESS
 	dta a(SCRMEM)
-	dta b($02)
 	dta b($02)
 	dta b($02)
 	dta b($02)
@@ -3141,7 +3083,7 @@ init_menu
 
 invert_menu_cursor
 		mva #80 any_moved
-		mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37 ptr1
+		mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37-40 ptr1
 		ldx menu_cursor_index
 		#if .byte menu_state = #MS_MAIN .and .byte menu_cursor_index = #3
 			inx
@@ -3170,9 +3112,9 @@ invert_options_menu_cursor
 		lda language
 		and #%00000001
 		beq iomc_0
-		mwa #MENU_1_DATA_EN+MENU_ITEM_OFFSET+37+40 ptr1
+		mwa #MENU_1_DATA_EN+MENU_ITEM_OFFSET+37 ptr1
 		jmp iomc_1
-iomc_0	mwa #MENU_1_DATA+MENU_ITEM_OFFSET+37+40 ptr1
+iomc_0	mwa #MENU_1_DATA+MENU_ITEM_OFFSET+37 ptr1
 iomc_1	ldx options_cursor_index
 		jsr invert_menu_cursor_common
 		rts
@@ -3362,7 +3304,6 @@ handle_delayers
 ; TODO[RC]: Ensure proper alignment, since these addresses
 ; are injected directly into the display list
 INSTRUCTION_DATA
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
 	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
 	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
 	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
@@ -3377,8 +3318,7 @@ INSTRUCTION_DATA
 	dta d'0123456789012345678901234567890123456789'
 
 INSTRUCTION_DATA_EN
-	dta d'ENGLISZhijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'ENGLISZijklmnopqrstuvxyzabcdefghijklmnop'
 	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
 	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
 	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
@@ -3392,7 +3332,6 @@ INSTRUCTION_DATA_EN
 	dta d'012345678901234567890123456789012ENGLISZ'
 
 MENU_0_DATA
-	dta d'                                        '
 	dta d'               Graj                     '
 	dta d'                                        '
 	dta d'               Opcje                    '
@@ -3407,7 +3346,6 @@ MENU_0_DATA
 	dta d'                                        '
 
 MENU_1_DATA
-	dta d'                                        '
 	dta d'      Przyspieszenie grawitacyjne:      '
 	dta d'               '
 GRAVITY_LABEL
@@ -3431,7 +3369,6 @@ LANGUAGE_LABEL
 	dta d'                                        '
 
 MENU_1_DATA_EN
-	dta d'                                        '
 	dta d'         Gravity acceleration:          '
 	dta d'               '
 GRAVITY_LABEL_1

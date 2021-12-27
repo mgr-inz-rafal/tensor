@@ -318,10 +318,39 @@ TITLE_TOP_BORDER
 :38	dta b(125)
 	dta b(93)
 TITLE_BOTTOM_BORDER
-	dta b(62)
-:37	dta b(125)
-	dta b(93)
-	dta b(93)
+	dta b(91)
+:1	dta b(125)
+	dta b(126)
+
+	; http://github.com/mgr-inz-rafal/tensor
+	dta b(66)
+	dta b(83)
+	dta b(79)
+	dta b(90)
+	dta b(76)
+	dta b(65)
+	dta b(84)
+	dta b(67)
+	dta b(69)
+	dta b(96)
+	dta b(27)
+	dta b(59)
+	dta b(60)
+	dta b(61)
+	dta b(120)
+	dta b(89)
+	dta b(8)
+	dta b(7)
+
+	dta b(127)
+:12	dta b(125)
+
+	dta b(126)
+	dta b(72)
+	dta b(73)
+	dta b(127)
+	dta b(125)
+	dta b(92)
 MENU_0_DATA
 	dta d'               Graj                     '
 	dta d'                                        '

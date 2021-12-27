@@ -116,6 +116,7 @@ MAIN_MENU_LABEL_LEN equ 18
 .zpvar	.byte   language
 .zpvar  .word   options_screen_ptr	; TODO[RC]: Can use any of the "in-game" ZP variables
 .zpvar  .word   main_menu_screen_ptr	; TODO[RC]: Can use any of the "in-game" ZP variables
+.zpvar  .byte   dont_touch_menu
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -854,10 +855,12 @@ ff1	#if .word ptr0 <> #HI_SCORE_TABLE+640
 
 	lda #MS_MAIN
 	sta menu_state
+	lda dont_touch_menu
+	bne ai8
 	jsr init_menu
 	mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 	jsr invert_menu_cursor
-	enable_antic
+ai8 enable_antic
 
 	ift USESPRITES
 	mva >pmg pmbase		;missiles and players data address
@@ -3702,6 +3705,7 @@ enable_polish
 
 show_level_selector
 		lda #1 
+		sta dont_touch_menu
 		sta rmt_player_halt
 		ldx <TITLE_FONT
 		ldy >TITLE_FONT
@@ -4206,6 +4210,8 @@ ROTATE_LUT_SIZE	equ ROTATE_LUT_END-ROTATE_LUT_BEGIN
 	org level_rotation
 	dta b(0)
 	org language
+	dta b(0)
+	org dont_touch_menu
 	dta b(0)
 	
 	

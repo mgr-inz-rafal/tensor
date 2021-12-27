@@ -841,6 +841,13 @@ pmg	.ds $0300
 ant	ANTIC_PROGRAM scr,ant
 
 main
+		ldy #0
+		lda #0
+axa1	sta SCRMEM+40*13,y
+		iny
+		cpy #41
+		bne axa1
+
 ;;--- BEGIN: Temporary code that fills hi-score table with arbitrary data
 	jsr os_gone
 	mwa #HI_SCORE_TABLE ptr0

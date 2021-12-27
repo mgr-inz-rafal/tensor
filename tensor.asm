@@ -3082,6 +3082,7 @@ init_menu
 		sta menu_cursor_index
 		sta options_cursor_index
 		sta already_inverted
+		mwa #MENU_0_DATA main_menu_screen_ptr
 		mwa #MENU_1_DATA options_screen_ptr
 		rts
 

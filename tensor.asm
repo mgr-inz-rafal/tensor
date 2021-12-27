@@ -435,19 +435,19 @@ MENU_0_DATA_EN
 	dta b(124),d'              Quit                    ',b(124)
 
 MENU_1_DATA
-	dta b(124),d'     Przyspieszenie grawitacyjne:     ',b(124)
+	dta b(124),d'     Przyspieszenie  grawitacyjne     ',b(124)
 	dta b(124),d'          '
 GRAVITY_LABEL
 	dta d'     POTEZNE      '*
 	dta d'          ',b(124)
 	dta b(124),d'                                      ',b(124)
-	dta b(124),d'           Obrot pieczary:            ',b(124)
-	dta b(124),d'              '
+	dta b(124),d'           Obrot  pieczary            ',b(124)
+	dta b(124),d'          '
 ROTATION_LABEL
-	dta d' WLACZONY'
-	dta d'               ',b(124)
+	dta d'    ANIMOWANY     '
+	dta d'          ',b(124)
 	dta b(124),d'                                      ',b(124)
-	dta b(124),d'                Jezyk:                ',b(124)
+	dta b(124),d'        Jezyk stosowany w grze        ',b(124)
 	dta b(124),d'              '
 LANGUAGE_LABEL
 	dta d'  POLSKI '
@@ -457,19 +457,19 @@ LANGUAGE_LABEL
 	dta b(124),d'                Powrot                ',b(124)
 
 MENU_1_DATA_EN
-	dta b(124),d'        Gravity acceleration:         ',b(124)
+	dta b(124),d'         Gravity acceleration         ',b(124)
 	dta b(124),d'          '
 GRAVITY_LABEL_1
-	dta d'     MIGHTY       '*
+	dta d'      MIGHTY      '*
 	dta d'          ',b(124)
 	dta b(124),d'                                      ',b(124)
-	dta b(124),d'           Level rotation:            ',b(124)
-	dta b(124),d'              '
+	dta b(124),d'           Level  rotation            ',b(124)
+	dta b(124),d'          '
 ROTATION_LABEL_1
-	dta d'   ON     '
-	dta d'              ',b(124)
+	dta d'     ANIMATED     '
+	dta d'          ',b(124)
 	dta b(124),d'                                      ',b(124)
-	dta b(124),d'              Language:               ',b(124)
+	dta b(124),d'               Language               ',b(124)
 	dta b(124),d'          '
 LANGUAGE_LABEL_1
 	dta d'     ENGLISH      '
@@ -3599,21 +3599,21 @@ handle_delayers
 @		rts
 
 GRAVITY_1
-	dta d'STONOWANE'*
+	dta d'    STONOWANE     '*
 GRAVITY_2
-	dta d' POTEZNE '*
+	dta d'     POTEZNE      '*
 GRAVITY_1_EN
-	dta d'FAINT    '*
+	dta d'      FAINT       '*
 GRAVITY_2_EN
-	dta d'MIGHTY   '*
+	dta d'      MIGHTY      '*
 ROTATION_1
-	dta d' WLACZONY'*
+	dta d'    ANIMOWANY     '*
 ROTATION_2
-	dta d'WYLACZONY'*
+	dta d'  NATYCHMIASTOWY  '*
 ROTATION_1_EN
-	dta d' ON      '*
+	dta d'     ANIMATED     '*
 ROTATION_2_EN
-	dta d' OFF     '*
+	dta d'  NEARLY INSTANT  '*
 LANG_1
 	dta d'  POLSKI '*
 LANG_2

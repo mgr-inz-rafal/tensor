@@ -1411,16 +1411,7 @@ raster_program_end
 	beq stop
 
 	lda porta
-	cmp #247	; 251
-	bne @+
-;	jsr set_next_starting_level
-	jmp xx1
-	
-@	cmp #251
-	bne @+
-;	jsr set_previous_starting_level
-xx1	
-@	cmp #253
+	cmp #253
 	bne @+
 	jsr menu_cursor_down
 	jmp xx2
@@ -1440,6 +1431,8 @@ stop
 	mva #$ff portb		;ROM switch on
 	mva #$40 nmien		;only NMI interrupts, DLI disabled
 	cli			;IRQ enabled
+
+	jmp show_level_selector
 
 	jmp run_here
 skp
@@ -3596,7 +3589,7 @@ LANG_2
 
 delayer_button_common
 		lda delayer_button
-		jne dbc_0
+		bne dbc_0
 		lda #MENU_SWITCH_DELAY
 		sta delayer_button
 		rts
@@ -3707,6 +3700,85 @@ enable_polish
 		;inc already_inverted
 		rts
 
+show_level_selector
+		lda #100
+		sta ignorestick
+		ldx <DLLEVELSELECTOR
+		ldy >DLLEVELSELECTOR
+		stx SDLSTL
+		sty SDLSTL+1
+
+		lda #28
+		sta SCRMEM
+		lda #30
+		sta SCRMEM+3
+
+		jsr paint_level_number
+		jmp xxxx1
+xx56
+		inc ignorestick
+		jmp xaxx1
+xxxx1	
+		dec ignorestick
+		lda ignorestick
+		cmp #$ff
+		beq xx56
+
+xaxx1	jsr synchro
+		jsr handle_delayers
+		lda porta
+		cmp #247	; 251
+		bne @+
+		jsr set_next_starting_level
+		jmp xx1
+		
+@		cmp #251
+		bne xx1
+		jsr set_previous_starting_level
+
+xx1		lda ignorestick
+		bne xxxx1
+		lda trig0
+		jeq run_here
+
+		jmp xxxx1
+		rts
+
+set_next_starting_level
+		jsr delayer_button_common
+		adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
+		adw curmapname #MAP_02_NAME-MAP_01_NAME
+		nop
+		#if .word curmapname = #MAP_NAME_LAST
+			sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
+			sbw curmapname #MAP_02_NAME-MAP_01_NAME
+		#end
+		jsr paint_level_number
+ 		rts
+		
+set_previous_starting_level
+		jsr delayer_button_common
+		sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
+		sbw curmapname #MAP_02_NAME-MAP_01_NAME
+		nop
+		#if .word curmapname = #MAP_01_NAME-(MAP_02_NAME-MAP_01_NAME)
+			adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
+			adw curmapname #MAP_02_NAME-MAP_01_NAME
+		#end
+		jsr paint_level_number
+		rts		
+
+paint_level_number
+		ldy #MAP_02_NAME-MAP_01_NAME-2
+		lda (curmapname),y
+		eor #%10000000
+		sta SCRMEM+1
+		iny
+		lda (curmapname),y
+		eor #%10000000
+		sta SCRMEM+2
+		rts		
+
 .align		$100
 DLGAME
 :3			dta b($70)
@@ -3742,6 +3814,10 @@ DLINTERMISSIONFINAL
 	dta b($07)
 	dta b($07)
 	dta $41,a(DLINTERMISSIONFINAL)
+DLLEVELSELECTOR
+	dta $70,$70,$70
+	dta $46,a(SCRMEM)
+	dta $41,a(DLLEVELSELECTOR)
 
 COLOR_TABLE_START
 COLOR_1_INSTRUCTION_TEXT

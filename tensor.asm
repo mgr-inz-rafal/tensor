@@ -3263,8 +3263,13 @@ back_to_main_menu
 		jsr synchro
 		lda #MS_MAIN
 		sta menu_state
-		mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-		jmp skp
+		lda language
+		and #%00000001
+		beq btmm_0
+		mwa #MENU_0_DATA_EN ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		jmp btmm_1
+btmm_0	mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+btmm_1	jmp skp
 
 STOP_MUSIC
 		jsr RASTERMUSICTRACKER+9
@@ -3347,6 +3352,19 @@ MENU_0_DATA
 	dta d'                                        '
 	dta d'                                        '
 	dta d'               Wyjscie                  '
+
+MENU_0_DATA_EN
+	dta d'               Play                     '
+	dta d'                                        '
+	dta d'               Options                  '
+	dta d'                                        '
+	dta d'               Info                     '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'                                        '
+	dta d'               Exit                     '
 
 MENU_1_DATA
 	dta d'      Przyspieszenie grawitacyjne:      '

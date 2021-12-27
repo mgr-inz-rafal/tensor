@@ -3302,8 +3302,13 @@ show_instruction
 		jsr synchro
 		lda #MS_INSTRUCTION
 		sta menu_state
-		mwa #INSTRUCTION_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-si_0	jmp skp
+		lda language
+		and #%00000001
+		beq sii_1
+		mwa #INSTRUCTION_DATA_EN ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		jmp sii_0
+sii_1	mwa #INSTRUCTION_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+sii_0	jmp skp
 
 back_to_main_menu
 		jsr delayer_button_common
@@ -3354,6 +3359,8 @@ handle_delayers
 		ind delayer_button
 @		rts
 
+; TODO[RC]: Ensure proper alignment, since these addresses
+; are injected directly into the display list
 INSTRUCTION_DATA
 	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
 	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
@@ -3368,6 +3375,21 @@ INSTRUCTION_DATA
 	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
 	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
 	dta d'0123456789012345678901234567890123456789'
+
+INSTRUCTION_DATA_EN
+	dta d'ENGLISZhijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
+	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
+	dta d'012345678901234567890123456789012ENGLISZ'
 
 MENU_0_DATA
 	dta d'                                        '

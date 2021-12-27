@@ -352,17 +352,17 @@ TITLE_BOTTOM_BORDER
 	dta b(125)
 	dta b(92)
 MENU_0_DATA
-	dta d'               Graj                     '
-	dta d'                                        '
-	dta d'               Opcje                    '
-	dta d'                                        '
-	dta d'               Instrukcja               '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'               Wyjscie                  '
+	dta b(124),d'              Graj                    ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'              Opcje                   ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'              Instrukcja              ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'              Wyjscie                 ',b(124)
 LUDEK_DATA
 		dta b($62)
 		dta b($16)
@@ -422,61 +422,61 @@ scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00
 	.he 00 00 00 70+128 71+128 72+128 73+128 74+128 75+128 76+128 77+128 78+128 00 00 00 00 00 00 00 00
 
 MENU_0_DATA_EN
-	dta d'               Play                     '
-	dta d'                                        '
-	dta d'               Options                  '
-	dta d'                                        '
-	dta d'               Info                     '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'               Exit                     '
+	dta b(124),d'              Play                    ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'              Options                 ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'              Info                    ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'              Quit                    ',b(124)
 
 MENU_1_DATA
-	dta d'      Przyspieszenie grawitacyjne:      '
-	dta d'           '
+	dta b(124),d'     Przyspieszenie grawitacyjne:     ',b(124)
+	dta b(124),d'          '
 GRAVITY_LABEL
 	dta d'     POTEZNE      '*
-	dta d'           '
-	dta d'                                        '
-	dta d'            Obrot pieczary:             '
-	dta d'               '
+	dta d'          ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'           Obrot pieczary:            ',b(124)
+	dta b(124),d'              '
 ROTATION_LABEL
 	dta d' WLACZONY'
-	dta d'                '
-	dta d'                                        '
-	dta d'                 Jezyk:                 '
-	dta d'               '
+	dta d'               ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                Jezyk:                ',b(124)
+	dta b(124),d'              '
 LANGUAGE_LABEL
 	dta d'  POLSKI '
-	dta d'                '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                 Powrot                 '
+	dta d'               ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                Powrot                ',b(124)
 
 MENU_1_DATA_EN
-	dta d'         Gravity acceleration:          '
-	dta d'           '
+	dta b(124),d'        Gravity acceleration:         ',b(124)
+	dta b(124),d'          '
 GRAVITY_LABEL_1
 	dta d'     MIGHTY       '*
-	dta d'           '
-	dta d'                                        '
-	dta d'            Level rotation:             '
-	dta d'               '
+	dta d'          ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'           Level rotation:            ',b(124)
+	dta b(124),d'              '
 ROTATION_LABEL_1
 	dta d'   ON     '
-	dta d'               '
-	dta d'                                        '
-	dta d'               Language:                '
-	dta d'           '
+	dta d'              ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'              Language:               ',b(124)
+	dta b(124),d'          '
 LANGUAGE_LABEL_1
 	dta d'     ENGLISH      '
-	dta d'           '
-	dta d'                                        '
-	dta d'                                        '
-	dta d'                  Back                  '
+	dta d'          ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                                      ',b(124)
+	dta b(124),d'                 Back                 ',b(124)
 MAP_01_NAME
 		dta d'kr'*,b(1+64*3),d'pcewo w prawo'*
 		dta d'    I W LEWO    '*
@@ -795,30 +795,30 @@ MAP_NAME_LAST_EN
 		dta b($9b)
 
 INSTRUCTION_DATA
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'0123456789012345678901234567890123456789'
+	dta b(124),d'cdefghijklmnopqrstuvxyzabcdefghijklmno',b(124)
+	dta b(124),d'bcdefghijklmnopqrstuvxyzabcdefghijklmn',b(124)
+	dta b(124),d'cdefghijklmnopqrstuvxyzabcdefghijklmno',b(124)
+	dta b(124),d'bcdefghijklmnopqrstuvxyzabcdefghijklmn',b(124)
+	dta b(124),d'cdefghijklmnopqrstuvxyzabcdefghijklmno',b(124)
+	dta b(124),d'bcdefghijklmnopqrstuvxyzabcdefghijklmn',b(124)
+	dta b(124),d'cdefghijklmnopqrstuvxyzabcdefghijklmno',b(124)
+	dta b(124),d'bcdefghijklmnopqrstuvxyzabcdefghijklmn',b(124)
+	dta b(124),d'cdefghijklmnopqrstuvxyzabcdefghijklmno',b(124)
+	dta b(124),d'bcdefghijklmnopqrstuvxyzabcdefghijklmn',b(124)
+	dta b(124),d'12345678901234567890123456789012345678',b(124)
 
 INSTRUCTION_DATA_EN
-	dta d'ENGLISZijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
-	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'012345678901234567890123456789012ENGLISZ'
+	dta b(124),d'NGLISZijklmnopqrstuvxyzabcdefghijklmno',b(124)
+	dta b(124),d'bcdefghijklmnopqrstuvxyzabcdefghijklmn',b(124)
+	dta b(124),d'cdefghijklmnopqrstuvxyzabcdefghijklmno',b(124)
+	dta b(124),d'bcdefghijklmnopqrstuvxyzabcdefghijklmn',b(124)
+	dta b(124),d'cdefghijklmnopqrstuvxyzabcdefghijklmno',b(124)
+	dta b(124),d'bcdefghijklmnopqrstuvxyzabcdefghijklmn',b(124)
+	dta b(124),d'cdefghijklmnopqrstuvxyzabcdefghijklmno',b(124)
+	dta b(124),d'bcdefghijklmnopqrstuvxyzabcdefghijklmn',b(124)
+	dta b(124),d'cdefghijklmnopqrstuvxyzabcdefghijklmno',b(124)
+	dta b(124),d'bcdefghijklmnopqrstuvxyzabcdefghijklmn',b(124)
+	dta b(124),d'12345678901234567890123456789012ENGLIS',b(124)
 
 FONT_MAPPER
 		dta b(>FONT_SLOT_1)			; North

@@ -3328,8 +3328,7 @@ hmi_6		; Back to main menu
 		lda menu_cursor_index
 		cmp #0
 		bne hmi_1
-		; BEGIN_GAME
-		;jmp skp
+		jmp stop
 hmi_1
 		cmp #1
 		bne hmi_2

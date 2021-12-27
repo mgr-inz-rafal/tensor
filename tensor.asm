@@ -316,6 +316,11 @@ TITLE_TOP_BORDER
 	dta b(62)
 :38	dta b(125)
 	dta b(93)
+TITLE_BOTTOM_BORDER
+	dta b(62)
+:37	dta b(125)
+	dta b(93)
+	dta b(93)
 MAP_01_NAME
 		dta d'kr'*,b(1+64*3),d'pcewo w prawo'*
 		dta d'    I W LEWO    '*
@@ -1228,7 +1233,8 @@ TEXT_PANEL_ADDRESS
 	dta b($02)
 	dta b($02)
 	dta b($02)
-	dta b($02)
+	dta b($42)
+	dta a(TITLE_BOTTOM_BORDER)
 	dta b($30)
 	dta b($42)
 	dta a(SCRMEM+40*13)
@@ -3314,7 +3320,6 @@ INSTRUCTION_DATA
 	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
 	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
 	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
 	dta d'0123456789012345678901234567890123456789'
 
 INSTRUCTION_DATA_EN
@@ -3328,7 +3333,6 @@ INSTRUCTION_DATA_EN
 	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
 	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
 	dta d'abcdefghijklmnopqrstuvxyzabcdefghijklmno'
-	dta d'bcdefghijklmnopqrstuvxyzabcdefghijklmnop'
 	dta d'012345678901234567890123456789012ENGLISZ'
 
 MENU_0_DATA
@@ -3343,7 +3347,6 @@ MENU_0_DATA
 	dta d'                                        '
 	dta d'                                        '
 	dta d'               Wyjscie                  '
-	dta d'                                        '
 
 MENU_1_DATA
 	dta d'      Przyspieszenie grawitacyjne:      '
@@ -3366,7 +3369,6 @@ LANGUAGE_LABEL
 	dta d'                                        '
 	dta d'                                        '
 	dta d'                 Powrot                 '
-	dta d'                                        '
 
 MENU_1_DATA_EN
 	dta d'         Gravity acceleration:          '
@@ -3389,7 +3391,6 @@ LANGUAGE_LABEL_1
 	dta d'                                        '
 	dta d'                                        '
 	dta d'                  Back                  '
-	dta d'                                        '
 
 GRAVITY_1
 	dta d'STONOWANE'*

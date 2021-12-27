@@ -112,7 +112,6 @@ MAIN_MENU_LABEL_LEN equ 18
 .zpvar	.byte   options_cursor_index
 .zpvar  .word	current_menu
 .zpvar  .byte   menu_state
-.zpvar	.byte	already_inverted
 .zpvar  .byte	level_rotation
 .zpvar	.byte   language
 .zpvar  .word   options_screen_ptr	; TODO[RC]: Can use any of the "in-game" ZP variables
@@ -3081,20 +3080,23 @@ init_menu
 		lda #0
 		sta menu_cursor_index
 		sta options_cursor_index
-		sta already_inverted
 		mwa #MENU_0_DATA main_menu_screen_ptr
 		mwa #MENU_1_DATA options_screen_ptr
 		rts
 
 invert_menu_cursor
 		mva #80 any_moved
-		lda language
-		and #%00000001
-		beq imcc_0
+		mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37-40 ptr1
+		ldx menu_cursor_index
+		#if .byte menu_state = #MS_MAIN .and .byte menu_cursor_index = #3
+			inx
+			inx
+		#end
+		jsr invert_menu_cursor_common
+
+		mva #80 any_moved
 		mwa #MENU_0_DATA_EN+MENU_ITEM_OFFSET+37-40 ptr1
-		jmp imcc_1
-imcc_0	mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37-40 ptr1
-imcc_1	ldx menu_cursor_index
+		ldx menu_cursor_index
 		#if .byte menu_state = #MS_MAIN .and .byte menu_cursor_index = #3
 			inx
 			inx
@@ -3119,13 +3121,13 @@ imc_0	lda (ptr1),y
 
 invert_options_menu_cursor
 		mva #80+40 any_moved
-		lda language
-		and #%00000001
-		beq iomc_0
 		mwa #MENU_1_DATA_EN+MENU_ITEM_OFFSET+37 ptr1
-		jmp iomc_1
-iomc_0	mwa #MENU_1_DATA+MENU_ITEM_OFFSET+37 ptr1
-iomc_1	ldx options_cursor_index
+		ldx options_cursor_index
+		jsr invert_menu_cursor_common
+
+		mva #80+40 any_moved
+		mwa #MENU_1_DATA+MENU_ITEM_OFFSET+37 ptr1
+		ldx options_cursor_index
 		jsr invert_menu_cursor_common
 		rts
 
@@ -3237,16 +3239,11 @@ hmi_3
 
 show_options
 		jsr delayer_button_common
-		jsr synchro
+		jsr synchro ; TODO[RC]: Instead of synchro, reject call when we're in the process of drawing the logo (in all "text-redrawing" functions)
 		lda #MS_OPTIONS
 		sta menu_state
 		ldy #0
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-		lda already_inverted
-		bne so_1
-		jsr invert_options_menu_cursor
-so_1	lda #1
-		sta already_inverted
 		jmp skp
 
 show_instruction
@@ -3368,10 +3365,10 @@ MENU_0_DATA_EN
 
 MENU_1_DATA
 	dta d'      Przyspieszenie grawitacyjne:      '
-	dta d'               '
+	dta d'           '
 GRAVITY_LABEL
-	dta d' POTEZNE '
-	dta d'                '
+	dta d'     POTEZNE      '*
+	dta d'           '
 	dta d'                                        '
 	dta d'            Obrot pieczary:             '
 	dta d'               '
@@ -3390,10 +3387,10 @@ LANGUAGE_LABEL
 
 MENU_1_DATA_EN
 	dta d'         Gravity acceleration:          '
-	dta d'               '
+	dta d'           '
 GRAVITY_LABEL_1
-	dta d' MIGHTY  '
-	dta d'                '
+	dta d'     MIGHTY       '*
+	dta d'           '
 	dta d'                                        '
 	dta d'            Level rotation:             '
 	dta d'               '
@@ -3404,7 +3401,7 @@ ROTATION_LABEL_1
 	dta d'               Language:                '
 	dta d'           '
 LANGUAGE_LABEL_1
-	dta d'     ENGLISH      '*
+	dta d'     ENGLISH      '
 	dta d'           '
 	dta d'                                        '
 	dta d'                                        '
@@ -3532,8 +3529,8 @@ enable_english
 		mwa #MENU_0_DATA_EN main_menu_screen_ptr
 		mwa #MENU_1_DATA_EN options_screen_ptr
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-		inc already_inverted
-		jsr invert_menu_cursor
+		;inc already_inverted
+		;jsr invert_menu_cursor
 		rts
 
 enable_polish
@@ -3541,7 +3538,7 @@ enable_polish
 		mwa #MENU_0_DATA main_menu_screen_ptr
 		mwa #MENU_1_DATA options_screen_ptr
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-		inc already_inverted
+		;inc already_inverted
 		rts
 
 .align		$100

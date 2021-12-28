@@ -3381,23 +3381,22 @@ init_menu
 		mwa #MENU_1_DATA options_screen_ptr
 		rts
 
-invert_menu_cursor
+invert_main_menu_cursor_common
 		mva #80 any_moved
-		mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37-40 ptr1
 		ldx menu_cursor_index
 		#if .byte menu_state = #MS_MAIN .and .byte menu_cursor_index = #3
 			inx
 			inx
 		#end
+		rts
+
+invert_menu_cursor
+		mwa #MENU_0_DATA+MENU_ITEM_OFFSET+37-40 ptr1
+		jsr invert_main_menu_cursor_common
 		jsr invert_menu_cursor_common
 
-		mva #80 any_moved
 		mwa #MENU_0_DATA_EN+MENU_ITEM_OFFSET+37-40 ptr1
-		ldx menu_cursor_index
-		#if .byte menu_state = #MS_MAIN .and .byte menu_cursor_index = #3
-			inx
-			inx
-		#end
+		jsr invert_main_menu_cursor_common
 		jsr invert_menu_cursor_common
 		rts
 
@@ -3729,8 +3728,6 @@ enable_english
 		mwa #MENU_0_DATA_EN main_menu_screen_ptr
 		mwa #MENU_1_DATA_EN options_screen_ptr
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-		;inc already_inverted
-		;jsr invert_menu_cursor
 		rts
 
 enable_polish
@@ -3738,7 +3735,6 @@ enable_polish
 		mwa #MENU_0_DATA main_menu_screen_ptr
 		mwa #MENU_1_DATA options_screen_ptr
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-		;inc already_inverted
 		rts
 
 show_level_selector

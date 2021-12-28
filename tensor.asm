@@ -3645,6 +3645,15 @@ flip_menu_option_common
 		bne @-		
 		rts
 
+instafall_common
+		lda instafall
+		and #%00000001
+		beq ffs_1
+		mwa ptr3 ptr0
+		jmp ffs_2
+ffs_1	mwa ppx ptr0
+ffs_2	rts
+
 flip_failing_speed
 		jsr delayer_button_common
 		jsr synchro
@@ -3653,35 +3662,27 @@ flip_failing_speed
 		mwa #GRAVITY_1_EN ptr3
 		mwa #GRAVITY_2_EN ppx
 
-		lda instafall
-		and #%00000001
-		beq ffs_1
-
-		mwa ptr3 ptr0
-		jmp ffs_2
-
-ffs_1	mwa ppx ptr0
-
-ffs_2	jsr flip_menu_option_common
+		jsr instafall_common
+		jsr flip_menu_option_common
 
 		mwa #GRAVITY_LABEL ptr1
 		mwa #GRAVITY_1 ptr3
 		mwa #GRAVITY_2 ppx
-
-		lda instafall
-		and #%00000001
-		beq ffs_4
-
-		mwa ptr3 ptr0
-		jmp ffs_5
-
-ffs_4	mwa ppx ptr0
-
-ffs_5	jsr flip_menu_option_common
-
+		
+		jsr instafall_common
+		jsr flip_menu_option_common
 
 		inc instafall
 		rts
+
+rotation_common
+		lda level_rotation
+		and #%00000001
+		beq flr_1
+		mwa ptr3 ptr0
+		jmp flr_2
+flr_1	mwa ppx ptr0
+flr_2	rts
 
 flip_level_rotation
 		jsr delayer_button_common
@@ -3691,32 +3692,18 @@ flip_level_rotation
 		mwa #ROTATION_1_EN ptr3
 		mwa #ROTATION_2_EN ppx
 
-		lda level_rotation
-		and #%00000001
-		beq flr_1
-
-		mwa ptr3 ptr0
-		jmp flr_2
-flr_1	mwa ppx ptr0
-
-flr_2	jsr flip_menu_option_common
+		jsr rotation_common
+		jsr flip_menu_option_common
 
 		mwa #ROTATION_LABEL ptr1
 		mwa #ROTATION_1 ptr3
 		mwa #ROTATION_2 ppx
 
-		lda level_rotation
-		and #%00000001
-		beq flr_4
-
-		mwa ptr3 ptr0
-		jmp flr_5
-flr_4	mwa ppx ptr0
-
-flr_5	jsr flip_menu_option_common
+		jsr rotation_common
+		jsr flip_menu_option_common
 
 		inc level_rotation
-flr_0	rts
+		rts
 
 flip_language
 		jsr delayer_button_common

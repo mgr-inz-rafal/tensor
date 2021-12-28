@@ -56,3 +56,20 @@ Main changes to cart edition:
 * Hi-Score list (80 entries, 8 bytes each) at $F4B1-$F731
 * 5th font is moved under the OS at $FBF9-$FFF9
 * Free mem under OS: $F732-$FBF8 (~1.2kb)
+
+
+
+Detailed structure of the "under OS" memory:
+
+First block:
+
+* $C000 - Credits font
+* $C1AD - Title font
+* $C3EC - Game font
+* $C5D5 - Digits font
+* $C86E - Game font 2
+* ...1447 bytes free
+
+Second block:
+
+* TBD

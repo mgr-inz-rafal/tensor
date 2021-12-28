@@ -117,6 +117,13 @@ MAIN_MENU_LABEL_LEN equ 18
 .zpvar  .word   options_screen_ptr	; TODO[RC]: Can use any of the "in-game" ZP variables
 .zpvar  .word   main_menu_screen_ptr	; TODO[RC]: Can use any of the "in-game" ZP variables
 .zpvar  .byte   dont_touch_menu
+.zpvar	.word	ZX5_OUTPUT
+.zpvar	.word	copysrc 
+.zpvar	.word	offset  
+.zpvar	.word	offset2 
+.zpvar	.word	offset3 
+.zpvar	.word	len      
+.zpvar	.word	pnb      
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -204,13 +211,20 @@ COPY_DONE
 ; ---	Load first 4 fonts and move under OS
 	org $2000
 CREDITS_FONT equ *-$2000 + FONTS_STORAGE		
-		ins "fonts\credits3.fnt"
+		ins "fonts\credits3.fnt.kloc"
+CREDITS_FONT_END equ *-$2000 + FONTS_STORAGE		
 TITLE_FONT equ *-$2000 + FONTS_STORAGE
-		ins "fonts\BZZZ1.FNT"
+		ins "fonts\BZZZ1.FNT.kloc"
+TITLE_FONT_END equ *-$2000 + FONTS_STORAGE		
 GAME_FONT equ *-$2000 + FONTS_STORAGE		
-		ins "fonts\fontek.fnt"
+		ins "fonts\fontek.fnt.kloc"
+GAME_FONT_END equ *-$2000 + FONTS_STORAGE		
 DIGITS_FONT equ *-$2000 + FONTS_STORAGE		
-		ins "fonts\digits.fnt"
+		ins "fonts\digits.fnt.kloc"
+DIGITS_FONT_END equ *-$2000 + FONTS_STORAGE		
+GAME_FONT_2 equ *-$2000 + FONTS_STORAGE		
+		ins "fonts\fontek2.fnt.kloc"
+GAME_FONT_2_END equ *-$2000 + FONTS_STORAGE		
 FONTS_END equ *
 
 COPY_UNDER_OS_FONTS
@@ -254,55 +268,6 @@ COPY_FONTS_DONE
 
 	rts
 	ini COPY_UNDER_OS_FONTS
-
-; ---	Load last font and move under OS
-	org $2000
-GAME_FONT_2 equ *-$2000 + LAST_FONT_STORAGE
-		ins "fonts\fontek2.fnt"
-LAST_FONT_END equ *
-LAST_FONT_END_IN_STORAGE equ LAST_FONT_END + LAST_FONT_STORAGE - $2000
-
-COPY_UNDER_OS_LAST_FONT
-	sei
-	lda #0
-	sta NMIEN
-	lda #$fe
-	sta PORTB
-
-; Copy target
-	lda <LAST_FONT_STORAGE
-	sta $80
-	lda >LAST_FONT_STORAGE
-	sta $81
-
-; Copy source
-	lda <$2000
-	sta $82
-	lda >$2000
-	sta $83
-
-	ldy #0
-@	lda ($82),y
-	sta ($80),y
-	inw $80
-	inw $82
-
-	lda $82
-	cmp <LAST_FONT_END
-	bne @-
-	lda $83
-	cmp >LAST_FONT_END
-	bne @-
-
-COPY_LAST_FONT_DONE
-	lda #$ff
-	sta PORTB
-	lda #$40
-	sta NMIEN
-	cli
-
-	rts
-	ini COPY_UNDER_OS_LAST_FONT
 
 ; ---	MAIN PROGRAM
 	org $2000
@@ -826,6 +791,159 @@ FONT_MAPPER
 		dta b(>FONT_SLOT_2)			; South
 		dta b(>FONT_SLOT_2+2)		; East
 
+unZX5         lda   #$ff
+              sta   offset
+              sta   offset+1
+              ldy   #$00
+              sty   len
+              sty   len+1
+              lda   #$80
+
+dzx5s_literals
+              jsr   dzx5s_elias
+              pha
+cop0          jsr   _GET_BYTE
+              ldy   #$00
+              sta   (ZX5_OUTPUT),y
+              inw   ZX5_OUTPUT
+              lda   len
+              bne   @+
+              dec   len+1
+@             dec   len
+              bne   cop0
+              lda   len+1
+              bne   cop0
+              pla
+              asl   @
+              bcs   dzx5s_other_offset
+
+dzx5s_last_offset
+              jsr   dzx5s_elias
+dzx5s_copy    pha
+              lda   ZX5_OUTPUT
+              clc
+              adc   offset
+              sta   copysrc
+              lda   ZX5_OUTPUT+1
+              adc   offset+1
+              sta   copysrc+1
+              ldy   #$00
+              ldx   len+1
+              beq   Remainder
+Page          lda   (copysrc),y
+              sta   (ZX5_OUTPUT),y
+              iny
+              bne   Page
+              inc   copysrc+1
+              inc   ZX5_OUTPUT+1
+              dex
+              bne   Page
+Remainder     ldx   len
+              beq   copyDone
+copyByte      lda   (copysrc),y
+              sta   (ZX5_OUTPUT),y
+              iny
+              dex
+              bne   copyByte
+              tya
+              clc
+              adc   ZX5_OUTPUT
+              sta   ZX5_OUTPUT
+              bcc   copyDone
+              inc   ZX5_OUTPUT+1
+copyDone      stx   len+1
+              stx   len
+              pla
+              asl   @
+              bcc   dzx5s_literals
+
+dzx5s_other_offset
+              asl   @
+              bne   dzx5s_other_offset_skip
+              jsr   _GET_BYTE
+              sec   ; można usunąć jeśli dekompresja z pamięci a nie pliku
+              rol   @
+dzx5s_other_offset_skip
+              bcc   dzx5s_prev_offset
+
+dzx5s_new_offset
+              sta   pnb
+              asl   @
+              ldx   offset2
+              stx   offset3
+              ldx   offset2+1
+              stx   offset3+1
+              ldx   offset
+              stx   offset2
+              ldx   offset+1
+              stx   offset2+1
+              ldx   #$fe
+              stx   len
+              jsr   dzx5s_elias_loop
+              pha
+              ldx   len
+              inx
+              stx   offset+1
+              bne   @+
+              pla
+              rts           ; koniec
+@             jsr   _GET_BYTE
+              sta   offset
+              ldx   #$00
+              stx   len+1
+              inx
+              stx   len
+              pla
+              dec   pnb
+              bmi   @+
+              jsr   dzx5s_elias_backtrack
+@             inw   len
+              jmp   dzx5s_copy
+
+dzx5s_prev_offset
+              asl   @
+              bcc   dzx5s_second_offset
+              ldy   offset2
+              ldx   offset3
+              sty   offset3
+              stx   offset2
+              ldy   offset2+1
+              ldx   offset3+1
+              sty   offset3+1
+              stx   offset2+1
+
+dzx5s_second_offset
+              ldy   offset2
+              ldx   offset
+              sty   offset
+              stx   offset2
+              ldy   offset2+1
+              ldx   offset+1
+              sty   offset+1
+              stx   offset2+1
+              jmp   dzx5s_last_offset
+
+dzx5s_elias   inc   len
+dzx5s_elias_loop
+              asl   @
+              bne   dzx5s_elias_skip
+              jsr   _GET_BYTE
+              sec   ; można usunąć jeśli dekompresja z pamięci a nie pliku
+              rol   @
+dzx5s_elias_skip
+              bcc   dzx5s_elias_backtrack
+              rts
+dzx5s_elias_backtrack
+              asl   @
+              rol   len
+              rol   len+1
+              jmp   dzx5s_elias_loop
+
+_GET_BYTE         lda    $ffff
+ZX5_INPUT         equ    *-2
+                  inw    ZX5_INPUT
+                  rts			  
+
 fnt
 	ift USESPRITES
 	.ALIGN $0800
@@ -868,12 +986,12 @@ ff1	#if .word ptr0 <> #HI_SCORE_TABLE+640
 	cpy #0
 	bne @-
 
-	ldx <TITLE_FONT
-	ldy >TITLE_FONT
-	jsr load_font_from_storage_slot_1
-	ldx <CREDITS_FONT
-	ldy >CREDITS_FONT
-	jsr load_font_from_storage_slot_2
+	mwa #TITLE_FONT ZX5_INPUT
+	mwa #FONT_SLOT_1 ZX5_OUTPUT
+	jsr load_font_from_storage
+	mwa #CREDITS_FONT ZX5_INPUT
+	mwa #FONT_SLOT_2 ZX5_OUTPUT
+	jsr load_font_from_storage
 	
 	lda #CS_FADEIN
 	sta credits_state
@@ -2396,12 +2514,12 @@ draw_happy_docent
 		
 show_intermission
 		jsr sleep_for_short_time
-		ldx <DIGITS_FONT
-		ldy >DIGITS_FONT
-		jsr load_font_from_storage_slot_1
-		ldx <TITLE_FONT
-		ldy >TITLE_FONT
-		jsr load_font_from_storage_slot_2
+		mwa #DIGITS_FONT ZX5_INPUT
+		mwa #FONT_SLOT_1 ZX5_OUTPUT
+		jsr load_font_from_storage
+		mwa #TITLE_FONT ZX5_INPUT
+		mwa #FONT_SLOT_2 ZX5_OUTPUT
+		jsr load_font_from_storage
 		enable_antic
 
 		lda #0
@@ -2568,12 +2686,12 @@ init_game
 ;		mwa #MAP_LAST curmap		; TODO: Remove after happy docent is integrated
 		jsr show_intermission
 
-		ldx <GAME_FONT
-		ldy >GAME_FONT
-		jsr load_font_from_storage_slot_1
-		ldx <GAME_FONT_2
-		ldy >GAME_FONT_2
-		jsr load_font_from_storage_slot_2
+		mwa #GAME_FONT ZX5_INPUT
+		mwa #FONT_SLOT_1 ZX5_OUTPUT
+		jsr load_font_from_storage
+		mwa #GAME_FONT_2 ZX5_INPUT
+		mwa #FONT_SLOT_2 ZX5_OUTPUT
+		jsr load_font_from_storage
 
 		#if .byte first_run = #0
 			mva #1 first_run
@@ -3000,37 +3118,11 @@ show_margin
 
 		rts
 
-load_font_from_storage_slot_1
-		stx ptr0
-		sty ptr0+1
-		mwa #FONT_SLOT_1 ptr1
-		ldy #0
+load_font_from_storage
 		jsr os_gone
-lffss_1	lda (ptr0),y
-		sta (ptr1),y
-		#if .word ptr1 = #FONT_SLOT_2
-			jsr os_back
-			rts
-		#end
-		inw ptr0
-		inw ptr1
-		jmp lffss_1
-
-load_font_from_storage_slot_2
-		stx ptr0
-		sty ptr0+1
-		mwa #FONT_SLOT_2 ptr1
-		ldy #0
-		jsr os_gone
-lffss_2	lda (ptr0),y
-		sta (ptr1),y
-		#if .word ptr1 = #FONT_SLOT_END
-			jsr os_back
-			rts
-		#end
-		inw ptr0
-		inw ptr1
-		jmp lffss_2
+		jsr unZX5
+		jsr os_back
+		rts
 
 load_map_from_storage
 		ldy #MAP_02_NAME-MAP_01_NAME-2
@@ -3741,9 +3833,10 @@ show_level_selector
 		lda #1 
 		sta dont_touch_menu
 		sta rmt_player_halt
-		ldx <TITLE_FONT
-		ldy >TITLE_FONT
-		jsr load_font_from_storage_slot_1
+
+		mwa #TITLE_FONT ZX5_INPUT
+		mwa #FONT_SLOT_1 ZX5_OUTPUT
+		jsr load_font_from_storage
 		lda >FONT_SLOT_1
 		sta CHBAS
 

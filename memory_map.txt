@@ -68,8 +68,10 @@ First block:
 * $C3EC - Game font
 * $C5D5 - Digits font
 * $C86E - Game font 2
-* ...1447 bytes free
+* $CA59 - Polish level names
+* ...142 bytes free
 
 Second block:
 
-* TBD
+* $B800 - 51 maps
+* $F4B0 - English level names

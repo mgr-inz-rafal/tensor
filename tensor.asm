@@ -2918,24 +2918,18 @@ load_map_from_storage
 		tay
 		dey
 
-		mwa #MAP_STORAGE ptr0
-lmfs_1	cpy #0
-		beq lmfs_0
-		adw ptr0 #MAP_BUFFER_END-MAP_BUFFER_START
-		dey
-		jmp lmfs_1
+		tya
+		asl
+		tay
 
-lmfs_0
-		jsr os_gone
+		lda COMPRESSED_MAPS_LUT,y
+		sta ZX5_INPUT
+		iny
+		lda COMPRESSED_MAPS_LUT,y
+		sta ZX5_INPUT+1
+		mwa #MAP_BUFFER_START ZX5_OUTPUT
+		jsr decompress_data
 
- 		ldy #MAPSIZE*MAPSIZE-1
-@		lda (ptr0),y
- 		sta MAP_BUFFER_START,y
- 		dey
- 		cpy #0-1
- 		bne @-
-
-		jsr os_back
 		rts
 		
 show_geometry

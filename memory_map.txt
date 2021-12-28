@@ -75,3 +75,4 @@ Second block:
 
 * $B800 - 51 maps
 * $F4B0 - English level names
+* $???? - Sprite data for intermission decoration

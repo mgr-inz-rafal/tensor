@@ -48,7 +48,6 @@ CS_FADEIN		equ 1	  ; Credits are fading in
 CS_SHOW			equ	2	  ; Credits are being shown
 MAP_STORAGE		equ $d800 ; Maps stored under the OS
 FONTS_STORAGE	equ $c000 ; 4 fonts
-HI_SCORE_TABLE  equ MAPS_END_IN_STORAGE+1
 MENU_ITEM_OFFSET equ (40/2-12/2)
 MS_MAIN			equ 1
 MS_INSTRUCTION  equ 2
@@ -165,6 +164,9 @@ HEIGHT	= 30
 ENGLISH_LEVEL_NAMES equ *-$2000 + MAP_STORAGE		
 		ins "data\level_names_en.obx.kloc"
 ENGLISH_LEVEL_NAMES_END equ *-$2000 + MAP_STORAGE		
+DECORATION_DATA equ *-$2000 + MAP_STORAGE		
+		ins "data\decoration.pmg.kloc"
+DECORATION_DATA_END equ *-$2000 + MAP_STORAGE		
 MAPS_END equ *
 MAPS_END_IN_STORAGE equ MAPS_END + MAP_STORAGE - $2000
 
@@ -815,19 +817,6 @@ axa1	sta SCRMEM+40*13,y
 		iny
 		cpy #41
 		bne axa1
-
-;;--- BEGIN: Temporary code that fills hi-score table with arbitrary data
-	jsr os_gone
-	mwa #HI_SCORE_TABLE ptr0
-	ldy #0
-ff1	#if .word ptr0 <> #HI_SCORE_TABLE+640
-		lda #'A'
-		sta (ptr0),y
-		inw ptr0
-		jmp ff1
-	#end
-	jsr os_back
-;;--- END: Temporary code that fills hi-score table with arbitrary data
 
 	disable_antic
 	ldy #64
@@ -2119,23 +2108,6 @@ header_text
 header_text_END
 
 draw_decoration
-		ldy #0
-		tya
-@		sta pmg_p0,y
-		iny
-		bne @-
-@		sta pmg_p2,y
-		iny
-		bne @-
-
-.rept 4 #
-		ldy #0
-@		lda sprite_decoration_data_:1,y
-		sta pmg_p:1+PMGDECOOFFSET,y
-		iny
-		cpy #sprite_decoration_data_0_LEN-sprite_decoration_data_0
-		bne @-
-.endr
 
 		ldy #0
 @		lda decoration_sine_table,y
@@ -2243,64 +2215,6 @@ decoration_sine_table
 		dta b(176)
 		dta b(176)
 		dta b(176)
-		
-sprite_decoration_data_0
-		dta b(0),b(64),b(0),b(80),b(5),b(82),b(81),b(70)
-		dta b(86),b(64),b(84),b(80),b(80),b(88),b(80),b(72)
-		dta b(90),b(72),b(88),b(75),b(83),b(72),b(74),b(104)
-		dta b(68),b(108),b(68),b(110),b(36),b(46),b(38),b(18)
-		dta b(23),b(27),b(13),b(15),b(5),b(6),b(7),b(2)
-		dta b(3),b(2),b(3),b(2),b(3),b(3),b(3),b(3)
-		dta b(7),b(3),b(7),b(14),b(7),b(14),b(31),b(15)
-		dta b(25),b(59),b(30),b(60),b(28),b(56),b(80),b(57)
-		dta b(112),b(32),b(112),b(38),b(118),b(32),b(80),b(32)
-		dta b(113),b(98),b(80),b(32),b(114),b(32),b(112),b(32)
-		dta b(49),b(57),b(16),b(8),b(4),b(4),b(2),b(1)
-		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
-		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
-sprite_decoration_data_0_LEN
-sprite_decoration_data_1
-		dta b(3),b(67),b(16),b(1),b(12),b(14),b(0),b(0)
-		dta b(5),b(56),b(25),b(34),b(1),b(42),b(129),b(11)
-		dta b(2),b(59),b(53),b(35),b(87),b(43),b(23),b(135)
-		dta b(87),b(137),b(89),b(47),b(95),b(46),b(31),b(46)
-		dta b(29),b(44),b(28),b(174),b(29),b(174),b(159),b(188)
-		dta b(223),b(157),b(219),b(189),b(218),b(154),b(220),b(191)
-		dta b(103),b(171),b(118),b(252),b(153),b(185),b(240),b(248)
-		dta b(240),b(99),b(112),b(100),b(114),b(32),b(114),b(32)
-		dta b(116),b(32),b(114),b(56),b(82),b(24),b(89),b(44)
-		dta b(124),b(174),b(119),b(59),b(17),b(25),b(29),b(14)
-		dta b(135),b(139),b(23),b(18),b(9),b(1),b(1),b(8)
-		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
-		dta b(24),b(161),b(65),b(73),b(99),b(35),b(22),b(44)
-sprite_decoration_data_2
-		dta b(10),b(119),b(122),b(84),b(10),b(239),b(203),b(143)
-		dta b(83),b(179),b(127),b(190),b(101),b(227),b(247),b(254)
-		dta b(149),b(106),b(128),b(48),b(40),b(152),b(64),b(232)
-		dta b(208),b(200),b(221),b(250),b(214),b(162),b(84),b(138)
-		dta b(64),b(162),b(81),b(27),b(65),b(232),b(212),b(228)
-		dta b(117),b(171),b(183),b(222),b(220),b(240),b(193),b(160)
-		dta b(140),b(26),b(12),b(64),b(161),b(35),b(198),b(12)
-		dta b(57),b(18),b(178),b(36),b(53),b(111),b(39),b(110)
-		dta b(47),b(110),b(109),b(109),b(110),b(44),b(108),b(38)
-		dta b(180),b(54),b(18),b(24),b(140),b(164),b(130),b(193)
-		dta b(200),b(192),b(96),b(34),b(49),b(185),b(246),b(160)
-		dta b(240),b(160),b(240),b(164),b(240),b(224),b(224),b(160)
-		dta b(210),b(204),b(64),b(128),b(0),b(128),b(0),b(0)
-sprite_decoration_data_3
-		dta b(171),b(127),b(47),b(127),b(165),b(231),b(255),b(187)
-		dta b(255),b(211),b(249),b(171),b(119),b(251),b(95),b(235)
-		dta b(15),b(5),b(195),b(193),b(27),b(153),b(1),b(131)
-		dta b(65),b(169),b(69),b(239),b(165),b(73),b(5),b(161)
-		dta b(19),b(131),b(69),b(45),b(201),b(147),b(49),b(227)
-		dta b(201),b(131),b(53),b(35),b(7),b(138),b(165),b(14)
-		dta b(157),b(40),b(117),b(162),b(29),b(52),b(66),b(134)
-		dta b(0),b(8),b(80),b(160),b(208),b(128),b(65),b(130)
-		dta b(21),b(202),b(149),b(46),b(85),b(46),b(87),b(11)
-		dta b(5),b(3),b(1),b(2),b(1),b(0),b(1),b(2)
-		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
-		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
-		dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
 
 setup_intermission_colors
 		#if .word curmap = #MAP_LAST
@@ -2369,6 +2283,9 @@ show_intermission
 		jsr decompress_data
 		mwa #TITLE_FONT ZX5_INPUT
 		mwa #FONT_SLOT_2 ZX5_OUTPUT
+		jsr decompress_data
+		mwa #DECORATION_DATA ZX5_INPUT
+		mwa #pmg_p0 ZX5_OUTPUT
 		jsr decompress_data
 		enable_antic
 

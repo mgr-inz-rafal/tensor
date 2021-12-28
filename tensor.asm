@@ -159,7 +159,8 @@ HEIGHT	= 30
 ; ---	Load some data into the $D800 region (second OS ROM block)
 	org $2000
 .rept MAPCOUNT #+1
-	ins "maps\v:1.map"
+COMPRESSED_MAP:1 equ *-$2000 + MAP_STORAGE
+	ins "maps\v:1.map.kloc"
 .endr
 ENGLISH_LEVEL_NAMES equ *-$2000 + MAP_STORAGE		
 		ins "data\level_names_en.obx.kloc"
@@ -610,6 +611,11 @@ MAP_02_NAME
 		dta d'  '
 MAP_NAME_LAST
 		dta b($9b)
+
+COMPRESSED_MAPS_LUT
+.rept MAPCOUNT #+1
+		dta a(COMPRESSED_MAP:1)
+.endr
 
 INSTRUCTION_DATA
 	dta b(124),d'Lorem ipsum dolor0sit amet, consectetu',b(124)

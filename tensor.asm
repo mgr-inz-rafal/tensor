@@ -53,6 +53,12 @@ MS_MAIN			equ 1
 MS_INSTRUCTION  equ 2
 MS_OPTIONS		equ 3
 MAIN_MENU_LABEL_LEN equ 18
+PERSISTENCY_BANK_CTL equ $d500
+PERSISTENCY_BANK_START equ PERSISTENCY_BANK_END-8
+PERSISTENCY_BANK_END equ $7f
+SAVE_SLOT_LEN 	equ 780 ; See 'memory_map.txt'
+CART_RAM_START	equ $a000
+SAVE_SLOT_OCCUPIED_MARK equ 07
 
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
@@ -776,6 +782,62 @@ ZX5_INPUT         equ    *-2
                   inw    ZX5_INPUT
                   rts			  
 
+HIGH_SCORE_TABLE	; Can be moved under OS
+:64   dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
+
+persistent_dupa
+			jsr FIND_PERSISTENCY_SLOT
+			jmp skp
+
+FIND_PERSISTENCY_SLOT
+			jsr os_gone
+
+			ldy #PERSISTENCY_BANK_START
+
+			ldx #10
+fps_5		sta PERSISTENCY_BANK_CTL,y
+
+			tya
+			pha
+			mwa #CART_RAM_START ptr0
+			ldy #0
+fps_3		lda (ptr0),y
+			cmp #SAVE_SLOT_OCCUPIED_MARK
+			beq fps_1
+
+; Found slot
+			pla
+			tay 
+
+			; persistency bank in Y
+			; slot address in ptr0
+			jmp fps_6
+
+; Try next slot within this bank
+fps_1		dex
+			cpx #$ff
+			beq fps_2
+
+			adw ptr0 #SAVE_SLOT_LEN
+			jmp fps_3
+
+
+; Try next persistency bank
+fps_2		pla
+			tay
+			iny
+			cpy #PERSISTENCY_BANK_END+1
+			beq fps_4
+			jmp fps_5
+	
+; No slot found
+fps_4		ldy #$ff
+
+fps_6		
+			sta $d580
+			jsr os_back			
+			rts
+
 fnt
 	ift USESPRITES
 	.ALIGN $0800
@@ -1384,7 +1446,7 @@ raster_program_end
 
 	lda consol		; START
 	and #1
-	beq stop
+	jeq persistent_dupa
 
 	lda porta
 	cmp #253

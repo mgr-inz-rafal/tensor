@@ -785,7 +785,56 @@ ZX5_INPUT         equ    *-2
 HIGH_SCORE_TABLE	; Can be moved under OS
 :64   dta b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0),b(0)
 
+; wr555 the value from A
+wr555
+			bit PERSISTENCY_BANK_START+PERSISTENCY_BANK_CTL ; First bank hardcoded for now
+			bvs _wr5c2
+			sta $d502   
+			sta $b555
+			rts     
+_wr5c2  
+			sta $d542   
+			sta $b555			
+			rts
+
+wr222
+			bit PERSISTENCY_BANK_START+PERSISTENCY_BANK_CTL ; First bank hardcoded for now
+			bvs _wr2c2
+			sta $d501
+			sta $aaaa
+			rts 
+_wr2c2      
+			sta $d541       
+			sta $aaaa       
+			rts
+
+unlock_cart
+			jsr os_gone
+			lda #$AA
+			jsr wr555
+			lda #$55
+			jsr wr222
+			jsr os_back
+			rts
+
+write_byte_to_cart
+			lda #$a0
+			jsr wr555
+			sta PERSISTENCY_BANK_START+PERSISTENCY_BANK_CTL ; First bank hardcoded for now
+			lda #$aa
+			sta $a000
+			rts
+
+cart_off
+			sta $d580
+			sta wsync
+			rts
+
 persistent_dupa
+			jsr unlock_cart
+			jsr write_byte_to_cart
+			jsr cart_off
+
 			jsr FIND_PERSISTENCY_SLOT
 			jmp skp
 
@@ -796,6 +845,7 @@ FIND_PERSISTENCY_SLOT
 
 			ldx #10
 fps_5		sta PERSISTENCY_BANK_CTL,y
+			sta wsync
 
 			tya
 			pha
@@ -834,7 +884,7 @@ fps_2		pla
 fps_4		ldy #$ff
 
 fps_6		
-			sta $d580
+			jsr cart_off
 			jsr os_back			
 			rts
 

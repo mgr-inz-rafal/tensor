@@ -21,7 +21,7 @@ DIGITOFFSET		equ 6
 SHADOWOFFSET 	equ 60
 TITLEOFFSET 	equ 60+20
 MAPCOUNT 		equ 51
-MUSICPLAYER		equ $9400
+MUSICPLAYER		equ $9600
 MAPSIZE			equ	12
 SCWIDTH 		equ 20
 MARGIN 			equ	(SCWIDTH-MAPSIZE)/2
@@ -56,24 +56,6 @@ MAIN_MENU_LABEL_LEN equ 18
 
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
-.zpvar	.byte	scroll_tmp
-.zpvar	.byte	credits_flips
-.zpvar	.byte	credits_timer
-.zpvar	.byte	credits_color
-.zpvar	.byte	credits_state
-.zpvar	.byte	scroll
-.zpvar	.byte	old_instafall
-.zpvar	.byte	rotation_warmup
-.zpvar	.byte	instafall
-.zpvar	.byte	first_run
-.zpvar	.byte	amygdala_color
-.zpvar	.byte	amygdala_type
-.zpvar	.byte	reducer
-.zpvar	.byte	collecting
-.zpvar	.byte	delayer
-.zpvar	.byte	delayer_button
-.zpvar	.byte	showsummary
-.zpvar	.byte	mapnumber
 .zpvar	.word	curmap
 .zpvar	.word	curmapname
 .zpvar	.word	ptr0
@@ -88,15 +70,7 @@ MAIN_MENU_LABEL_LEN equ 18
 .zpvar	.byte	pby
 .zpvar	.byte	psy
 .zpvar	.byte	mvstate
-.zpvar	.byte	mvcntr
-.zpvar	.byte	ignorestick
-.zpvar	.byte	moved
-.zpvar	.byte	gstate
-.zpvar	.byte	movable
-.zpvar	.byte	compared
-.zpvar	.byte	sync
-.zpvar	.byte	any_moved
-.zpvar	.byte	collect
+.zpvar  .byte   movable
 .zpvar	.byte	target
 .zpvar	.byte	collectibles
 .zpvar	.byte	repaint
@@ -3901,11 +3875,38 @@ SCRMEM_BUFFER equ SCRMEM+SCWIDTH*MAPSIZE
 SCRMEM_BACKUP equ SCRMEM_BUFFER+SCWIDTH*MAPSIZE
 SCRMEM_END equ SCRMEM_BACKUP+SCWIDTH*MAPSIZE
 
-; TODO[RC]: Here we can also fit some data (before font slots)
-; but... this might be used for the text on the title screen.
-; Double check before use.
-
 	org SCRMEM_END
+
+; TODO[RC]: Remove these `dta(0)` and just leave the buffer
+credits_flips		dta(0)
+credits_timer		dta(0)
+credits_color		dta(0)
+credits_state		dta(0)
+scroll_tmp			dta(0)	
+scroll				dta(0)	
+old_instafall		dta(0)	
+rotation_warmup		dta(0)	
+instafall			dta(0)	
+first_run			dta(0)	
+amygdala_color		dta(0)	
+amygdala_type		dta(0)	
+reducer				dta(0)	
+collecting			dta(0)	
+delayer				dta(0)	
+delayer_button		dta(0)	
+showsummary			dta(0)	
+mapnumber			dta(0)	
+mvcntr				dta(0)
+ignorestick			dta(0)
+moved				dta(0)
+gstate				dta(0)
+compared			dta(0)
+sync				dta(0)
+any_moved			dta(0)
+collect				dta(0)
+; TODO[RC]: Here we can also fit some data (before font slots)
+
+
 .align	$400
 FONT_SLOT_1
 FONT_SLOT_2 equ FONT_SLOT_1+1024

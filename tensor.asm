@@ -54,7 +54,7 @@ MS_INSTRUCTION  equ 2
 MS_OPTIONS		equ 3
 MAIN_MENU_LABEL_LEN equ 18
 PERSISTENCY_BANK_CTL equ $d500
-PERSISTENCY_BANK_START equ PERSISTENCY_BANK_END-8
+PERSISTENCY_BANK_START equ PERSISTENCY_BANK_END-7
 PERSISTENCY_BANK_END equ $7f
 SAVE_SLOT_LEN 	equ 780 ; See 'memory_map.txt'
 CART_RAM_START	equ $a000
@@ -815,12 +815,14 @@ unlock_cart
 			lda #$55
 			jsr wr222
 			jsr os_back
+			sta WSYNC
 			rts
 
 write_byte_to_cart
 			lda #$a0
 			jsr wr555
 			sta PERSISTENCY_BANK_START+PERSISTENCY_BANK_CTL ; First bank hardcoded for now
+			sta WSYNC
 			lda #$aa
 			sta $a000
 			rts

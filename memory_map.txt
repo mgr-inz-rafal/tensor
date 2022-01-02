@@ -83,13 +83,12 @@ Second block:
 
 --- Save data structure
 
-  1 byte  (  0 -   0): Save slot occupied indicator ($07)
-  8 bytes (  1 -   9): Level completion bits (64 levels in total, 1 bit per level)
-128 bytes ( 10 - 138): High-scores (64 levels, two bytes per number)
-640 bytes (139 - 779): Names of best playes (10 bytes * 64 levels)
-  1 byte  (780 - 780): instafall
-  1 byte  (781 - 781): rotation_speed
-  1 byte  (782 - 782): language
+  1 byte  : Save slot occupied indicator ($07)
+  8 bytes : Level completion bits (64 levels in total, 1 bit per level)
+768 bytes : High-scores (64 records, 2 bytes for score, 10 bytes for name)
+  1 byte  : instafall
+  1 byte  : rotation_speed
+  1 byte  : language
 
 Total: 780 bytes
 

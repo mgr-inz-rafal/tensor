@@ -102,7 +102,7 @@ SAVE_SLOT_OCCUPIED_MARK equ $bb
 .zpvar	.word	offset3 
 .zpvar	.word	len      
 .zpvar	.word	pnb      
-
+.zpvar	.word	current_persistency_address
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; BEGIN: TENSOR LOGO G2F ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -851,7 +851,7 @@ HIGH_SCORE_TABLE_END
 
 ; wr555 the value from A
 wr555
-			bit PERSISTENCY_BANK_START+PERSISTENCY_BANK_CTL ; First bank hardcoded for now
+			bit current_persistency_bank
 			bvs _wr5c2
 			sta $d502   
 			sta $b555
@@ -863,7 +863,7 @@ _wr5c2
 
 ; wr222 the value from A
 wr222
-			bit PERSISTENCY_BANK_START+PERSISTENCY_BANK_CTL ; First bank hardcoded for now
+			bit current_persistency_bank
 			bvs _wr2c2
 			sta $d501
 			sta $aaaa
@@ -888,7 +888,7 @@ write_byte_to_cart
 			ldy #0
 			lda #$a0
 			jsr wr555
-			sta PERSISTENCY_BANK_START+PERSISTENCY_BANK_CTL ; First bank hardcoded for now
+			sta (current_persistency_address),y
 			txa
 			sta (ptr0),y
 			jsr cart_off	
@@ -904,7 +904,19 @@ cart_off
 burn_state
 			jsr os_gone
 
-			mwa #$a000 ptr0
+			mwa #PERSISTENCY_BANK_CTL current_persistency_address
+			jsr find_persistency_slot
+			sty current_persistency_bank
+bs_6		cpy #0
+			beq bs_5
+			inw current_persistency_address
+			dey
+			jmp bs_6
+
+bs_5
+			; find_persistency_slot() will correctly set `ptr0`
+			; mwa #$a000 ptr0
+			
 			ldx #SAVE_SLOT_OCCUPIED_MARK
 			jsr write_byte_to_cart
 
@@ -912,7 +924,7 @@ burn_state
 bs_1		inw ptr0
 			lda LEVEL_COMPLETION_BITS,y
 			tax
-			;jsr write_byte_to_cart
+			jsr write_byte_to_cart
 			iny
 			cpy #8
 			bne bs_1
@@ -950,10 +962,7 @@ persistent_dupa
 			jsr burn_state
 			jmp skp
 
-write_current_state
-
-FIND_PERSISTENCY_SLOT
-			jsr os_gone
+find_persistency_slot
 
 			ldy #PERSISTENCY_BANK_START
 
@@ -997,9 +1006,8 @@ fps_2		pla
 ; No slot found
 fps_4		ldy #$ff
 
-fps_6		
-			jsr cart_off
-			jsr os_back			
+fps_6	
+			jsr cart_off	
 			rts
 
 fnt
@@ -4130,6 +4138,7 @@ compared			dta(0)
 sync				dta(0)
 any_moved			dta(0)
 collect				dta(0)
+current_persistency_bank dta(0)
 ; TODO[RC]: Here we can also fit some data (before font slots)
 LEVEL_COMPLETION_BITS
 :8 dta b(%01010000)

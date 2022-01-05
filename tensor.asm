@@ -57,7 +57,11 @@ PERSISTENCY_BANK_CTL equ $d500
 PERSISTENCY_BANK_START equ PERSISTENCY_BANK_END-7
 PERSISTENCY_BANK_END equ $7f
 SAVE_SLOT_LEN 	equ 780 ; See 'memory_map.txt'
+CART_RAM_SIZE   equ $2000
 CART_RAM_START	equ $a000
+CART_RAM_END	equ CART_RAM_START+CART_RAM_SIZE
+SAVES_PER_SLOT	equ CART_RAM_SIZE/SAVE_SLOT_LEN
+LAST_SAVE_SLOT_ADDRESS equ CART_RAM_START+SAVES_PER_SLOT*SAVE_SLOT_LEN
 SAVE_SLOT_OCCUPIED_MARK equ $bb
 
 .zpvar	.byte	antic_tmp
@@ -966,8 +970,8 @@ find_persistency_slot
 
 			ldy #PERSISTENCY_BANK_START
 
-			ldx #10
-fps_5		sta PERSISTENCY_BANK_CTL,y
+fps_5		ldx #10
+			sta PERSISTENCY_BANK_CTL,y
 			sta wsync
 
 			tya
@@ -988,10 +992,10 @@ fps_3		lda (ptr0),y
 
 ; Try next slot within this bank
 fps_1		dex
-			cpx #$ff
 			beq fps_2
 
 			adw ptr0 #SAVE_SLOT_LEN
+
 			jmp fps_3
 
 

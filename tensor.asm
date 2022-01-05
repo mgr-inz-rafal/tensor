@@ -965,8 +965,6 @@ bs_2		inw ptr0
 persistent_dupa
 			jsr os_gone
 			jsr burn_state
-chuj
-			jsr erase_state_sector
 			jsr os_back
 			jmp skp
 
@@ -1040,7 +1038,8 @@ fps_2		pla
 			jmp fps_5
 	
 ; No slot found
-fps_4		ldy #$ff
+fps_4		jsr erase_state_sector
+			jmp find_persistency_slot
 
 fps_6	
 			jsr cart_off	

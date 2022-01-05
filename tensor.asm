@@ -895,7 +895,7 @@ write_byte_to_cart
 			sta (current_persistency_address),y
 			txa
 			sta (ptr0),y
-			jsr cart_off	
+			jsr cart_off
 			pla
 			tay
 			rts
@@ -963,8 +963,40 @@ bs_2		inw ptr0
 			rts
 
 persistent_dupa
+			jsr os_gone
 			jsr burn_state
+chuj
+			jsr erase_state_sector
+			jsr os_back
 			jmp skp
+
+erase_state_sector
+			ldy #PERSISTENCY_BANK_START
+			sta PERSISTENCY_BANK_CTL,y
+			jsr unlock_cart
+			lda #$80
+			jsr wr555
+			jsr unlock_cart
+			sta PERSISTENCY_BANK_CTL,y
+			lda #$30
+			sta CART_RAM_START
+			jsr wait_to_complete
+			jsr cart_off
+			rts
+
+wait_to_complete
+poll_write
+			lda #0
+			sta workpages
+_poll_again		
+			lda CART_RAM_START
+			cmp CART_RAM_START
+			bne poll_write
+			cmp CART_RAM_START
+			bne poll_write
+			inc workpages
+			bne _poll_again
+			rts
 
 find_persistency_slot
 
@@ -4143,6 +4175,7 @@ sync				dta(0)
 any_moved			dta(0)
 collect				dta(0)
 current_persistency_bank dta(0)
+workpages			dta(0)
 ; TODO[RC]: Here we can also fit some data (before font slots)
 LEVEL_COMPLETION_BITS
 :8 dta b(%01010000)

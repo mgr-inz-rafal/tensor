@@ -61,7 +61,7 @@ CART_RAM_SIZE   equ $2000
 CART_RAM_START	equ $a000
 CART_RAM_END	equ CART_RAM_START+CART_RAM_SIZE
 SAVES_PER_SLOT	equ CART_RAM_SIZE/SAVE_SLOT_LEN
-LAST_SAVE_SLOT_ADDRESS equ CART_RAM_START+SAVES_PER_SLOT*SAVE_SLOT_LEN
+LAST_SAVE_SLOT_ADDRESS equ CART_RAM_START+SAVES_PER_SLOT*SAVE_SLOT_LEN-SAVE_SLOT_LEN
 SAVE_SLOT_OCCUPIED_MARK equ $bb
 
 .zpvar	.byte	antic_tmp
@@ -906,10 +906,10 @@ cart_off
 			rts
 
 burn_state
-			jsr os_gone
-
 			mwa #PERSISTENCY_BANK_CTL current_persistency_address
-			jsr find_persistency_slot
+bs_8		jsr find_persistency_slot
+			cpy #$ff
+			beq bs_7
 			sty current_persistency_bank
 bs_6		cpy #0
 			beq bs_5
@@ -918,9 +918,6 @@ bs_6		cpy #0
 			jmp bs_6
 
 bs_5
-			; find_persistency_slot() will correctly set `ptr0`
-			; mwa #$a000 ptr0
-			
 			ldx #SAVE_SLOT_OCCUPIED_MARK
 			jsr write_byte_to_cart
 
@@ -961,12 +958,66 @@ bs_2		inw ptr0
 
 			jsr os_back
 			rts
+bs_7
+			jsr erase_state_sector
+			jmp bs_8
 
-persistent_dupa
+
+persistent_save
 			jsr os_gone
 			jsr burn_state
 			jsr os_back
 			jmp skp
+
+persistent_load
+			jsr os_gone
+			jsr read_state
+			jsr os_back
+			jmp skp
+
+read_state
+			jsr os_gone
+
+			jsr find_last_burned_state
+
+			jsr os_back
+			rts
+
+find_last_burned_state
+			ldy #PERSISTENCY_BANK_END
+
+flbs_3		sta PERSISTENCY_BANK_CTL,y
+			sta wsync
+
+			tya
+			pha
+			mwa #LAST_SAVE_SLOT_ADDRESS ptr0
+			ldy #0
+flbs_2		lda (ptr0),y
+			cmp #SAVE_SLOT_OCCUPIED_MARK
+			beq flbs_1
+
+; Try previous slot
+			sbw ptr0 #SAVE_SLOT_LEN
+			#if .word ptr0 < #CART_RAM_START
+				pla
+				tay
+				dey
+				cpy #PERSISTENCY_BANK_START-1
+				beq flbs_4
+				jmp flbs_3
+			#end
+			jmp flbs_2
+
+; Found last save
+flbs_1		pla
+			tay
+flbs_5		jsr cart_off
+			rts
+; No save found
+flbs_4
+			ldy #$ff
+			jmp flbs_5
 
 erase_state_sector
 			ldy #PERSISTENCY_BANK_START
@@ -1038,8 +1089,8 @@ fps_2		pla
 			jmp fps_5
 	
 ; No slot found
-fps_4		jsr erase_state_sector
-			jmp find_persistency_slot
+fps_4		ldy #$ff
+			jmp flbs_5
 
 fps_6	
 			jsr cart_off	
@@ -1653,7 +1704,11 @@ raster_program_end
 
 	lda consol		; START
 	and #1
-	jeq persistent_dupa
+	jeq persistent_save
+
+	lda consol
+	and #%00000100
+	jeq persistent_load
 
 	lda porta
 	cmp #253

@@ -1791,7 +1791,7 @@ stop
 	mva #$40 nmien		;only NMI interrupts, DLI disabled
 	cli			;IRQ enabled
 
-	jmp show_level_selector
+	jsr show_level_selector
 
 	jmp run_here
 skp
@@ -4023,10 +4023,8 @@ xaxx1	jsr synchro
 xx1		lda ignorestick
 		bne xxxx1
 		lda trig0
-		jeq run_here
-
+		beq snsl_X
 		jmp xxxx1
-		rts
 
 set_next_starting_level
 		jsr delayer_button_common
@@ -4038,7 +4036,7 @@ set_next_starting_level
 			sbw curmapname #MAP_02_NAME-MAP_01_NAME
 		#end
 		jsr paint_level_number
- 		rts
+snsl_X	rts
 		
 set_previous_starting_level
 		jsr delayer_button_common

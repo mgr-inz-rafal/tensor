@@ -2289,9 +2289,16 @@ clear_intermission_screen
 		rts
 		
 draw_header
+		lda language
+		and #%00000001
+		bne dh_1
+		mwa #header_text ptr0
+		jmp dh_2
+dh_1	mwa #header_text_en ptr0
+dh_2
 		ldy #0
 		ldx #(header_text_END-header_text)
-@		lda header_text,y
+@		lda (ptr0),y
 		sta SCRMEM+DIGITOFFSET-2,y
 		iny
 		dex
@@ -2474,6 +2481,9 @@ dln_X	rts
 header_text
 		dta d'pieczara'
 header_text_END
+header_text_en
+		dta d' cavern '
+header_text_en_END
 
 draw_decoration
 
@@ -2924,7 +2934,7 @@ rotate_counter_clockwise
 		jmp SI_1
 @		mva #ROT_CTR rotation_warmup
 
-		INC direction
+		inc direction
 		jsr rotate_internal_1
 		mwy #LEFT_ROTATION_TABLE_FROM ptr2
 		mwy #LEFT_ROTATION_TABLE_TO ptr3

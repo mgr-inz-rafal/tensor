@@ -942,22 +942,19 @@ bs_2		inw ptr0
 			#end
 
 			inw ptr0
-			;ldx instafall
-			ldx #$aa
+			ldx instafall
 			jsr write_byte_to_cart
 
 			inw ptr0
-			;ldx #0 ; TODO: Rotation speed
-			ldx #$bb
+			ldx rotation_speed
 			jsr write_byte_to_cart
 
 			inw ptr0
-			;ldx language
-			ldx #$cc
+			ldx language
 			jsr write_byte_to_cart
 
 			jsr os_back
-			rts
+bs_X		rts
 bs_7
 			jsr erase_state_sector
 			jmp bs_8
@@ -969,16 +966,35 @@ persistent_save
 			jsr os_back
 			jmp skp
 
+persistent_load_no_rts	; TODO: For testing, to be removed
+			jsr os_gone
+			jsr read_state
+			jsr os_back
+			jsr apply_loaded_state
+			jmp skp
+
 persistent_load
 			jsr os_gone
 			jsr read_state
 			jsr os_back
-			jmp skp
+			jsr apply_loaded_state
+			rts
+
+apply_loaded_state
+			lda language
+			and #%00000001
+			beq als_1
+			jsr enable_english		
+			mwa main_menu_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+als_1			
+			rts
 
 read_state
 			jsr os_gone
 
 			jsr find_last_burned_state
+			cpy #$ff
+			beq bs_X ; No stored state found
 
 			sta PERSISTENCY_BANK_CTL,y
 			sta WSYNC
@@ -1009,7 +1025,7 @@ rs_2		inw ptr0
 
 			iny
 			lda (ptr0),y
-			;sta ; TODO: rotation speed
+			sta rotation_speed
 
 			iny
 			lda (ptr0),y
@@ -1210,6 +1226,7 @@ ai8 enable_antic
 
 	jsr detect_ntsc
 	jsr clear_pmg
+	jsr persistent_load
 	lda #6
 	sta ntsc_music_conductor
 	lda #1
@@ -1744,7 +1761,7 @@ raster_program_end
 
 	lda consol
 	and #%00000100
-	jeq persistent_load
+	jeq persistent_load_no_rts
 
 	lda porta
 	cmp #253
@@ -3920,6 +3937,7 @@ enable_english
 		jsr synchro
 		mwa #MENU_0_DATA_EN main_menu_screen_ptr
 		mwa #MENU_1_DATA_EN options_screen_ptr
+		ldy #0
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 		rts
 
@@ -3927,6 +3945,7 @@ enable_polish
 		jsr synchro
 		mwa #MENU_0_DATA main_menu_screen_ptr
 		mwa #MENU_1_DATA options_screen_ptr
+		ldy #0
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 		rts
 
@@ -4247,6 +4266,7 @@ scroll				dta(0)
 old_instafall		dta(0)	
 rotation_warmup		dta(0)	
 instafall			dta(0)	
+rotation_speed		dta(0)	
 first_run			dta(0)	
 amygdala_color		dta(0)	
 amygdala_type		dta(0)	

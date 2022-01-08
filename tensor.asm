@@ -964,12 +964,11 @@ bs_7
 			jsr erase_state_sector
 			jmp bs_8
 
-
 persistent_save
 			jsr os_gone
 			jsr burn_state
 			jsr os_back
-			jmp skp
+			rts
 
 persistent_load_no_rts	; TODO: For testing, to be removed
 			jsr os_gone
@@ -1786,6 +1785,9 @@ stop
 	mva #$00 pmcntl		;PMG disabled
 	tax
 	sta:rne hposp0,x+
+
+	; TODO: Burn only if options are dirty
+	jsr persistent_save
 
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL

@@ -980,7 +980,43 @@ read_state
 
 			jsr find_last_burned_state
 
-			jsr os_back
+			sta PERSISTENCY_BANK_CTL,y
+			sta WSYNC
+
+			ldy #0
+			inw ptr0
+
+rs_1		lda (ptr0),y
+			sta LEVEL_COMPLETION_BITS,y
+			iny
+			cpy #8
+			bne rs_1
+
+			adw ptr0 #7
+			ldy #0
+			mwa #HIGH_SCORE_TABLE ptr1
+rs_2		inw ptr0
+			lda (ptr0),y
+			sta (ptr1),y
+			inw ptr1
+			#if .word ptr1 <> #HIGH_SCORE_TABLE_END
+				jmp rs_2
+			#end
+
+			inw ptr0
+			lda (ptr0),y
+			sta instafall
+
+			iny
+			lda (ptr0),y
+			;sta ; TODO: rotation speed
+
+			iny
+			lda (ptr0),y
+			sta language
+
+			jsr cart_off
+
 			rts
 
 find_last_burned_state

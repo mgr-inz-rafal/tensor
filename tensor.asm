@@ -1787,6 +1787,9 @@ stop
 	tax
 	sta:rne hposp0,x+
 
+	lda #$22	; Default SDMCTL value
+	sta SDMCTL
+
 	mva #$ff portb		;ROM switch on
 	mva #$40 nmien		;only NMI interrupts, DLI disabled
 	cli			;IRQ enabled

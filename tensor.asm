@@ -106,7 +106,12 @@ SAVE_SLOT_OCCUPIED_MARK equ $bb
 .zpvar	.word	offset3 
 .zpvar	.word	len      
 .zpvar	.word	pnb      
-.zpvar	.word	current_persistency_address
+.zpvar	.word	current_persistency_address	; ...$BA
+
+; Rest of ZP
+; $CB - $DC - RMT player
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; BEGIN: TENSOR LOGO G2F ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1214,12 +1219,6 @@ ai8 enable_antic
 
 	lda:cmp:req $14		;wait 1 frame
 
-	sei			;stop interrups
-	mva #$00 nmien		;stop all interrupts
-	mva #$fe portb		;switch off ROM to get 16k more ram
-
-	ZPINIT
-
 ////////////////////
 // RASTER PROGRAM //
 ////////////////////
@@ -1236,6 +1235,13 @@ ai8 enable_antic
 	ldy #>MODUL
 	jsr INIT_MUSIC
 	
+chuj
+	sei			;stop interrups
+	mva #$00 nmien		;stop all interrupts
+	mva #$fe portb		;switch off ROM to get 16k more ram
+
+	ZPINIT
+
 	jmp raster_program_end
 
 LOOP	lda vcount		;synchronization for the first screen line
@@ -3774,12 +3780,15 @@ back_to_main_menu
 		jmp skp
 
 STOP_MUSIC
+		lda #0
+		sta rmt_player_halt
 		jsr RASTERMUSICTRACKER+9
 		rts
 
 INIT_MUSIC
 		phr
-		dec rmt_player_halt
+		lda #0
+		sta rmt_player_halt
 		jsr STOP_MUSIC
 		plr
 		jsr RASTERMUSICTRACKER
@@ -3962,7 +3971,6 @@ sls_2	jsr decompress_data
 
 		lda #1 
 		sta dont_touch_menu
-		sta rmt_player_halt
 
 		mwa #TITLE_FONT ZX5_INPUT
 		mwa #FONT_SLOT_1 ZX5_OUTPUT
@@ -4079,6 +4087,10 @@ DL_TOP_SCROL
 DL_BOT_SCROL			
 			dta b(%10111)
 			dta b($41),a(DLINTERMISSION)
+DLLEVELSELECTOR
+	dta $70,$70,$70
+	dta $46,a(SCRMEM)
+	dta $41,a(DLLEVELSELECTOR)
 DLINTERMISSIONFINAL
 	dta $70,$70,$70
 	dta $47,a(SCRMEM), $07
@@ -4090,10 +4102,6 @@ DLINTERMISSIONFINAL
 	dta b($07)
 	dta b($07)
 	dta $41,a(DLINTERMISSIONFINAL)
-DLLEVELSELECTOR
-	dta $70,$70,$70
-	dta $46,a(SCRMEM)
-	dta $41,a(DLLEVELSELECTOR)
 
 COLOR_TABLE_START
 COLOR_1_INSTRUCTION_TEXT

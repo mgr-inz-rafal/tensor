@@ -53,6 +53,16 @@ MS_MAIN			equ 1
 MS_INSTRUCTION  equ 2
 MS_OPTIONS		equ 3
 MAIN_MENU_LABEL_LEN equ 18
+PERSISTENCY_BANK_CTL equ $d500
+PERSISTENCY_BANK_START equ PERSISTENCY_BANK_END-7
+PERSISTENCY_BANK_END equ $3f
+SAVE_SLOT_LEN 	equ 780 ; See 'memory_map.txt'
+CART_RAM_SIZE   equ $2000
+CART_RAM_START	equ $a000
+CART_RAM_END	equ CART_RAM_START+CART_RAM_SIZE
+SAVES_PER_SLOT	equ CART_RAM_SIZE/SAVE_SLOT_LEN
+LAST_SAVE_SLOT_ADDRESS equ CART_RAM_START+SAVES_PER_SLOT*SAVE_SLOT_LEN-SAVE_SLOT_LEN
+SAVE_SLOT_OCCUPIED_MARK equ $bb
 
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
@@ -96,6 +106,11 @@ MAIN_MENU_LABEL_LEN equ 18
 .zpvar	.word	offset3 
 .zpvar	.word	len      
 .zpvar	.word	pnb      
+.zpvar	.word	current_persistency_address	; ...$BA
+
+; Rest of ZP
+; $CB - $DC - RMT player
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -776,6 +791,367 @@ ZX5_INPUT         equ    *-2
                   inw    ZX5_INPUT
                   rts			  
 
+HIGH_SCORE_TABLE	; Can be moved under OS
+		   dta b(0),b(0),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(1),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(2),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(3),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(4),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(5),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(6),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(7),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(8),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(9),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(10),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(11),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(12),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(13),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(14),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(15),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(16),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(17),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(18),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(19),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(20),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(21),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(22),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(23),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(24),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(25),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(26),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(27),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(28),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(29),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(30),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(31),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(32),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(33),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(34),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(35),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(36),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(37),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(38),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(39),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(40),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(41),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(42),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(43),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(44),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(45),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(46),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(47),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(48),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(49),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(50),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(51),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(52),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(53),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(54),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(55),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(56),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(57),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(58),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(59),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(60),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(61),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(62),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b(0),b(63),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+HIGH_SCORE_TABLE_END
+
+; wr555 the value from A
+wr555
+			bit current_persistency_bank
+			bvs _wr5c2
+			sta $d502   
+			sta $b555
+			rts     
+_wr5c2  
+			sta $d542   
+			sta $b555			
+			rts
+
+; wr222 the value from A
+wr222
+			bit current_persistency_bank
+			bvs _wr2c2
+			sta $d501
+			sta $aaaa
+			rts 
+_wr2c2      
+			sta $d541       
+			sta $aaaa       
+			rts
+
+unlock_cart
+			lda #$AA
+			jsr wr555
+			lda #$55
+			jsr wr222
+			rts
+		
+write_byte_to_cart
+			tya
+			pha
+
+			jsr unlock_cart
+			ldy #0
+			lda #$a0
+			jsr wr555
+			sta (current_persistency_address),y
+			txa
+			sta (ptr0),y
+			jsr cart_off
+			pla
+			tay
+			rts
+
+cart_off
+			sta $d580
+			sta wsync
+			rts
+
+burn_state
+			mwa #PERSISTENCY_BANK_CTL current_persistency_address
+bs_8		jsr find_persistency_slot
+			cpy #$ff
+			beq bs_7
+			sty current_persistency_bank
+bs_6		cpy #0
+			beq bs_5
+			inw current_persistency_address
+			dey
+			jmp bs_6
+
+bs_5
+			ldx #SAVE_SLOT_OCCUPIED_MARK
+			jsr write_byte_to_cart
+
+			ldy #0
+bs_1		inw ptr0
+			lda LEVEL_COMPLETION_BITS,y
+			tax
+			jsr write_byte_to_cart
+			iny
+			cpy #8
+			bne bs_1
+
+			mwa #HIGH_SCORE_TABLE ptr1
+			ldy #0
+bs_2		inw ptr0
+			lda (ptr1),y
+			tax
+			jsr write_byte_to_cart
+			inw ptr1
+			#if .word ptr1 <> #HIGH_SCORE_TABLE_END
+				jmp bs_2
+			#end
+
+			inw ptr0
+			ldx instafall
+			jsr write_byte_to_cart
+
+			inw ptr0
+			ldx rotation_speed
+			jsr write_byte_to_cart
+
+			inw ptr0
+			ldx language
+			jsr write_byte_to_cart
+
+			jsr os_back
+bs_X		rts
+bs_7
+			jsr erase_state_sector
+			jmp bs_8
+
+persistent_save
+			jsr os_gone
+			jsr burn_state
+			jsr os_back
+			rts
+
+persistent_load_no_rts	; TODO: For testing, to be removed
+			jsr os_gone
+			jsr read_state
+			jsr os_back
+			jsr apply_loaded_state
+			jmp skp
+
+persistent_load
+			jsr os_gone
+			jsr read_state
+			jsr os_back
+			jsr apply_loaded_state
+			rts
+
+apply_loaded_state
+			lda language
+			and #%00000001
+			beq als_1
+			jsr enable_english		
+			mwa main_menu_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+als_1			
+			rts
+
+read_state
+			jsr os_gone
+
+			jsr find_last_burned_state
+			cpy #$ff
+			beq bs_X ; No stored state found
+
+			sta PERSISTENCY_BANK_CTL,y
+			sta WSYNC
+
+			ldy #0
+			inw ptr0
+
+rs_1		lda (ptr0),y
+			sta LEVEL_COMPLETION_BITS,y
+			iny
+			cpy #8
+			bne rs_1
+
+			adw ptr0 #7
+			ldy #0
+			mwa #HIGH_SCORE_TABLE ptr1
+rs_2		inw ptr0
+			lda (ptr0),y
+			sta (ptr1),y
+			inw ptr1
+			#if .word ptr1 <> #HIGH_SCORE_TABLE_END
+				jmp rs_2
+			#end
+
+			inw ptr0
+			lda (ptr0),y
+			sta instafall
+
+			iny
+			lda (ptr0),y
+			sta rotation_speed
+
+			iny
+			lda (ptr0),y
+			sta language
+
+			jsr cart_off
+
+			rts
+
+find_last_burned_state
+			ldy #PERSISTENCY_BANK_END
+
+flbs_3		sta PERSISTENCY_BANK_CTL,y
+			sta wsync
+
+			tya
+			pha
+			mwa #LAST_SAVE_SLOT_ADDRESS ptr0
+			ldy #0
+flbs_2		lda (ptr0),y
+			cmp #SAVE_SLOT_OCCUPIED_MARK
+			beq flbs_1
+
+; Try previous slot
+			sbw ptr0 #SAVE_SLOT_LEN
+			#if .word ptr0 < #CART_RAM_START
+				pla
+				tay
+				dey
+				cpy #PERSISTENCY_BANK_START-1
+				beq flbs_4
+				jmp flbs_3
+			#end
+			jmp flbs_2
+
+; Found last save
+flbs_1		pla
+			tay
+flbs_5		jsr cart_off
+			rts
+; No save found
+flbs_4
+			ldy #$ff
+			jmp flbs_5
+
+erase_state_sector
+			ldy #PERSISTENCY_BANK_START
+			sta PERSISTENCY_BANK_CTL,y
+			jsr unlock_cart
+			lda #$80
+			jsr wr555
+			jsr unlock_cart
+			sta PERSISTENCY_BANK_CTL,y
+			lda #$30
+			sta CART_RAM_START
+			jsr wait_to_complete
+			jsr cart_off
+			rts
+
+wait_to_complete
+poll_write
+			lda #0
+			sta workpages
+_poll_again		
+			lda CART_RAM_START
+			cmp CART_RAM_START
+			bne poll_write
+			cmp CART_RAM_START
+			bne poll_write
+			inc workpages
+			bne _poll_again
+			rts
+
+find_persistency_slot
+
+			ldy #PERSISTENCY_BANK_START
+
+fps_5		ldx #10
+			sta PERSISTENCY_BANK_CTL,y
+			sta wsync
+
+			tya
+			pha
+			mwa #CART_RAM_START ptr0
+			ldy #0
+fps_3		lda (ptr0),y
+			cmp #SAVE_SLOT_OCCUPIED_MARK
+			beq fps_1
+
+; Found slot
+			pla
+			tay 
+
+			; persistency bank in Y
+			; slot address in ptr0
+			jmp fps_6
+
+; Try next slot within this bank
+fps_1		dex
+			beq fps_2
+
+			adw ptr0 #SAVE_SLOT_LEN
+
+			jmp fps_3
+
+
+; Try next persistency bank
+fps_2		pla
+			tay
+			iny
+			cpy #PERSISTENCY_BANK_END+1
+			beq fps_4
+			jmp fps_5
+	
+; No slot found
+fps_4		ldy #$ff
+			jmp flbs_5
+
+fps_6	
+			jsr cart_off	
+			rts
+
 fnt
 	ift USESPRITES
 	.ALIGN $0800
@@ -842,18 +1218,13 @@ ai8 enable_antic
 
 	lda:cmp:req $14		;wait 1 frame
 
-	sei			;stop interrups
-	mva #$00 nmien		;stop all interrupts
-	mva #$fe portb		;switch off ROM to get 16k more ram
-
-	ZPINIT
-
 ////////////////////
 // RASTER PROGRAM //
 ////////////////////
 
 	jsr detect_ntsc
 	jsr clear_pmg
+	jsr persistent_load
 	lda #6
 	sta ntsc_music_conductor
 	lda #1
@@ -863,6 +1234,13 @@ ai8 enable_antic
 	ldy #>MODUL
 	jsr INIT_MUSIC
 	
+chuj
+	sei			;stop interrups
+	mva #$00 nmien		;stop all interrupts
+	mva #$fe portb		;switch off ROM to get 16k more ram
+
+	ZPINIT
+
 	jmp raster_program_end
 
 LOOP	lda vcount		;synchronization for the first screen line
@@ -1384,7 +1762,11 @@ raster_program_end
 
 	lda consol		; START
 	and #1
-	beq stop
+	jeq persistent_save
+
+	lda consol
+	and #%00000100
+	jeq persistent_load_no_rts
 
 	lda porta
 	cmp #253
@@ -1404,11 +1786,17 @@ stop
 	tax
 	sta:rne hposp0,x+
 
+	; TODO: Burn only if options are dirty
+	jsr persistent_save
+
+	lda #$22	; Default SDMCTL value
+	sta SDMCTL
+
 	mva #$ff portb		;ROM switch on
 	mva #$40 nmien		;only NMI interrupts, DLI disabled
 	cli			;IRQ enabled
 
-	jmp show_level_selector
+	jsr show_level_selector
 
 	jmp run_here
 skp
@@ -1901,9 +2289,16 @@ clear_intermission_screen
 		rts
 		
 draw_header
+		lda language
+		and #%00000001
+		bne dh_1
+		mwa #header_text ptr0
+		jmp dh_2
+dh_1	mwa #header_text_en ptr0
+dh_2
 		ldy #0
 		ldx #(header_text_END-header_text)
-@		lda header_text,y
+@		lda (ptr0),y
 		sta SCRMEM+DIGITOFFSET-2,y
 		iny
 		dex
@@ -2086,6 +2481,9 @@ dln_X	rts
 header_text
 		dta d'pieczara'
 header_text_END
+header_text_en
+		dta d' cavern '
+header_text_en_END
 
 draw_decoration
 
@@ -2536,7 +2934,7 @@ rotate_counter_clockwise
 		jmp SI_1
 @		mva #ROT_CTR rotation_warmup
 
-		INC direction
+		inc direction
 		jsr rotate_internal_1
 		mwy #LEFT_ROTATION_TABLE_FROM ptr2
 		mwy #LEFT_ROTATION_TABLE_TO ptr3
@@ -3397,12 +3795,15 @@ back_to_main_menu
 		jmp skp
 
 STOP_MUSIC
+		lda #0
+		sta rmt_player_halt
 		jsr RASTERMUSICTRACKER+9
 		rts
 
 INIT_MUSIC
 		phr
-		dec rmt_player_halt
+		lda #0
+		sta rmt_player_halt
 		jsr STOP_MUSIC
 		plr
 		jsr RASTERMUSICTRACKER
@@ -3560,6 +3961,7 @@ enable_english
 		jsr synchro
 		mwa #MENU_0_DATA_EN main_menu_screen_ptr
 		mwa #MENU_1_DATA_EN options_screen_ptr
+		ldy #0
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 		rts
 
@@ -3567,6 +3969,7 @@ enable_polish
 		jsr synchro
 		mwa #MENU_0_DATA main_menu_screen_ptr
 		mwa #MENU_1_DATA options_screen_ptr
+		ldy #0
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 		rts
 
@@ -3583,7 +3986,6 @@ sls_2	jsr decompress_data
 
 		lda #1 
 		sta dont_touch_menu
-		sta rmt_player_halt
 
 		mwa #TITLE_FONT ZX5_INPUT
 		mwa #FONT_SLOT_1 ZX5_OUTPUT
@@ -3636,10 +4038,8 @@ xaxx1	jsr synchro
 xx1		lda ignorestick
 		bne xxxx1
 		lda trig0
-		jeq run_here
-
+		beq snsl_X
 		jmp xxxx1
-		rts
 
 set_next_starting_level
 		jsr delayer_button_common
@@ -3651,7 +4051,7 @@ set_next_starting_level
 			sbw curmapname #MAP_02_NAME-MAP_01_NAME
 		#end
 		jsr paint_level_number
- 		rts
+snsl_X	rts
 		
 set_previous_starting_level
 		jsr delayer_button_common
@@ -3700,6 +4100,10 @@ DL_TOP_SCROL
 DL_BOT_SCROL			
 			dta b(%10111)
 			dta b($41),a(DLINTERMISSION)
+DLLEVELSELECTOR
+	dta $70,$70,$70
+	dta $46,a(SCRMEM)
+	dta $41,a(DLLEVELSELECTOR)
 DLINTERMISSIONFINAL
 	dta $70,$70,$70
 	dta $47,a(SCRMEM), $07
@@ -3711,10 +4115,6 @@ DLINTERMISSIONFINAL
 	dta b($07)
 	dta b($07)
 	dta $41,a(DLINTERMISSIONFINAL)
-DLLEVELSELECTOR
-	dta $70,$70,$70
-	dta $46,a(SCRMEM)
-	dta $41,a(DLLEVELSELECTOR)
 
 COLOR_TABLE_START
 COLOR_1_INSTRUCTION_TEXT
@@ -3887,6 +4287,7 @@ scroll				dta(0)
 old_instafall		dta(0)	
 rotation_warmup		dta(0)	
 instafall			dta(0)	
+rotation_speed		dta(0)	
 first_run			dta(0)	
 amygdala_color		dta(0)	
 amygdala_type		dta(0)	
@@ -3904,7 +4305,11 @@ compared			dta(0)
 sync				dta(0)
 any_moved			dta(0)
 collect				dta(0)
+current_persistency_bank dta(0)
+workpages			dta(0)
 ; TODO[RC]: Here we can also fit some data (before font slots)
+LEVEL_COMPLETION_BITS
+:8 dta b(%01010000)
 
 
 .align	$400

@@ -73,6 +73,25 @@ First block:
 
 Second block:
 
-* $B800 - 51 maps
-* $F4B0 - English level names
+* $B800 - 51 compressed maps
+* $EA12 - English level names
 * $???? - Sprite data for intermission decoration
+
+
+
+
+
+--- Save data structure
+
+  1 byte  : Save slot occupied indicator ($07)
+  8 bytes : Level completion bits (64 levels in total, 1 bit per level)
+768 bytes : High-scores (64 records, 2 bytes for score, 10 bytes for name)
+  1 byte  : instafall
+  1 byte  : rotation_speed
+  1 byte  : language
+
+Total: 780 bytes
+
+10 entries per cartridge block (7800 bytes)
+
+80 entries per memory sector (8 banks)

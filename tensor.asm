@@ -792,70 +792,73 @@ ZX5_INPUT         equ    *-2
                   rts			  
 
 HIGH_SCORE_TABLE	; Can be moved under OS
-		   dta b(0),b(0),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(1),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(2),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(3),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(4),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(5),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(6),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(7),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(8),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(9),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(10),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(11),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(12),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(13),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(14),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(15),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(16),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(17),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(18),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(19),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(20),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(21),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(22),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(23),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(24),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(25),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(26),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(27),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(28),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(29),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(30),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(31),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(32),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(33),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(34),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(35),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(36),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(37),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(38),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(39),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(40),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(41),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(42),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(43),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(44),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(45),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(46),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(47),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(48),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(49),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(50),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(51),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(52),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(53),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(54),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(55),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(56),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(57),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(58),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(59),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(60),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(61),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(62),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b(0),b(63),b('R'),b('A'),b('F'),b('A'),b('L'),b(0),b(0),b(0),b(0),b('Q')
+HIGH_SCORE_RECORD_BEGIN
+		   dta b($47),b($13),b('c'),b('z'),b('e'),b('s'),b('l'),b('a'),b('f'),b(0),b(0),b('c')
+HIGH_SCORE_RECORD_END
+		   dta b($23),b($12),b('b'),b('r'),b('o'),b('n'),b('i'),b('s'),b('l'),b('a'),b('w'),b('a')
+		   dta b($0),b($3),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($4),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($5),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($6),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($7),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($8),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($9),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($10),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($11),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($12),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($13),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($14),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($15),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($16),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($17),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($18),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($19),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($20),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($21),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($22),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($23),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($24),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($25),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($26),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($27),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($28),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($29),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($30),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($31),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($32),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($33),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($34),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($35),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($36),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($37),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($38),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($39),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($40),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($41),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($42),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($43),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($44),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($45),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($46),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($47),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($48),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($49),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($50),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($51),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($52),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($53),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($54),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($55),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($56),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($57),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($58),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($59),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($60),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($61),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($62),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($63),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($64),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($0),b($65),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
 HIGH_SCORE_TABLE_END
 
 ; wr555 the value from A
@@ -1224,7 +1227,8 @@ ai8 enable_antic
 
 	jsr detect_ntsc
 	jsr clear_pmg
-	jsr persistent_load
+	; TODO: Unlock!
+;	jsr persistent_load
 	lda #6
 	sta ntsc_music_conductor
 	lda #1
@@ -1787,7 +1791,8 @@ stop
 	sta:rne hposp0,x+
 
 	; TODO: Burn only if options are dirty
-	jsr persistent_save
+	; TODO: UNLOCK!
+	;jsr persistent_save
 
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL
@@ -2287,6 +2292,119 @@ clear_intermission_screen
 		cpy #11*20
 		bne @-
 		rts
+
+		
+; TODO: Dedup code with "draw_cavern_number"
+read_record_holder
+		mwa curmapname ptr0
+		adw ptr0 #(MAP_01_NAME_END-MAP_01_NAME)
+		ldy #0
+		lda (ptr0),y
+		sub #$10
+		asl
+		sta ludek_face
+		asl
+		asl
+		add ludek_face
+		sta ludek_face
+		iny
+		lda (ptr0),y
+		sub #$10
+		add ludek_face
+
+		tax
+		mwa #HIGH_SCORE_TABLE ptr0
+rrh_2	dex
+		beq rrh_1
+		adw ptr0 #(HIGH_SCORE_RECORD_END-HIGH_SCORE_RECORD_BEGIN)
+		jmp rrh_2
+rrh_1
+		; Paint score
+		mwa #record_text_buffer ptr1
+		ldy #0
+rrh_3	lda (ptr0),y
+		pha
+		and #%11110000
+		lsr
+		lsr
+		lsr
+		lsr
+		add #"0"
+		sta (ptr1),y
+		pla
+		and #%00001111
+		add #"0"
+		iny
+		sta (ptr1),y
+		inw ptr1
+		cpy #1
+		beq rrh_3
+
+		; Paint record holder name
+		adw ptr1 #3
+rrh_4	lda (ptr0),y
+		sta (ptr1),y
+		iny
+		cpy #12
+		bne rrh_4
+
+		rts
+
+; TODO: Dedup code with "draw_header" - create (draw string or smth)
+draw_record_holder
+		lda language
+		and #%00000001
+		bne dhxy_1
+		mwa #record_text_buffer ptr0
+		jmp dhxy_2
+dhxy_1	mwa #record_text_buffer_END ptr0
+dhxy_2
+		ldy #0
+		ldx #(record_text_buffer_END-record_text_buffer)
+@		lda (ptr0),y
+		sta SCRMEM+TITLEOFFSET+28,y
+		iny
+		dex
+		txa
+		pha
+		
+		lda STRIG0
+		beq @+
+		
+		pla
+		tax
+		bne @-
+		rts
+@		pla
+		rts
+
+; TODO: Dedup code with "draw_header"
+draw_record_holder_header
+		lda language
+		and #%00000001
+		bne dhx_1
+		mwa #header_record_holder_text ptr0
+		jmp dhx_2
+dhx_1	mwa #header_record_holder_text_en ptr0
+dhx_2
+		ldy #0
+		ldx #(header_record_holder_text_END-header_record_holder_text)
+@		lda (ptr0),y
+		sta SCRMEM+TITLEOFFSET+5,y
+		iny
+		dex
+		txa
+		pha
+		
+		lda STRIG0
+		beq @+
+		
+		pla
+		tax
+		bne @-
+		rts
+@		pla
+		rts		
 		
 draw_header
 		lda language
@@ -2477,13 +2595,23 @@ draw_level_name
 		jsr do_level_name_scroll
 
 dln_X	rts
-		
+
+; TODO: Dedatatize the record text buffer
+record_text_buffer
+		dta d'1234 - abcdefghij'
+record_text_buffer_END
 header_text
 		dta d'pieczara'
 header_text_END
 header_text_en
 		dta d' cavern '
 header_text_en_END
+header_record_holder_text
+		dta d'wzorcowy wynik:'
+header_record_holder_text_END
+header_record_holder_text_en
+		dta d'  best score:  '
+header_record_holder_text_en_END
 
 draw_decoration
 
@@ -3973,6 +4101,8 @@ enable_polish
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 		rts
 
+; TODO: Dedup code with "show_intermission"
+; TODO: Move text a little bit to the right since we don't have the fancy margin
 show_level_selector
 		lda language
 		and #%00000001
@@ -3987,32 +4117,45 @@ sls_2	jsr decompress_data
 		lda #1 
 		sta dont_touch_menu
 
-		mwa #TITLE_FONT ZX5_INPUT
+		mwa #DIGITS_FONT ZX5_INPUT
 		mwa #FONT_SLOT_1 ZX5_OUTPUT
 		jsr decompress_data
-		lda >FONT_SLOT_1
-		sta CHBAS
+		mwa #TITLE_FONT ZX5_INPUT
+		mwa #FONT_SLOT_2 ZX5_OUTPUT
+		jsr decompress_data
+
+		; TODO: Set different colors for menu selector
+		jsr setup_intermission_colors
 
 		lda #100
 		sta ignorestick
+
+		; Enable DLI
+		lda <dli_routine
+		sta VDSLST
+		lda >dli_routine
+		sta VDSLST+1
+		lda #192
+		sta NMIEN
+
 		ldx <DLLEVELSELECTOR
 		ldy >DLLEVELSELECTOR
 		stx SDLSTL
 		sty SDLSTL+1
 
-		lda #94
-		sta SCRMEM
-		lda #95
-		sta SCRMEM+3
-
-		ldy #20
 		lda #0
-@		sta SCRMEM,y
-		dey
-		cpy #3
-		bne @-
+		sta $d008 
+		sta $d009
+		sta $d00c
+		sta HPOSM0
 
-		jsr paint_level_number
+		jsr clear_intermission_screen
+		jsr draw_header
+		jsr draw_cavern_number
+		jsr draw_record_holder_header
+		jsr read_record_holder
+		jsr draw_record_holder
+
 		jmp xxxx1
 xx56
 		inc ignorestick
@@ -4050,7 +4193,9 @@ set_next_starting_level
 			sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 			sbw curmapname #MAP_02_NAME-MAP_01_NAME
 		#end
-		jsr paint_level_number
+		jsr draw_cavern_number
+		jsr read_record_holder
+		jsr draw_record_holder
 snsl_X	rts
 		
 set_previous_starting_level
@@ -4062,18 +4207,9 @@ set_previous_starting_level
 			adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 			adw curmapname #MAP_02_NAME-MAP_01_NAME
 		#end
-		jsr paint_level_number
-		rts		
-
-paint_level_number
-		ldy #MAP_02_NAME-MAP_01_NAME-2
-		lda (curmapname),y
-		eor #%10000000
-		sta SCRMEM+1
-		iny
-		lda (curmapname),y
-		eor #%10000000
-		sta SCRMEM+2
+		jsr draw_cavern_number
+		jsr read_record_holder
+		jsr draw_record_holder
 		rts		
 
 .align		$100
@@ -4101,9 +4237,22 @@ DL_BOT_SCROL
 			dta b(%10111)
 			dta b($41),a(DLINTERMISSION)
 DLLEVELSELECTOR
-	dta $70,$70,$70
-	dta $46,a(SCRMEM)
-	dta $41,a(DLLEVELSELECTOR)
+:8			dta b($60)
+			dta b(%10010000)	; DLI - top 			[VCOUNT=$20]
+			dta b($47)
+			dta a(SCRMEM)
+			dta b(%11110000)	; DLI - digits			[VCOUNT=$2C]
+			dta b($87)			; DLI - digits half		[VCOUNT=$34]
+			dta b($87)			; DLI - digits shadow	[VCOUNT=$3C]
+			dta b($06)			
+:2			dta b($70)
+			dta b(%11110000)	; DLI - level name		[VCOUNT=$4C]
+DL_TOP_SCROL2
+			dta b(%10110)
+			dta b($40)
+DL_BOT_SCROL2			
+			dta b(%10111)
+			dta b($41),a(DLLEVELSELECTOR)
 DLINTERMISSIONFINAL
 	dta $70,$70,$70
 	dta $47,a(SCRMEM), $07

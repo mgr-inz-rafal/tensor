@@ -793,7 +793,7 @@ ZX5_INPUT         equ    *-2
 
 HIGH_SCORE_TABLE	; Can be moved under OS
 HIGH_SCORE_RECORD_BEGIN
-		   dta b($47),b($13),b('c'),b('z'),b('e'),b('s'),b('l'),b('a'),b('f'),b(0),b(0),b('c')
+		   dta b($47),b($13),b($ff),b('z'),b('e'),b('s'),b('l'),b('a'),b('f'),b(0),b(0),b('c')
 HIGH_SCORE_RECORD_END
 		   dta b($23),b($12),b('b'),b('r'),b('o'),b('n'),b('i'),b('s'),b('l'),b('a'),b('w'),b('a')
 		   dta b($0),b($3),b('r'),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
@@ -2319,6 +2319,11 @@ rrh_2	dex
 		adw ptr0 #(HIGH_SCORE_RECORD_END-HIGH_SCORE_RECORD_BEGIN)
 		jmp rrh_2
 rrh_1
+		iny
+		lda (ptr0),y
+		cmp #$ff
+		beq rrh_5 ; No record set yet
+
 		; Paint score
 		mwa #record_text_buffer ptr1
 		ldy #0
@@ -2347,35 +2352,34 @@ rrh_4	lda (ptr0),y
 		iny
 		cpy #12
 		bne rrh_4
-
 		rts
+
+		; Paint "record unset" message
+rrh_5	lda language
+		and #%00000001
+		bne rrh_7
+		mwa #unset_record_text_buffer ptr0
+		jmp rrh_8
+rrh_7	mwa #unset_record_text_buffer_en ptr0
+rrh_8	mwa #record_text_buffer ptr1
+		ldy #0
+rrh_6	lda (ptr0),y
+		sta (ptr1),y
+		iny
+		cpy #(unset_record_text_buffer_END-unset_record_text_buffer)
+		bne rrh_6
+		rts
+
 
 ; TODO: Dedup code with "draw_header" - create (draw string or smth)
 draw_record_holder
-		lda language
-		and #%00000001
-		bne dhxy_1
 		mwa #record_text_buffer ptr0
-		jmp dhxy_2
-dhxy_1	mwa #record_text_buffer_END ptr0
-dhxy_2
 		ldy #0
-		ldx #(record_text_buffer_END-record_text_buffer)
 @		lda (ptr0),y
 		sta SCRMEM+TITLEOFFSET+28,y
 		iny
-		dex
-		txa
-		pha
-		
-		lda STRIG0
-		beq @+
-		
-		pla
-		tax
+		cpy #(record_text_buffer_END-record_text_buffer)
 		bne @-
-		rts
-@		pla
 		rts
 
 ; TODO: Dedup code with "draw_header"
@@ -2600,6 +2604,12 @@ dln_X	rts
 record_text_buffer
 		dta d'1234 - abcdefghij'
 record_text_buffer_END
+unset_record_text_buffer
+		dta d'na razie tu pusto'
+unset_record_text_buffer_END
+unset_record_text_buffer_en
+		dta d'     vacant      '
+unset_record_text_buffer_en_END
 header_text
 		dta d'pieczara'
 header_text_END

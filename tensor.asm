@@ -2293,8 +2293,6 @@ clear_intermission_screen
 		bne @-
 		rts
 
-		
-; TODO: Dedup code with "draw_cavern_number"
 read_record_holder
 		mwa curmapname ptr0
 		adw ptr0 #(MAP_01_NAME_END-MAP_01_NAME)
@@ -2380,7 +2378,6 @@ rrh_6	lda (ptr0),y
 		rts
 
 
-; TODO: Dedup code with "draw_header" - create (draw string or smth)
 draw_record_holder
 		mwa #record_text_buffer ptr0
 		ldy #0
@@ -2391,7 +2388,6 @@ draw_record_holder
 		bne @-
 		rts
 
-; TODO: Dedup code with "draw_header"
 draw_record_holder_header
 		lda language
 		and #%00000001
@@ -2406,17 +2402,7 @@ dhx_2
 		sta SCRMEM+TITLEOFFSET+5,y
 		iny
 		dex
-		txa
-		pha
-		
-		lda STRIG0
-		beq @+
-		
-		pla
-		tax
 		bne @-
-		rts
-@		pla
 		rts		
 		
 draw_header
@@ -2449,20 +2435,32 @@ dh_2
 		rts
 		
 draw_cavern_number
-		mwa curmapname ptr0
+		mwa #SCRMEM+20+DIGITOFFSET ptr1
+		ldy repaint
+dcn_2	beq dcn_1
+		inw ptr1
+		dey
+		jmp dcn_2
+
+dcn_1	mwa curmapname ptr0
 		adw ptr0 #(MAP_01_NAME_END-MAP_01_NAME)
 		ldy #0
 		lda (ptr0),y
 		sub #$10
 		asl
 		add #2
-		sta SCRMEM+20+DIGITOFFSET,y
+		sta (ptr1),y
 		add #1
-		sta SCRMEM+21+DIGITOFFSET,y
+		inw ptr1
+		sta (ptr1),y
 		add #31
-		sta SCRMEM+20+20+DIGITOFFSET,y
+		pha
+		adw ptr1 #19
+		pla
+		sta (ptr1),y
 		add #1
-		sta SCRMEM+21+20+DIGITOFFSET,y
+		inw ptr1
+		sta (ptr1),y
 		
 		iny 
 		
@@ -2471,16 +2469,27 @@ draw_cavern_number
 		sub #$10
 		asl
 		add #2
-		sta SCRMEM+22+DIGITOFFSET,y
+		pha
+		sbw ptr1 #19
+		pla 
+		sta (ptr1),y
 		add #1
-		sta SCRMEM+23+DIGITOFFSET,y
+		inw ptr1
+		sta (ptr1),y
 		add #31
-		sta SCRMEM+22+20+DIGITOFFSET,y
+		pha
+		adw ptr1 #19
+		pla
+		sta (ptr1),y
 		add #1
-		sta SCRMEM+23+20+DIGITOFFSET,y
+		inw ptr1
+		sta (ptr1),y
 		
 		lda #33
-		sta SCRMEM+20+20+DIGITOFFSET-1,y
+		pha
+		sbw ptr1 #4
+		pla
+		sta (ptr1),y
 		
 		jsr draw_cavern_number_shadow
 		
@@ -2802,6 +2811,10 @@ draw_happy_docent
 		rts
 		
 show_intermission
+		; Define offset for caver number
+		lda #0
+		sta repaint
+
 		jsr sleep_for_short_time
 		mwa #DIGITS_FONT ZX5_INPUT
 		mwa #FONT_SLOT_1 ZX5_OUTPUT
@@ -4123,6 +4136,10 @@ enable_polish
 ; TODO: Dedup code with "show_intermission"
 ; TODO: Move text a little bit to the right since we don't have the fancy margin
 show_level_selector
+		; Define offset for caver number
+		lda #2
+		sta repaint
+
 		lda language
 		and #%00000001
 		beq sls_1

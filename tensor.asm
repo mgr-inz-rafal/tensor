@@ -2406,7 +2406,14 @@ dhx_2
 		rts		
 		
 draw_header
-		lda language
+		mwa #SCRMEM+DIGITOFFSET-2 ptr1
+		ldy repaint
+dhh_2	beq dhh_1
+		inw ptr1
+		dey
+		jmp dhh_2
+
+dhh_1	lda language
 		and #%00000001
 		bne dh_1
 		mwa #header_text ptr0
@@ -2416,7 +2423,7 @@ dh_2
 		ldy #0
 		ldx #(header_text_END-header_text)
 @		lda (ptr0),y
-		sta SCRMEM+DIGITOFFSET-2,y
+		sta (ptr1),y
 		iny
 		dex
 		txa

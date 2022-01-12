@@ -2662,10 +2662,10 @@ header_text_selector_en
 		dta d'  which cavern?  '
 header_text_selector_en_END
 header_record_holder_text
-		dta d'wzorcowy wynik:'
+		dta d'wzorcowy wynik:'*
 header_record_holder_text_END
 header_record_holder_text_en
-		dta d'  best score:  '
+		dta d'  best score:  '*
 header_record_holder_text_en_END
 
 draw_decoration
@@ -2776,6 +2776,21 @@ decoration_sine_table
 		dta b(176)
 		dta b(176)
 		dta b(176)
+
+setup_level_selecor_colors
+		lda LEVEL_SELECTOR_COLOR_0
+		sta CLR0
+		lda LEVEL_SELECTOR_COLOR_1
+		sta CLR1
+		; lda LEVEL_SELECTOR_COLOR_2
+		; sta CLR2
+		; lda LEVEL_SELECTOR_COLOR_3
+		; sta CLR3
+		lda LEVEL_SELECTOR_COLOR_3
+		sta CLR2
+		lda LEVEL_SELECTOR_COLOR_3
+		sta CLR3
+		rts		
 
 setup_intermission_colors
 		#if .word curmap = #MAP_LAST
@@ -4187,16 +4202,15 @@ sls_2	jsr decompress_data
 		mwa #FONT_SLOT_2 ZX5_OUTPUT
 		jsr decompress_data
 
-		; TODO: Set different colors for menu selector
-		jsr setup_intermission_colors
+		jsr setup_level_selecor_colors
 
 		lda #100
 		sta ignorestick
 
 		; Enable DLI
-		lda <dli_routine
+		lda <dli_routine_selector
 		sta VDSLST
-		lda >dli_routine
+		lda >dli_routine_selector
 		sta VDSLST+1
 		lda #192
 		sta NMIEN
@@ -4377,6 +4391,20 @@ OBSTACLE_COLOR
 	dta b(C_OBSTA)
 WALL_2_COLOR
 	dta b(C_WALL1)
+LEVEL_SELECTOR_COLOR_0
+	dta b($6b)
+LEVEL_SELECTOR_COLOR_1
+	dta b($26)
+LEVEL_SELECTOR_COLOR_2
+	dta b($38)
+LEVEL_SELECTOR_COLOR_3
+	dta b($94)
+LEVEL_SELECTOR_COLOR_4
+	dta b($6b-2)
+LEVEL_SELECTOR_COLOR_5
+	dta b($6b-4)
+LEVEL_SELECTOR_COLOR_6
+	dta b($6b-6)
 COLOR_TABLE_END
 COLOR_COUNT equ 	COLOR_TABLE_END - COLOR_TABLE_START
 
@@ -4409,7 +4437,13 @@ LOGO_COLOR_3_NTSC
 	dta b(C_WALL2+$10)
 	dta b(C_OBSTA+$10)
 	dta b(C_WALL1+$10)
-
+	dta b($7b)
+	dta b($36)
+	dta b($38)
+	dta b($a4)
+	dta b($7b-2)
+	dta b($7b-4)
+	dta b($7b-6)
 
 ; Sprites
 .align		$1000
@@ -4613,6 +4647,60 @@ dli_routine
 dli_end		
 		plr
 		rti
+
+dli_routine_selector
+		phr
+		
+		lda VCOUNT
+		cmp #$20	; Header
+		bne @+
+		lda >FONT_SLOT_2
+		sta CHBASE
+		jmp dli_end
+		
+@		cmp #$2C	; Digits
+		bne @+
+		lda >FONT_SLOT_1
+		sta CHBASE
+		ldy LEVEL_SELECTOR_COLOR_4
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sty COLOR0
+		jmp dli_end
+		
+@		cmp #$34	; Digits - lower part
+		bne @+
+		ldy LEVEL_SELECTOR_COLOR_5
+		sta WSYNC
+		sty COLOR0
+		ldy LEVEL_SELECTOR_COLOR_6
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sty COLOR0
+		jmp dli_end
+
+@		cmp #$3C	; Digits - shadow
+		bne @+
+		ldy #$04
+		sta WSYNC
+		sty COLOR1
+		jmp dli_end
+		
+@		lda >FONT_SLOT_2
+		sta CHBASE
+		
+		jmp dli_end
 
 dli_routine_final
 pr1	

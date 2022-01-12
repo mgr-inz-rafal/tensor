@@ -2326,6 +2326,15 @@ rrh_1
 
 		; Paint score
 		mwa #record_text_buffer ptr1
+		lda #0
+		ldy #4
+		sta (ptr1),y
+		iny
+		iny
+		sta (ptr1),y
+		dey
+		lda #"-"*
+		sta (ptr1),y
 		ldy #0
 rrh_3	lda (ptr0),y
 		pha

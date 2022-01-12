@@ -2404,16 +2404,25 @@ dhx_2
 		dex
 		bne @-
 		rts		
+
+draw_selector_header
+		lda language
+		and #%00000001
+		bne dsh_7
+		mwa #header_text_selector ptr0
+		jmp dsh_8
+dsh_7	mwa #header_text_selector_en ptr0
+dsh_8	
+		ldy #0
+dsh_6	lda (ptr0),y
+		sta SCRMEM+DIGITOFFSET-4,y
+		iny
+		cpy #(header_text_selector_en_END-header_text_selector_en)
+		bne dsh_6
+		rts
 		
 draw_header
-		mwa #SCRMEM+DIGITOFFSET-2 ptr1
-		ldy repaint
-dhh_2	beq dhh_1
-		inw ptr1
-		dey
-		jmp dhh_2
-
-dhh_1	lda language
+		lda language
 		and #%00000001
 		bne dh_1
 		mwa #header_text ptr0
@@ -2423,7 +2432,7 @@ dh_2
 		ldy #0
 		ldx #(header_text_END-header_text)
 @		lda (ptr0),y
-		sta (ptr1),y
+		sta SCRMEM+DIGITOFFSET-2,y
 		iny
 		dex
 		txa
@@ -2646,6 +2655,12 @@ header_text_END
 header_text_en
 		dta d' cavern '
 header_text_en_END
+header_text_selector
+		dta d' ktora pieczara? '
+header_text_selector_END
+header_text_selector_en
+		dta d'  which cavern?  '
+header_text_selector_en_END
 header_record_holder_text
 		dta d'wzorcowy wynik:'
 header_record_holder_text_END
@@ -4198,7 +4213,7 @@ sls_2	jsr decompress_data
 		sta HPOSM0
 
 		jsr clear_intermission_screen
-		jsr draw_header
+		jsr draw_selector_header
 		jsr draw_cavern_number
 		jsr draw_record_holder_header
 		jsr read_record_holder

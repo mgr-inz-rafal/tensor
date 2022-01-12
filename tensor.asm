@@ -2497,7 +2497,8 @@ dcn_1	mwa curmapname ptr0
 		
 draw_cavern_number_shadow
 		lda #65
-		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET-1
+		ldy repaint
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET-1,y
 
 		ldy #0
 		lda (ptr0),y
@@ -2509,10 +2510,13 @@ draw_cavern_number_shadow
 		#else
 			add #(54-12)+2+64
 		#end
-		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET
+		sty direction
+		ldy repaint
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET,y
 		add #1
-		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+1
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+1,y
 
+		ldy direction
 		iny 
 		iny
 
@@ -2525,9 +2529,10 @@ draw_cavern_number_shadow
 		#else
 			add #(54-12)+2+64
 		#end
-		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+2
+		ldy repaint
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+2,y
 		add #1
-		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+3
+		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET+3,y
 
 		rts
 		

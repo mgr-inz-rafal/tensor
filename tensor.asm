@@ -63,6 +63,7 @@ CART_RAM_END	equ CART_RAM_START+CART_RAM_SIZE
 SAVES_PER_SLOT	equ CART_RAM_SIZE/SAVE_SLOT_LEN
 LAST_SAVE_SLOT_ADDRESS equ CART_RAM_START+SAVES_PER_SLOT*SAVE_SLOT_LEN-SAVE_SLOT_LEN
 SAVE_SLOT_OCCUPIED_MARK equ $bb
+SCORE_SPRITE_START equ 113
 
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
@@ -107,6 +108,7 @@ SAVE_SLOT_OCCUPIED_MARK equ $bb
 .zpvar	.word	len      
 .zpvar	.word	pnb      
 .zpvar	.word	current_persistency_address	; ...$BA
+.zpvar  .byte   last_true_player_pos
 
 ; Rest of ZP
 ; $CB - $DC - RMT player
@@ -1170,6 +1172,9 @@ pmg	.ds $0300
 ant	ANTIC_PROGRAM scr,ant
 
 main
+		lda #$40
+		sta os_back_nmien
+
 		ldy #0
 		lda #0
 axa1	sta SCRMEM+40*13,y
@@ -2159,6 +2164,7 @@ move_element
 		stx HPOSP2
 		#if .byte moved = #PL_CHR
 			stx HPOSP3
+			stx last_true_player_pos
 			mva #1 ludek_face
 		#end
 		rts
@@ -2174,6 +2180,7 @@ move_element
 		stx HPOSP2
 		#if .byte moved = #PL_CHR
 			stx HPOSP3
+			stx last_true_player_pos
 			mva #0 ludek_face
 		#end
 		rts
@@ -2212,7 +2219,6 @@ me_fin	mva #MV_IDLE mvstate
 		dec collecting
 @		jsr display_player
 		jsr clear_sprite
-		mva #0 HPOSP2
 		rts
 		
 clear_player_sprite
@@ -2222,7 +2228,7 @@ clear_player_sprite
 		lda #0
 @		sta pmg_p3,y
 		iny
-		cpy #128
+		cpy #SCORE_SPRITE_START
 		bne @-
 		pla
 		tay
@@ -3025,6 +3031,9 @@ sa_0
 		rts
 
 init_game
+		lda #192
+		sta os_back_nmien
+
 		jsr enable_sprites
 		disable_antic
 
@@ -3032,7 +3041,7 @@ init_game
 		ldx >vbi_routine
 		lda #7
 		jsr SETVBV
-		
+
 		mva instafall old_instafall
 ;		mwa #MAP_LAST curmap		; TODO: Remove after happy docent is integrated
 		jsr show_intermission
@@ -3056,6 +3065,13 @@ init_game
 		ldx #<MODUL
 		ldy #>MODUL
 		jsr INIT_MUSIC
+
+		lda <dli_routine_game
+		sta VDSLST
+		lda >dli_routine_game
+		sta VDSLST+1
+		lda #192
+		sta NMIEN
 
 		lda RANDOM
 		and #%00000111
@@ -3365,11 +3381,24 @@ show_level
 		pha
 		jsr show_margin
 		jsr show_geometry
+		jsr draw_points
 		jsr recalc_player_position
 		pla
 		sta curmap+1
 		pla
 		sta curmap
+		rts
+
+draw_points
+		ldy #SCORE_SPRITE_START
+		lda #$ff
+@		sta pmg_p0,y
+		sta pmg_p1,y
+		sta pmg_p2,y
+		sta pmg_p3,y
+		iny
+		cpy #SCORE_SPRITE_START+8
+		bne @-
 		rts
 		
 add_color
@@ -3509,7 +3538,7 @@ load_map_from_storage
 		jsr decompress_data
 
 		rts
-		
+
 show_geometry
 		jsr load_map_from_storage
 		mwa #(SCRMEM+MARGIN) ptr0
@@ -3726,6 +3755,7 @@ x2pmg_1	cpy #0
 		jmp x2pmg_1
 @		sta HPOSP3
 		sta psx
+		sta last_true_player_pos
 		
 		mwa #pmg_p3+TOPMARG ptr1
 		
@@ -3805,7 +3835,7 @@ os_back
 		jsr synchro
 		lda #$ff
 		sta PORTB
-		lda #$40
+		lda os_back_nmien
 		sta NMIEN
 		cli
 		rts
@@ -4295,10 +4325,12 @@ set_previous_starting_level
 
 .align		$100
 DLGAME
-:3			dta b($70)
+			dta b(%11110000)
+:2			dta b($70)
 			dta b($47)
 			dta a(SCRMEM)
-:MAPSIZE-1	dta	b($07)
+:MAPSIZE-2	dta	b($07)
+			dta	b(%10000111)
 			dta b($41),a(DLGAME)
 DLINTERMISSION
 :8			dta b($60)
@@ -4558,6 +4590,7 @@ collect				dta(0)
 current_persistency_bank dta(0)
 workpages			dta(0)
 record_holder_color	dta(0)
+os_back_nmien		dta(0)
 ; TODO[RC]: Here we can also fit some data (before font slots)
 LEVEL_COMPLETION_BITS
 :8 dta b(%01010000)
@@ -4710,6 +4743,52 @@ dli_routine_selector
 		sta CHBASE
 		
 		jmp dli_end
+
+dli_routine_game
+		pha
+		lda VCOUNT
+		cmp #$6f
+		beq daas_1
+		; Drawing game board
+		lda MARGIN_COLOR
+		sta COLPM1
+		sta COLPM0
+		lda #$2f
+		sta hposp1
+		lda #$b4
+		sta hposp0
+		LDA #$03
+		STA SIZEP0
+		STA SIZEP1
+		mva last_true_player_pos HPOSP3		
+		pla
+		rti
+daas_1	; Drawing points
+		lda #0
+		sta SIZEP0
+		sta SIZEP1
+		sta SIZEP2
+		sta SIZEP3
+		lda #$50
+		sta HPOSP0
+		lda #$60
+		sta HPOSP1
+
+		; Ten miga!
+		lda #$70
+		sta HPOSP2
+
+		lda #$80
+		sta HPOSP3
+
+		lda #$ff
+		sta COLPM0
+		sta COLPM1
+		sta COLPM2
+		sta COLPM3
+
+		pla
+		rti
 
 dli_routine_final
 pr1	

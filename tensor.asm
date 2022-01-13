@@ -2323,6 +2323,8 @@ rrh_1
 		beq rrh_5 ; No record set yet
 
 		; Paint score
+		lda #$db
+		sta record_holder_color
 		mwa #record_text_buffer ptr1
 		lda #0
 		ldy #4
@@ -2362,7 +2364,9 @@ rrh_4	lda (ptr0),y
 		rts
 
 		; Paint "record unset" message
-rrh_5	lda language
+rrh_5	lda #$04
+		sta record_holder_color
+		lda language
 		and #%00000001
 		bne rrh_7
 		mwa #unset_record_text_buffer ptr0
@@ -4553,6 +4557,7 @@ any_moved			dta(0)
 collect				dta(0)
 current_persistency_bank dta(0)
 workpages			dta(0)
+record_holder_color	dta(0)
 ; TODO[RC]: Here we can also fit some data (before font slots)
 LEVEL_COMPLETION_BITS
 :8 dta b(%01010000)
@@ -4698,6 +4703,10 @@ dli_routine_selector
 		jmp dli_end
 		
 @		lda >FONT_SLOT_2
+		ldy record_holder_color
+		sty COLOR1
+		ldy #$35
+		sty COLOR0
 		sta CHBASE
 		
 		jmp dli_end

@@ -288,29 +288,28 @@ TITLE_TOP_BORDER
 TITLE_BOTTOM_BORDER
 	dta b(91)
 :1	dta b(125)
-	dta b(126)
+	dta b(125)
 
-	; http://github.com/mgr-inz-rafal/tensor
-	dta b(66)
-	dta b(83)
-	dta b(79)
-	dta b(90)
-	dta b(76)
-	dta b(65)
-	dta b(84)
-	dta b(67)
-	dta b(69)
-	dta b(96)
-	dta b(27)
-	dta b(59)
-	dta b(60)
-	dta b(61)
-	dta b(120)
-	dta b(89)
-	dta b(8)
-	dta b(7)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
+	dta b(125)
 
-	dta b(127)
+	dta b(125)
 :12	dta b(125)
 
 	dta b(126)
@@ -2803,10 +2802,6 @@ setup_level_selecor_colors
 		sta CLR0
 		lda LEVEL_SELECTOR_COLOR_1
 		sta CLR1
-		; lda LEVEL_SELECTOR_COLOR_2
-		; sta CLR2
-		; lda LEVEL_SELECTOR_COLOR_3
-		; sta CLR3
 		lda LEVEL_SELECTOR_COLOR_3
 		sta CLR2
 		lda LEVEL_SELECTOR_COLOR_3

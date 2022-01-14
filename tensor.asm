@@ -3049,6 +3049,10 @@ init_game
 		lda #7
 		jsr SETVBV
 
+		lda #0
+		sta current_score
+		sta current_score+1
+
 		mva instafall old_instafall
 ;		mwa #MAP_LAST curmap		; TODO: Remove after happy docent is integrated
 		jsr show_intermission

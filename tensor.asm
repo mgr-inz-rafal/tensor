@@ -4945,13 +4945,13 @@ daas_1	; Drawing points
 		sta SIZEP2
 		sta SIZEP3
 		lda #$c8-(9*3)
-		sta HPOSP0
-		lda #$c8-(9*2)
-		sta HPOSP1
-		lda #$c8-(9*1)
 		sta HPOSP2
-		lda #$c8-(9*0)
+		lda #$c8-(9*2)
 		sta HPOSP3
+		lda #$c8-(9*1)
+		sta HPOSP0
+		lda #$c8-(9*0)
+		sta HPOSP1
 
 		lda #$ff
 		sta COLPM0

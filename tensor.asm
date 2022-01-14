@@ -4964,6 +4964,21 @@ daas_1	; Drawing points
 		sta COLPM2
 		sta COLPM3
 
+		lda #$fa
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta COLPM0
+		sta COLPM1
+		sta COLPM2
+		sta COLPM3
+
 		pla
 		rti
 

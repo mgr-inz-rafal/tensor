@@ -2677,10 +2677,10 @@ header_text_en
 		dta d' cavern '
 header_text_en_END
 header_text_selector
-		dta d' ktora pieczara? '
+		dta d' kt',b(5+64),d'ra pieczara| '
 header_text_selector_END
 header_text_selector_en
-		dta d'  which cavern?  '
+		dta d'  which cavern|  '
 header_text_selector_en_END
 header_record_holder_text
 		dta d'wzorcowy wynik:'*

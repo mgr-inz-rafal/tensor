@@ -4944,6 +4944,10 @@ dli_routine_game
 		STA SIZEP0
 		STA SIZEP1
 		mva last_true_player_pos HPOSP3		
+		#if .byte reducer < #REDUCER_START_POS
+			lda reducer
+			sta COLPM3
+		#end
 		pla
 		rti
 daas_1	; Drawing points

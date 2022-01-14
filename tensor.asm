@@ -63,7 +63,8 @@ CART_RAM_END	equ CART_RAM_START+CART_RAM_SIZE
 SAVES_PER_SLOT	equ CART_RAM_SIZE/SAVE_SLOT_LEN
 LAST_SAVE_SLOT_ADDRESS equ CART_RAM_START+SAVES_PER_SLOT*SAVE_SLOT_LEN-SAVE_SLOT_LEN
 SAVE_SLOT_OCCUPIED_MARK equ $bb
-SCORE_SPRITE_START equ 113
+SCORE_SPRITE_START equ 113-4
+SCORE_DLI_LINE equ $6b
 
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
@@ -2161,7 +2162,7 @@ move_element
 		dec mvcntr
 		inc psx
 		ldx psx
-		#if .byte VCOUNT < #$6f
+		#if .byte VCOUNT < #SCORE_DLI_LINE
 			stx HPOSP2
 		#end
 		#if .byte moved = #PL_CHR
@@ -2179,7 +2180,7 @@ move_element
 		dec mvcntr
 		dec psx
 		ldx psx
-		#if .byte VCOUNT < #$6f
+		#if .byte VCOUNT < #SCORE_DLI_LINE
 			stx HPOSP2
 		#end
 		#if .byte moved = #PL_CHR
@@ -2196,7 +2197,7 @@ move_element
 		jeq me_finD
 		dec mvcntr
 		ldx psx
-		#if .byte VCOUNT < #$6f
+		#if .byte VCOUNT < #SCORE_DLI_LINE
 			stx HPOSP2
 		#end
 :2		jsr sprite_down
@@ -3313,7 +3314,7 @@ set_falling_sprite_color
 		rts
 		
 init_movement
-		#if .byte VCOUNT < #$6f
+		#if .byte VCOUNT < #SCORE_DLI_LINE
 			lda #0
 			sta HPOSP2
 		#end
@@ -3520,11 +3521,11 @@ show_margin
 		cpy #$ff/2
 		bne @-
 
-		ldy #16
+		ldy #16-4
 		lda #%00000010
 @		sta pmg_m0,y
 		iny
-		cpy #$ff/2-15
+		cpy #$ff/2-15-4
 		bne @-
 		
 		lda #$b1
@@ -3538,11 +3539,11 @@ show_margin
 		cpy #$ff/2
 		bne @-
 
-		ldy #16
+		ldy #16-4
 		lda #%11111110
 @		sta pmg_p0,y
 		iny
-		cpy #$ff/2-15
+		cpy #$ff/2-15-4
 		bne @-
 		
 		lda #$b4
@@ -3556,11 +3557,11 @@ show_margin
 		cpy #$ff/2
 		bne @-
 
-		ldy #16
+		ldy #16-4
 		lda #$ff
 @		sta pmg_p1,y
 		iny
-		cpy #$ff/2-15
+		cpy #$ff/2-15-4
 		bne @-
 		
 		lda #$2f
@@ -3810,7 +3811,7 @@ p2pmg_0	cpy #0
 		adw ptr1 #8
 		jmp p2pmg_0
 @		sbw ptr1 #pmg_p2 ptr2
-		adb ptr2 #8
+		adb ptr2 #8-4
 		mva ptr2 psy
 		rts
 
@@ -3836,7 +3837,7 @@ x2pmg_0	cpy #0
 		adw ptr1 #8
 		jmp x2pmg_0
 @		sbw ptr1 #pmg_p3 ptr2
-		adb ptr2 #8
+		adb ptr2 #8-4
 		mva ptr2 psy
 		rts
 
@@ -4396,7 +4397,7 @@ set_previous_starting_level
 .align		$100
 DLGAME
 			dta b(%11110000)
-:2			dta b($70)
+			dta b($70)
 			dta b($47)
 			dta a(SCRMEM)
 :MAPSIZE-2	dta	b($07)
@@ -4921,7 +4922,7 @@ dli_routine_selector
 dli_routine_game
 		pha
 		lda VCOUNT
-		cmp #$6f
+		cmp #SCORE_DLI_LINE
 		beq daas_1
 		; Drawing game board
 		lda MARGIN_COLOR

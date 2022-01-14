@@ -4782,11 +4782,8 @@ daas_1	; Drawing points
 		sta HPOSP0
 		lda #$c8-(9*1)
 		sta HPOSP1
-
-		; Ten miga!
 		lda #$c8-(9*2)
 		sta HPOSP2
-
 		lda #$c8-(9*3)
 		sta HPOSP3
 

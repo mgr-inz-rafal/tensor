@@ -3257,8 +3257,22 @@ stick_right
 		cmp #0
 		jne game_loop
 		jsr init_movement
+		jsr count_score
 		mva #MV_MRGH mvstate
 		jmp game_loop
+
+count_score
+		sed
+		clc
+		lda current_score
+		adc #<1
+		sta current_score
+		lda current_score+1
+		adc #>1
+		sta current_score+1
+		cld
+		jsr draw_points
+		rts
 		
 stick_left
 		ldx <rotate_counter_clockwise-1
@@ -3268,6 +3282,7 @@ stick_left
 		cmp #0
 		jne game_loop
 		jsr init_movement
+		jsr count_score
 		mva #MV_MLFT mvstate
 		jmp game_loop
 		
@@ -4638,7 +4653,7 @@ current_persistency_bank dta(0)
 workpages			dta(0)
 record_holder_color	dta(0)
 os_back_nmien		dta(0)
-current_score		dta($71),($23)
+current_score		dta($0),($0)
 
 SCORE_DIGIT_DATA
 ;0

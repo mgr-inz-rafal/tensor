@@ -3398,15 +3398,54 @@ show_level
 		rts
 
 draw_points
-		ldy #SCORE_SPRITE_START
-		lda #$ff
-@		sta pmg_p0,y
-		sta pmg_p1,y
-		sta pmg_p2,y
-		sta pmg_p3,y
+		lda current_score
+		pha
+		and #%11110000
+		lsr
+		lsr
+		lsr
+		lsr
+		mwy #(pmg_p0+SCORE_SPRITE_START) ptr1
+		jsr draw_points_internal
+
+		pla
+		and #%00001111
+		mwy #(pmg_p1+SCORE_SPRITE_START) ptr1
+		jsr draw_points_internal
+
+		lda current_score+1
+		pha
+		and #%11110000
+		lsr
+		lsr
+		lsr
+		lsr
+		mwy #(pmg_p2+SCORE_SPRITE_START) ptr1
+		jsr draw_points_internal
+
+		pla
+		and #%00001111
+		mwy #(pmg_p3+SCORE_SPRITE_START) ptr1
+		jsr draw_points_internal
+
+		rts
+
+draw_points_internal
+		tax
+		mwa #SCORE_DIGIT_DATA ptr0
+dpi_1	cpx #0
+		beq dpi_0
+		adw ptr0 #SCORE_DIGIT_SIZE
+		dex
+		jmp dpi_1
+
+dpi_0	ldy #0
+dpi_2	lda (ptr0),y
+		sta (ptr1),y
 		iny
-		cpy #SCORE_SPRITE_START+8
-		bne @-
+		cpy #SCORE_DIGIT_SIZE
+		bne dpi_2
+
 		rts
 		
 add_color
@@ -4599,6 +4638,110 @@ current_persistency_bank dta(0)
 workpages			dta(0)
 record_holder_color	dta(0)
 os_back_nmien		dta(0)
+current_score		dta($71),($23)
+
+SCORE_DIGIT_DATA
+;0
+	dta b(%11000011)
+	dta b(%10000001)
+	dta b(%00111000)
+	dta b(%01000100)
+	dta b(%01000100)
+	dta b(%00111000)
+	dta b(%10000001)
+	dta b(%11000011)
+SCORE_DIGIT_SIZE equ *-SCORE_DIGIT_DATA
+
+;1
+	dta b(%11000011)
+	dta b(%10010001)
+	dta b(%00101000)
+	dta b(%00001000)
+	dta b(%00001000)
+	dta b(%00001000)
+	dta b(%10001001)
+	dta b(%11000011)
+
+;2
+	dta b(%11000011)
+	dta b(%10000001)
+	dta b(%00111000)
+	dta b(%00001000)
+	dta b(%00111000)
+	dta b(%00100000)
+	dta b(%10011001)
+	dta b(%11000011)
+
+;3
+	dta b(%11000011)
+	dta b(%10000001)
+	dta b(%00111000)
+	dta b(%00001000)
+	dta b(%00011000)
+	dta b(%00001000)
+	dta b(%10011001)
+	dta b(%11000011)
+
+;4
+	dta b(%11000011)
+	dta b(%10000001)
+	dta b(%00100000)
+	dta b(%00100000)
+	dta b(%00111100)
+	dta b(%00000100)
+	dta b(%10000001)
+	dta b(%11000011)
+
+;5
+	dta b(%11000011)
+	dta b(%10000001)
+	dta b(%00111000)
+	dta b(%00100000)
+	dta b(%00010000)
+	dta b(%00001000)
+	dta b(%10110001)
+	dta b(%11000011)
+
+;6
+	dta b(%11000011)
+	dta b(%10110001)
+	dta b(%00100000)
+	dta b(%00111000)
+	dta b(%00101000)
+	dta b(%00111000)
+	dta b(%10000001)
+	dta b(%11000011)
+
+;7
+	dta b(%11000011)
+	dta b(%10000001)
+	dta b(%00000000)
+	dta b(%01111110)
+	dta b(%00000010)
+	dta b(%00000010)
+	dta b(%10000001)
+	dta b(%11000011)
+
+;8
+	dta b(%11000011)
+	dta b(%10000001)
+	dta b(%00111000)
+	dta b(%00101000)
+	dta b(%00111000)
+	dta b(%00101000)
+	dta b(%10111001)
+	dta b(%11000011)
+
+;9
+	dta b(%11000011)
+	dta b(%10011101)
+	dta b(%00010100)
+	dta b(%00001000)
+	dta b(%00001000)
+	dta b(%01001000)
+	dta b(%10110001)
+	dta b(%11000011)
+
 ; TODO[RC]: Here we can also fit some data (before font slots)
 LEVEL_COMPLETION_BITS
 :8 dta b(%01010000)
@@ -4778,13 +4921,13 @@ daas_1	; Drawing points
 		sta SIZEP1
 		sta SIZEP2
 		sta SIZEP3
-		lda #$c8-(9*0)
-		sta HPOSP0
-		lda #$c8-(9*1)
-		sta HPOSP1
-		lda #$c8-(9*2)
-		sta HPOSP2
 		lda #$c8-(9*3)
+		sta HPOSP0
+		lda #$c8-(9*2)
+		sta HPOSP1
+		lda #$c8-(9*1)
+		sta HPOSP2
+		lda #$c8-(9*0)
 		sta HPOSP3
 
 		lda #$ff

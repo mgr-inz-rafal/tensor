@@ -2161,7 +2161,9 @@ move_element
 		dec mvcntr
 		inc psx
 		ldx psx
-		stx HPOSP2
+		#if .byte VCOUNT < #$6f
+			stx HPOSP2
+		#end
 		#if .byte moved = #PL_CHR
 			stx HPOSP3
 			stx last_true_player_pos
@@ -2177,7 +2179,9 @@ move_element
 		dec mvcntr
 		dec psx
 		ldx psx
-		stx HPOSP2
+		#if .byte VCOUNT < #$6f
+			stx HPOSP2
+		#end
 		#if .byte moved = #PL_CHR
 			stx HPOSP3
 			stx last_true_player_pos
@@ -2192,7 +2196,9 @@ move_element
 		jeq me_finD
 		dec mvcntr
 		ldx psx
-		stx HPOSP2
+		#if .byte VCOUNT < #$6f
+			stx HPOSP2
+		#end
 :2		jsr sprite_down
 :2		jsr player_sprite_down
 		lda #0
@@ -3288,8 +3294,10 @@ set_falling_sprite_color
 		rts
 		
 init_movement
-		lda #0
-		sta HPOSP2
+		#if .byte VCOUNT < #$6f
+			lda #0
+			sta HPOSP2
+		#end
 		lda mvstate
 		cmp #MV_IDLE
 		jeq @+
@@ -4764,21 +4772,22 @@ dli_routine_game
 		pla
 		rti
 daas_1	; Drawing points
+		sta WSYNC
 		lda #0
 		sta SIZEP0
 		sta SIZEP1
 		sta SIZEP2
 		sta SIZEP3
-		lda #$50
+		lda #$c8-(9*0)
 		sta HPOSP0
-		lda #$60
+		lda #$c8-(9*1)
 		sta HPOSP1
 
 		; Ten miga!
-		lda #$70
+		lda #$c8-(9*2)
 		sta HPOSP2
 
-		lda #$80
+		lda #$c8-(9*3)
 		sta HPOSP3
 
 		lda #$ff

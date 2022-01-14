@@ -65,6 +65,8 @@ LAST_SAVE_SLOT_ADDRESS equ CART_RAM_START+SAVES_PER_SLOT*SAVE_SLOT_LEN-SAVE_SLOT
 SAVE_SLOT_OCCUPIED_MARK equ $bb
 SCORE_SPRITE_START equ 113-4
 SCORE_DLI_LINE equ $6b
+REDUCER_START_POS equ $ff/2-4-19
+REDUCER_END_POS equ $10
 
 .zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
@@ -2008,7 +2010,7 @@ game_loop
 		ldx collectibles
 		cpx #0
 		bne gl_0
-		#if .byte reducer = #$ff/2-4
+		#if .byte reducer = #REDUCER_START_POS
 			adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 			adw curmapname #MAP_02_NAME-MAP_01_NAME
 			mva #GS_FIN gstate
@@ -2058,6 +2060,8 @@ gl_1	jsr move_element
 		iny
 		sta pmg_p3,y
 		dec reducer
+		ldx reducer
+		cpx #REDUCER_END_POS
 		jeq run_here
 		jmp game_loop		
 @		lda ignorestick
@@ -3097,7 +3101,7 @@ init_game
 		sty SDLSTL+1
 		mva #MV_IDLE mvstate
 		mva #GS_GRAV gstate
-		ldx #$ff/2-4
+		ldx #REDUCER_START_POS
 		stx reducer
 		ldx #0
 		stx scroll

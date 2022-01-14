@@ -3236,6 +3236,9 @@ stick_internal
 		cmp #0
 		bne @+
 		jsr clear_player_sprite
+		jsr count_score
+		jsr count_score
+		jsr draw_points
 		tya
 		pha
 		txa
@@ -3258,6 +3261,7 @@ stick_right
 		jne game_loop
 		jsr init_movement
 		jsr count_score
+		jsr draw_points
 		mva #MV_MRGH mvstate
 		jmp game_loop
 
@@ -3271,7 +3275,6 @@ count_score
 		adc #>1
 		sta current_score+1
 		cld
-		jsr draw_points
 		rts
 		
 stick_left
@@ -3283,6 +3286,7 @@ stick_left
 		jne game_loop
 		jsr init_movement
 		jsr count_score
+		jsr draw_points
 		mva #MV_MLFT mvstate
 		jmp game_loop
 		
@@ -3413,6 +3417,8 @@ show_level
 		rts
 
 draw_points
+		phr
+
 		lda current_score
 		pha
 		and #%11110000
@@ -3442,6 +3448,8 @@ draw_points
 		and #%00001111
 		mwy #(pmg_p3+SCORE_SPRITE_START) ptr1
 		jsr draw_points_internal
+
+		plr
 
 		rts
 

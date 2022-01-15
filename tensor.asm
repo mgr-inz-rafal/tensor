@@ -2408,7 +2408,7 @@ draw_record_holder
 		bne @-
 		rts
 
-draw_enter_psuedonim
+draw_enter_pseudonim
 		lda language
 		and #%00000001
 		bne dhxQ_1
@@ -4408,7 +4408,26 @@ mariola
 		sty SDLSTL+1
 
 		jsr draw_new_record_header
-		jsr draw_enter_psuedonim
+		jsr draw_enter_pseudonim
+
+		mwa #SCRMEM+TITLEOFFSET+31 ZX5_OUTPUT
+		lda #0
+		sta ppx
+snrs_0	inc ppx
+		lda ppx
+		and #%01000000
+		cmp #%01000000
+		bne snrs_1
+		inc last_true_player_pos
+		lda #0
+		sta ppx
+snrs_1	#if last_true_player_pos > #$ff/2
+			lda #0
+		#else
+			lda #60
+		#end
+		ldy #0
+		sta (ZX5_OUTPUT),y
 
 		lda #$ff
 		sta CH
@@ -4416,7 +4435,7 @@ mariola
 		; Return	- $0c
 		; Backspace - $34
 
-snrs_0	lda CH
+		lda CH
 		cmp #$ff
 		beq snrs_0
 

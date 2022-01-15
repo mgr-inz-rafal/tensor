@@ -1808,7 +1808,8 @@ stop
 	mva #$40 nmien		;only NMI interrupts, DLI disabled
 	cli			;IRQ enabled
 
-	jsr show_level_selector
+	jsr show_new_record_screen
+;	jsr show_level_selector
 
 	jmp run_here
 skp
@@ -2397,7 +2398,6 @@ rrh_6	lda (ptr0),y
 		bne rrh_6
 		rts
 
-
 draw_record_holder
 		mwa #record_text_buffer ptr0
 		ldy #0
@@ -2407,6 +2407,23 @@ draw_record_holder
 		cpy #(record_text_buffer_END-record_text_buffer)
 		bne @-
 		rts
+
+draw_enter_psuedonim
+		lda language
+		and #%00000001
+		bne dhxQ_1
+		mwa #header_record_enter_pseudonim ptr0
+		jmp dhxQ_2
+dhxQ_1	mwa #header_record_enter_pseudonim_en ptr0
+dhxQ_2
+		ldy #0
+		ldx #(header_record_enter_pseudonim_END-header_record_enter_pseudonim)
+@		lda (ptr0),y
+		sta SCRMEM+TITLEOFFSET+2,y
+		iny
+		dex
+		bne @-
+		rts		
 
 draw_record_holder_header
 		lda language
@@ -2439,6 +2456,22 @@ dsh_6	lda (ptr0),y
 		iny
 		cpy #(header_text_selector_en_END-header_text_selector_en)
 		bne dsh_6
+		rts
+		
+draw_new_record_header
+		lda language
+		and #%00000001
+		bne dnrh_7
+		mwa #header_text_new_record ptr0
+		jmp dnrh_8
+dnrh_7	mwa #header_text_new_record_en ptr0
+dnrh_8	
+		ldy #0
+dnrh_6	lda (ptr0),y
+		sta SCRMEM+DIGITOFFSET-6,y
+		iny
+		cpy #(header_text_new_record_END-header_text_new_record)
+		bne dnrh_6
 		rts
 		
 draw_header
@@ -2521,20 +2554,24 @@ dcn_1	mwa curmapname ptr0
 		inw ptr1
 		sta (ptr1),y
 		
-		lda #33
-		pha
-		sbw ptr1 #4
-		pla
-		sta (ptr1),y
+		#if .byte movable > #0
+			lda #33
+			pha
+			sbw ptr1 #4
+			pla
+			sta (ptr1),y
+		#end
 		
 		jsr draw_cavern_number_shadow
 		
 		rts
 		
 draw_cavern_number_shadow
-		lda #65
-		ldy repaint
-		sta SCRMEM+SHADOWOFFSET+DIGITOFFSET-1,y
+		#if .byte movable > #0
+			lda #65
+			ldy repaint
+			sta SCRMEM+SHADOWOFFSET+DIGITOFFSET-1,y
+		#end
 
 		ldy #0
 		lda (ptr0),y
@@ -2675,6 +2712,12 @@ header_text_END
 header_text_en
 		dta d' cavern '
 header_text_en_END
+header_text_new_record
+		dta d'   dorodny wynik!   '
+header_text_new_record_END
+header_text_new_record_en
+		dta d'distinguished score!'
+header_text_new_record_en_END
 header_text_selector
 		dta d' kt',b(5+64),d'ra pieczara| '
 header_text_selector_END
@@ -2687,6 +2730,12 @@ header_record_holder_text_END
 header_record_holder_text_en
 		dta d'  best score:  '*
 header_record_holder_text_en_END
+header_record_enter_pseudonim
+		dta d'podaj imie bohaterze'*
+header_record_enter_pseudonim_END
+header_record_enter_pseudonim_en
+		dta d'enter your name here'*
+header_record_enter_pseudonim_en_END
 
 draw_decoration
 
@@ -2797,7 +2846,7 @@ decoration_sine_table
 		dta b(176)
 		dta b(176)
 
-setup_level_selecor_colors
+setup_level_selector_colors
 		lda LEVEL_SELECTOR_COLOR_0
 		sta CLR0
 		lda LEVEL_SELECTOR_COLOR_1
@@ -2807,6 +2856,17 @@ setup_level_selecor_colors
 		lda LEVEL_SELECTOR_COLOR_3
 		sta CLR3
 		rts		
+
+setup_new_record_screen_colors		
+		lda LEVEL_SELECTOR_COLOR_0
+		sta CLR0
+		lda LEVEL_SELECTOR_COLOR_1
+		sta CLR1
+		lda LEVEL_SELECTOR_COLOR_3
+		sta CLR2
+		lda LEVEL_SELECTOR_COLOR_3
+		sta CLR3
+		rts
 
 setup_intermission_colors
 		#if .word curmap = #MAP_LAST
@@ -2870,16 +2930,12 @@ draw_happy_docent
 		
 show_intermission
 		; Define offset for caver number
-		lda #0
-		sta repaint
+		ldx #0
+		stx repaint
+		inx
+		stx movable
 
 		jsr sleep_for_short_time
-		mwa #DIGITS_FONT ZX5_INPUT
-		mwa #FONT_SLOT_1 ZX5_OUTPUT
-		jsr decompress_data
-		mwa #TITLE_FONT ZX5_INPUT
-		mwa #FONT_SLOT_2 ZX5_OUTPUT
-		jsr decompress_data
 		mwa #DECORATION_DATA ZX5_INPUT
 		mwa #pmg_p0 ZX5_OUTPUT
 		jsr decompress_data
@@ -4283,12 +4339,96 @@ enable_polish
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 		rts
 
-; TODO: Dedup code with "show_intermission"
-; TODO: Move text a little bit to the right since we don't have the fancy margin
+load_intermission_fonts
+		mwa #DIGITS_FONT ZX5_INPUT
+		mwa #FONT_SLOT_1 ZX5_OUTPUT
+		jsr decompress_data
+		mwa #TITLE_FONT ZX5_INPUT
+		mwa #FONT_SLOT_2 ZX5_OUTPUT
+		jsr decompress_data
+		rts
+
+show_new_record_screen
+		jsr load_intermission_fonts
+
+		; TODO[RC]: Decompression of the map names here
+		; is needed only for debug builds
+		lda language
+		and #%00000001
+		beq slsAZ_1
+		mwa #ENGLISH_LEVEL_NAMES ZX5_INPUT
+		mwa #MAP_01_NAME ZX5_OUTPUT
+		jmp slsAZ_2
+slsAZ_1	mwa #POLISH_LEVEL_NAMES ZX5_INPUT
+		mwa #MAP_01_NAME ZX5_OUTPUT
+slsAZ_2	jsr decompress_data
+
+mariola
+		jsr clear_intermission_screen
+
+		lda curmapname
+		pha
+		lda curmapname+1
+		pha
+		lda #0
+		sta repaint
+		sta movable
+		lda #<CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET
+		sta curmapname
+		lda #>CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET
+		sta curmapname+1
+		jsr draw_cavern_number
+		lda #4
+		sta repaint
+		lda #<CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET_FOR_THE_SECOND
+		sta curmapname
+		lda #>CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET_FOR_THE_SECOND
+		sta curmapname+1
+		jsr draw_cavern_number
+		pla
+		sta curmapname+1
+		pla
+		sta curmapname
+
+		lda #1 
+		sta dont_touch_menu
+		jsr setup_new_record_screen_colors
+
+		; Enable DLI
+		lda <dli_routine_new_record
+		sta VDSLST
+		lda >dli_routine_new_record
+		sta VDSLST+1
+		lda #192
+		sta NMIEN
+
+		ldx <DLNEW_RECORD
+		ldy >DLNEW_RECORD
+		stx SDLSTL
+		sty SDLSTL+1
+
+		jsr draw_new_record_header
+		jsr draw_enter_psuedonim
+
+		lda #$ff
+		sta CH
+
+		; Return	- $0c
+		; Backspace - $34
+
+snrs_0	lda CH
+		cmp #$ff
+		beq snrs_0
+
+zenek
+		rts
+
 show_level_selector
 		; Define offset for caver number
-		lda #2
-		sta repaint
+		ldx #2
+		stx repaint
+		inx
+		stx movable
 
 		lda language
 		and #%00000001
@@ -4303,14 +4443,8 @@ sls_2	jsr decompress_data
 		lda #1 
 		sta dont_touch_menu
 
-		mwa #DIGITS_FONT ZX5_INPUT
-		mwa #FONT_SLOT_1 ZX5_OUTPUT
-		jsr decompress_data
-		mwa #TITLE_FONT ZX5_INPUT
-		mwa #FONT_SLOT_2 ZX5_OUTPUT
-		jsr decompress_data
-
-		jsr setup_level_selecor_colors
+		jsr load_intermission_fonts
+		jsr setup_level_selector_colors
 
 		lda #100
 		sta ignorestick
@@ -4434,10 +4568,10 @@ DLLEVELSELECTOR
 			dta b($06)			
 :2			dta b($70)
 			dta b(%11110000)	; DLI - level name		[VCOUNT=$4C]
-DL_TOP_SCROL2
+DL_TOP_SCROL3
 			dta b(%10110)
 			dta b($40)
-DL_BOT_SCROL2			
+DL_BOT_SCROL3			
 			dta b(%10111)
 			dta b($41),a(DLLEVELSELECTOR)
 DLINTERMISSIONFINAL
@@ -4451,6 +4585,24 @@ DLINTERMISSIONFINAL
 	dta b($07)
 	dta b($07)
 	dta $41,a(DLINTERMISSIONFINAL)
+DLNEW_RECORD
+:8			dta b($60)
+			dta b(%10010000)	; DLI - top 			[VCOUNT=$20]
+			dta b($47)
+			dta a(SCRMEM)
+			dta b(%11110000)	; DLI - digits			[VCOUNT=$2C]
+			dta b($87)			; DLI - digits half		[VCOUNT=$34]
+			dta b($87)			; DLI - digits shadow	[VCOUNT=$3C]
+			dta b($06)			
+:2			dta b($70)
+			dta b(%11110000)	; DLI - level name		[VCOUNT=$4C]
+DL_TOP_SCROL2
+			dta b(%10110)
+			dta b($40)
+DL_BOT_SCROL2			
+			dta b(%10111)
+			dta b($41),a(DLLEVELSELECTOR)
+
 
 COLOR_TABLE_START
 COLOR_1_INSTRUCTION_TEXT
@@ -4773,6 +4925,41 @@ SCORE_DIGIT_SIZE equ *-SCORE_DIGIT_DATA
 LEVEL_COMPLETION_BITS
 :8 dta b(%01010000)
 
+CHAR_MAP
+	dta b($3f)		; a
+	dta b($0)		; b
+	dta b($0)		; c
+	dta b($0)		; d
+	dta b($0)		; e
+	dta b($38)		; f
+	dta b($0)		; g
+	dta b($0)		; h
+	dta b($0)		; i
+	dta b($0)		; j
+	dta b($0)		; k
+	dta b($0)		; l
+	dta b($0)		; m
+	dta b($0)		; n
+	dta b($0)		; o
+	dta b($0)		; p
+	dta b($0)		; q
+	dta b($0)		; r
+	dta b($0)		; s
+	dta b($0)		; t
+	dta b($0)		; u
+	dta b($0)		; v
+	dta b($0)		; w
+	dta b($0)		; x
+	dta b($0)		; y
+	dta b($0)		; z
+CHAR_MAP_END
+CURMAP_LOCATION_EMULATION_LOCATION
+	dta b($14),b($15)
+CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET equ * - (MAP_01_NAME_END-MAP_01_NAME) - 2
+CURMAP_LOCATION_EMULATION_LOCATION_FOR_THE_SECOND
+	dta b($19),b($11)
+CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET_FOR_THE_SECOND equ * - (MAP_01_NAME_END-MAP_01_NAME) - 2
+
 
 .align	$400
 FONT_SLOT_1
@@ -4863,6 +5050,64 @@ dli_routine
 dli_end		
 		plr
 		rti
+
+dli_routine_new_record
+		phr
+
+		lda VCOUNT
+		cmp #$20	; Header
+		bne @+
+		lda >FONT_SLOT_2
+		sta CHBASE
+		jmp dli_end
+		
+@		cmp #$2C	; Digits
+		bne @+
+		lda >FONT_SLOT_1
+		sta CHBASE
+		ldy LEVEL_SELECTOR_COLOR_4
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sty COLOR0
+		jmp dli_end
+		
+@		cmp #$34	; Digits - lower part
+		bne @+
+		ldy LEVEL_SELECTOR_COLOR_5
+		sta WSYNC
+		sty COLOR0
+		ldy LEVEL_SELECTOR_COLOR_6
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sty COLOR0
+		jmp dli_end
+
+@		cmp #$3C	; Digits - shadow
+		bne @+
+		ldy #$04
+		sta WSYNC
+		sty COLOR1
+		jmp dli_end
+		
+@		lda >FONT_SLOT_2
+		ldy record_holder_color
+		sty COLOR1
+		ldy #$35
+		sty COLOR0
+		sta CHBASE
+		
+		jmp dli_end
 
 dli_routine_selector
 		phr

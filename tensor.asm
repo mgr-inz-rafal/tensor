@@ -2713,10 +2713,10 @@ header_text_en
 		dta d' cavern '
 header_text_en_END
 header_text_new_record
-		dta d'   dorodny wynik!   '
+		dta d'   dorodny wynik',b(61+64),d'   '
 header_text_new_record_END
 header_text_new_record_en
-		dta d'distinguished score!'
+		dta d'distinguished score',b(61+64)
 header_text_new_record_en_END
 header_text_selector
 		dta d' kt',b(5+64),d'ra pieczara| '
@@ -2858,13 +2858,13 @@ setup_level_selector_colors
 		rts		
 
 setup_new_record_screen_colors		
-		lda LEVEL_SELECTOR_COLOR_0
+		lda RECORD_PSEUDONIM_COLOR_0
 		sta CLR0
-		lda LEVEL_SELECTOR_COLOR_1
+		lda RECORD_PSEUDONIM_COLOR_1
 		sta CLR1
-		lda LEVEL_SELECTOR_COLOR_3
+		lda RECORD_PSEUDONIM_COLOR_2
 		sta CLR2
-		lda LEVEL_SELECTOR_COLOR_3
+		lda RECORD_PSEUDONIM_COLOR_3
 		sta CLR3
 		rts
 
@@ -4427,7 +4427,7 @@ snrs_0	inc ppx
 snrs_1	#if last_true_player_pos > #$ff/2
 			lda #0
 		#else
-			lda #60
+			lda #59+128
 		#end
 		ldy mvstate
 		sta (ZX5_OUTPUT),y
@@ -4439,7 +4439,6 @@ snrs_1	#if last_true_player_pos > #$ff/2
 		cmp #$ff
 		beq snrs_0
 
-zenek
 		pha
 		lda #0
 		sta last_true_player_pos
@@ -4732,6 +4731,14 @@ LEVEL_SELECTOR_COLOR_5
 	dta b($6b-4)
 LEVEL_SELECTOR_COLOR_6
 	dta b($6b-6)
+RECORD_PSEUDONIM_COLOR_0
+	dta b($6b)
+RECORD_PSEUDONIM_COLOR_1
+	dta b($26)
+RECORD_PSEUDONIM_COLOR_2
+	dta b($ff)
+RECORD_PSEUDONIM_COLOR_3
+	dta b($94)
 COLOR_TABLE_END
 COLOR_COUNT equ 	COLOR_TABLE_END - COLOR_TABLE_START
 
@@ -4771,6 +4778,10 @@ LOGO_COLOR_3_NTSC
 	dta b($7b-2)
 	dta b($7b-4)
 	dta b($7b-6)
+	dta b($6b)
+	dta b($26)
+	dta b($38)
+	dta b($94)
 
 ; Sprites
 .align		$1000

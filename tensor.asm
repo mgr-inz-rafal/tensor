@@ -4992,31 +4992,31 @@ LEVEL_COMPLETION_BITS
 
 CHAR_MAP
 	dta b($3f)		; a
-	dta b($0)		; b
-	dta b($0)		; c
-	dta b($0)		; d
-	dta b($0)		; e
+	dta b($15)		; b
+	dta b($12)		; c
+	dta b($3a)		; d
+	dta b($2a)		; e
 	dta b($38)		; f
-	dta b($0)		; g
-	dta b($0)		; h
-	dta b($0)		; i
-	dta b($0)		; j
-	dta b($0)		; k
-	dta b($0)		; l
-	dta b($0)		; m
-	dta b($0)		; n
-	dta b($0)		; o
-	dta b($0)		; p
-	dta b($0)		; q
-	dta b($0)		; r
-	dta b($0)		; s
-	dta b($0)		; t
-	dta b($0)		; u
-	dta b($0)		; v
-	dta b($0)		; w
-	dta b($0)		; x
-	dta b($0)		; y
-	dta b($0)		; z
+	dta b($3d)		; g
+	dta b($39)		; h
+	dta b($0d)		; i
+	dta b($01)		; j
+	dta b($05)		; k
+	dta b($00)		; l
+	dta b($25)		; m
+	dta b($23)		; n
+	dta b($08)		; o
+	dta b($0a)		; p
+	dta b($2f)		; q
+	dta b($28)		; r
+	dta b($3e)		; s
+	dta b($2d)		; t
+	dta b($0b)		; u
+	dta b($10)		; v
+	dta b($2e)		; w
+	dta b($16)		; x
+	dta b($2b)		; y
+	dta b($17)		; z
 CHAR_MAP_END
 CURMAP_LOCATION_EMULATION_LOCATION
 	dta b($14),b($15)

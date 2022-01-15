@@ -4453,6 +4453,12 @@ zenek
 			dec mvstate
 snrs_3			
 		#else
+			jsr find_pressed_letter
+			cpx #$ff
+			beq snrs_2
+			txa
+			add #33
+			sta (ZX5_OUTPUT),y 
 			lda mvstate
 			cmp #10
 			beq snrs_2
@@ -4464,8 +4470,23 @@ snrs_2
 		sta CH
 		jmp snrs_0
 
-
 		rts
+
+find_pressed_letter
+		sta target
+		ldx #0
+fpl_1	lda CHAR_MAP,x
+		cmp target
+		beq fpl_0 ; found!
+		inx
+		cpx #CHAR_MAP_END-CHAR_MAP
+		beq fpl_2 ; not found
+		jmp fpl_1
+
+fpl_0	rts		
+fpl_2	ldx #$ff
+		rts
+
 
 show_level_selector
 		; Define offset for caver number

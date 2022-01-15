@@ -4434,6 +4434,7 @@ snrs_1	#if last_true_player_pos > #$ff/2
 
 		; Return	- $0c
 		; Backspace - $34
+		; Space     - $21
 
 		lda CH
 		cmp #$ff
@@ -4455,9 +4456,13 @@ snrs_3
 			jsr find_pressed_letter
 			cpx #$ff
 			beq snrs_2
-			txa
+			cpx #CHAR_MAP_END-CHAR_MAP-1
+			bne snrs_5
+			lda #0
+			jmp snrs_8
+snrs_5		txa 
 			add #33
-			sta (ZX5_OUTPUT),y 
+snrs_8		sta (ZX5_OUTPUT),y 
 			lda mvstate
 			cmp #10
 			beq snrs_2
@@ -5028,6 +5033,7 @@ CHAR_MAP
 	dta b($16)		; x
 	dta b($2b)		; y
 	dta b($17)		; z
+	dta b($21)		; space
 CHAR_MAP_END
 CURMAP_LOCATION_EMULATION_LOCATION
 	dta b($14),b($15)

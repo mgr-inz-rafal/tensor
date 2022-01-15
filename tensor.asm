@@ -4413,6 +4413,9 @@ mariola
 		mwa #SCRMEM+TITLEOFFSET+31 ZX5_OUTPUT
 		lda #0
 		sta ppx
+		sta mvstate
+		lda #$ff
+		sta CH
 snrs_0	inc ppx
 		lda ppx
 		and #%01000000
@@ -4426,11 +4429,8 @@ snrs_1	#if last_true_player_pos > #$ff/2
 		#else
 			lda #60
 		#end
-		ldy #0
+		ldy mvstate
 		sta (ZX5_OUTPUT),y
-
-		lda #$ff
-		sta CH
 
 		; Return	- $0c
 		; Backspace - $34
@@ -4440,6 +4440,31 @@ snrs_1	#if last_true_player_pos > #$ff/2
 		beq snrs_0
 
 zenek
+		pha
+		lda #0
+		sta last_true_player_pos
+		ldy mvstate
+		sta (ZX5_OUTPUT),y
+		pla
+
+		#if .byte @ = #$34
+			lda mvstate
+			beq snrs_3
+			dec mvstate
+snrs_3			
+		#else
+			lda mvstate
+			cmp #10
+			beq snrs_2
+			inc mvstate
+snrs_2
+		#end
+
+		lda #$ff
+		sta CH
+		jmp snrs_0
+
+
 		rts
 
 show_level_selector

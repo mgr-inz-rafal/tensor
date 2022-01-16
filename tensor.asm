@@ -68,7 +68,6 @@ SCORE_DLI_LINE equ $6b
 REDUCER_START_POS equ $ff/2-4-19
 REDUCER_END_POS equ $10
 
-.zpvar	.byte	antic_tmp
 .zpvar	.byte	stop_intermission
 .zpvar	.word	curmap
 .zpvar	.word	curmapname
@@ -166,6 +165,8 @@ MAPS_END equ *
 MAPS_END_IN_STORAGE equ MAPS_END + MAP_STORAGE - $2000
 
 COPY_UNDER_OS
+	lda #0
+	sta DMACTL
 	sei
 	lda #0
 	sta NMIEN
@@ -1169,6 +1170,7 @@ main
 		lda #$40
 		sta os_back_nmien
 
+	jsr disable_antic
 		ldy #0
 		lda #0
 axa1	sta SCRMEM+40*13,y
@@ -1176,7 +1178,6 @@ axa1	sta SCRMEM+40*13,y
 		cpy #41
 		bne axa1
 
-	disable_antic
 	ldy #64
 @	jsr synchro
 	dey
@@ -1211,8 +1212,7 @@ axa1	sta SCRMEM+40*13,y
 	jsr init_menu
 	mwa #MENU_0_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 	jsr invert_menu_cursor
-ai8 enable_antic
-
+ai8 
 	ift USESPRITES
 	mva >pmg pmbase		;missiles and players data address
 	mva #$03 pmcntl		;enable players and missiles
@@ -1228,7 +1228,7 @@ ai8 enable_antic
 	jsr clear_pmg
 
 	; TODO: unlock burning
-	lda PERSISTENCY_LOADED
+	;lda PERSISTENCY_LOADED
 	bne awwq
 	jsr persistent_load
 	inc PERSISTENCY_LOADED
@@ -1242,6 +1242,7 @@ awwq
 	ldx #<MODUL
 	ldy #>MODUL
 	jsr INIT_MUSIC
+	jsr enable_antic
 	
 chuj
 	sei			;stop interrups
@@ -1789,7 +1790,7 @@ stop
 
 	; TODO: Burn only if options are dirty
 	; TODO: unlock burning
-	jsr persistent_save
+	;jsr persistent_save
 
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL
@@ -2540,8 +2541,11 @@ dcn_1	mwa curmapname ptr0
 		rts
 
 handle_new_record
+		jsr is_better_score
+		cmp #1
+		bne hnr_1
 		jsr show_new_record_screen
-		jmp run_here
+hnr_1	jmp run_here
 		
 draw_cavern_number_shadow
 		#if .byte movable > #0
@@ -2906,6 +2910,8 @@ draw_happy_docent
 		rts
 		
 show_intermission
+		jsr disable_antic
+
 		; Define offset for caver number
 		ldx #0
 		stx repaint
@@ -2916,7 +2922,6 @@ show_intermission
 		mwa #DECORATION_DATA ZX5_INPUT
 		mwa #pmg_p0 ZX5_OUTPUT
 		jsr decompress_data
-		enable_antic
 
 		lda #0
 		sta stop_intermission
@@ -2971,6 +2976,8 @@ show_intermission
 		#end
 		
 		jsr clear_intermission_screen
+		jsr enable_antic
+
 		jsr draw_decoration
 :4		jsr sleep_for_some_time
 		#if .word curmap <> #MAP_LAST
@@ -2991,7 +2998,6 @@ show_intermission
 di_X	ldx #$ff
 		stx CH
 		
-		disable_antic
 		jsr synchro
 
 		; Reenable scroll on the first line of the title
@@ -3003,7 +3009,6 @@ di_X	ldx #$ff
 			pla
 			pla
 			pla
-			enable_antic
 			mwa #MAP_BUFFER_START curmap
 			mwa #MAP_01_NAME curmapname
 			jmp main
@@ -3074,7 +3079,6 @@ init_game
 		sta os_back_nmien
 
 		jsr enable_sprites
-		disable_antic
 
 		ldy <vbi_routine
 		ldx >vbi_routine
@@ -3088,6 +3092,8 @@ init_game
 		mva instafall old_instafall
 ;		mwa #MAP_LAST curmap		; TODO: Remove after happy docent is integrated
 		jsr show_intermission
+
+		jsr disable_antic
 
 		mwa #GAME_FONT ZX5_INPUT
 		mwa #FONT_SLOT_1 ZX5_OUTPUT
@@ -3146,7 +3152,7 @@ init_game
 		sta ignorestick
 		lda #PL_CHR
 		sta moved
-		enable_antic
+		jsr enable_antic
 		rts
 
 rotate_internal_1
@@ -3550,7 +3556,7 @@ show_margin
 		; Vidol - end
 		
 		; Missile 1
-		ldy #0
+		ldy #1
 		lda #0
 @		sta pmg_m0,y
 		iny
@@ -3920,7 +3926,7 @@ dn_1  	cli
 
 clear_pmg
 		mwa #pmg_m0 ptr0
-		ldy #0
+		ldy #1
 		lda #0
 CP_1	sta (ptr0),y
 		inw ptr0
@@ -4375,7 +4381,7 @@ sz_2	lda (ZX5_OUTPUT),y
 		bne sz_2
 
 		; TODO: unlock burning
-		jsr persistent_save
+		;jsr persistent_save
 
 		rts
 
@@ -4395,6 +4401,7 @@ fpl_2	ldx #$ff
 		rts
 
 show_level_selector
+		jsr disable_antic
 		; Define offset for caver number
 		ldx #2
 		stx repaint
@@ -4445,6 +4452,8 @@ sls_2	jsr decompress_data
 		jsr draw_record_holder_header
 		jsr read_record_holder
 		jsr draw_record_holder
+
+		jsr enable_antic
 
 		jmp xxxx1
 xx56
@@ -4749,9 +4758,17 @@ AMYGDALA_DATA_3	; Serce
 
 AMYGDALA_DATA_4	; Swiecznik
 	dta b(16),b(24),b(48),b(16),b(68),b(56),b(16),b(56),b($ea),b($fa)
+
+enable_antic
+			lda antic_tmp
+			sta SDMCTL
+			rts
+
 PRE_PMG_DATA_END
 
-; TODO[RC]: Still some place available here
+; Nothing more fits here, we're overwriting the first byte of the missile, anyway
+; pmg_m0 should stay fixed at $8180
+
 pmg_m0			equ pmg_base+$180
 pmg_p0			equ pmg_base+$200
 pmg_p1			equ pmg_base+$280
@@ -4943,10 +4960,16 @@ CURMAP_LOCATION_EMULATION_LOCATION_FOR_THE_SECOND
 	dta b($19),b($11)
 CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET_FOR_THE_SECOND equ * - (MAP_01_NAME_END-MAP_01_NAME) - 2
 
+disable_antic
+			lda SDMCTL
+			sta antic_tmp
+			lda #0
+			sta SDMCTL
+			jsr sleep_for_short_time
+			rts
 PERSISTENCY_LOADED
 	dta b(0)
-
-; TODO[RC]: Here we can also fit some data (before font slots)
+antic_tmp dta b(0)
 
 
 .align	$400
@@ -4956,6 +4979,7 @@ FONT_SLOT_END equ FONT_SLOT_2+1024
 
 	org (FONT_SLOT_END)
 show_new_record_screen
+		jsr disable_antic
 		jsr STOP_MUSIC
 		jsr load_intermission_fonts
 
@@ -4968,7 +4992,6 @@ show_new_record_screen
 
 		jsr clear_intermission_screen
 
-ziemia
 		lda current_score
 		pha
 		jsr draw_points_internal_1
@@ -5035,6 +5058,8 @@ ziemia
 
 		jsr draw_new_record_header
 		jsr draw_enter_pseudonim
+
+		jsr enable_antic
 
 		mwa #SCRMEM+TITLEOFFSET+31 ZX5_OUTPUT
 		lda #0
@@ -5110,6 +5135,9 @@ snrs_2
 
 		rts
 
+is_better_score
+		lda #1
+		rts
 		
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"
@@ -5446,28 +5474,6 @@ flip_credits
 CREDITS_BASE
 	ins "data\credits.dat"
 	
-.proc disable_antic
-				lda SDMCTL
-				sta antic_tmp
-				lda #$00
-				sta SDMCTL
-				lda 20
-@				cmp 20
-				beq @-
-				lda #%01000000
-				sta NMIEN
-				rts
-.endp
-
-; Enables ANTIC and DLI
-.proc enable_antic
-				lda antic_tmp
-				sta SDMCTL
-				lda #%11000000
-				sta NMIEN
-				rts
-.endp
-
 ROTATE_LUT_BEGIN
 .rept 9 #
 	icl "include\rotate_lut\left\rotate_left_frame_:1.txt"

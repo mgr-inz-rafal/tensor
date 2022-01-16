@@ -1873,8 +1873,6 @@ TEXT_PANEL_ADDRESS
 CREDITS_ADDRESS_DL
 	dta a(CREDITS_BASE+80)
 	dta b($02)
-	dta b($42)
-	dta a(FOURTY_EMPTY_CHARS)
 	
 	dta $41,a(:2)
 .ENDM
@@ -3465,16 +3463,20 @@ show_level
 		sta curmap
 		rts
 
-draw_points
-		phr
-
-		lda current_score
-		pha
+draw_points_internal_1
 		and #%11110000
 		lsr
 		lsr
 		lsr
 		lsr
+		rts
+
+draw_points
+		phr
+
+		lda current_score
+		pha
+		jsr draw_points_internal_1
 		mwy #(pmg_p0+SCORE_SPRITE_START) ptr1
 		jsr draw_points_internal
 
@@ -3485,11 +3487,7 @@ draw_points
 
 		lda current_score+1
 		pha
-		and #%11110000
-		lsr
-		lsr
-		lsr
-		lsr
+		jsr draw_points_internal_1
 		mwy #(pmg_p2+SCORE_SPRITE_START) ptr1
 		jsr draw_points_internal
 
@@ -4337,136 +4335,6 @@ load_intermission_fonts
 		jsr decompress_data
 		rts
 
-show_new_record_screen
-		jsr load_intermission_fonts
-
-		lda #0
-		sta HPOSM0
-		sta HPOSP0
-		sta HPOSP1
-		sta HPOSP2
-		sta HPOSP3
-
-		jsr clear_intermission_screen
-
-		lda curmapname
-		pha
-		lda curmapname+1
-		pha
-		lda #0
-		sta repaint
-		sta movable
-		lda #<CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET
-		sta curmapname
-		lda #>CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET
-		sta curmapname+1
-		jsr draw_cavern_number
-		lda #4
-		sta repaint
-		lda #<CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET_FOR_THE_SECOND
-		sta curmapname
-		lda #>CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET_FOR_THE_SECOND
-		sta curmapname+1
-		jsr draw_cavern_number
-		pla
-		sta curmapname+1
-		pla
-		sta curmapname
-
-		lda #1 
-		sta dont_touch_menu
-		jsr setup_new_record_screen_colors
-
-		; Enable DLI
-		lda <dli_routine_new_record
-		sta VDSLST
-		lda >dli_routine_new_record
-		sta VDSLST+1
-		lda #192
-		sta NMIEN
-
-		ldx <DLNEW_RECORD
-		ldy >DLNEW_RECORD
-		stx SDLSTL
-		sty SDLSTL+1
-
-		jsr draw_new_record_header
-		jsr draw_enter_pseudonim
-
-		mwa #SCRMEM+TITLEOFFSET+31 ZX5_OUTPUT
-		lda #0
-		sta ppx
-		sta mvstate
-		lda #$ff
-		sta CH
-snrs_0	inc ppx
-		lda ppx
-		and #%01000000
-		cmp #%01000000
-		bne snrs_1
-		inc last_true_player_pos
-		lda #0
-		sta ppx
-snrs_1	#if last_true_player_pos > #$ff/2
-			lda #0
-		#else
-			lda #59+128
-		#end
-		ldy mvstate
-		sta (ZX5_OUTPUT),y
-
-		; Return	- $0c
-		; Backspace - $34
-		; Space     - $21
-
-		lda CH
-		cmp #$ff
-		beq snrs_0
-
-		pha
-		lda #0
-		sta last_true_player_pos
-		ldy mvstate
-		sta (ZX5_OUTPUT),y
-		pla
-
-		cmp #$0c	; Return pressed
-		bne snrs_9
-		cpy #0		; But we don't allow empty name
-		beq snrs_9
-
-		jsr store_new_high_score_entry
-		rts
-
-snrs_9	#if .byte @ = #$34
-			lda mvstate
-			beq snrs_3
-			dec mvstate
-snrs_3			
-		#else
-			jsr find_pressed_letter
-			cpx #$ff
-			beq snrs_2
-			cpx #CHAR_MAP_END-CHAR_MAP-1
-			bne snrs_5
-			lda #0
-			jmp snrs_8
-snrs_5		txa 
-			add #33
-snrs_8		sta (ZX5_OUTPUT),y 
-			lda mvstate
-			cmp #10
-			beq snrs_2
-			inc mvstate
-snrs_2
-		#end
-
-		lda #$ff
-		sta CH
-		jmp snrs_0
-
-		rts
-
 calculate_map_number
 		mwa curmapname ptr0
 		adw ptr0 #(MAP_01_NAME_END-MAP_01_NAME)
@@ -5090,7 +4958,161 @@ FONT_SLOT_1
 FONT_SLOT_2 equ FONT_SLOT_1+1024
 FONT_SLOT_END equ FONT_SLOT_2+1024
 
-; CODE HERE UNTIL ($8CE0-1)
+	org (FONT_SLOT_END)
+show_new_record_screen
+		jsr load_intermission_fonts
+
+		lda #0
+		sta HPOSM0
+		sta HPOSP0
+		sta HPOSP1
+		sta HPOSP2
+		sta HPOSP3
+
+		jsr clear_intermission_screen
+
+ziemia
+		lda current_score
+		pha
+		jsr draw_points_internal_1
+		eor #%00010000
+		sta CURMAP_LOCATION_EMULATION_LOCATION_FOR_THE_SECOND
+
+		pla
+		and #%00001111
+		eor #%00010000
+		sta CURMAP_LOCATION_EMULATION_LOCATION_FOR_THE_SECOND+1
+
+		lda current_score+1
+		pha
+		jsr draw_points_internal_1
+		eor #%00010000
+		sta CURMAP_LOCATION_EMULATION_LOCATION
+
+		pla
+		and #%00001111
+		eor #%00010000
+		sta CURMAP_LOCATION_EMULATION_LOCATION+1
+
+
+		lda curmapname
+		pha
+		lda curmapname+1
+		pha
+		lda #0
+		sta repaint
+		sta movable
+		lda #<CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET
+		sta curmapname
+		lda #>CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET
+		sta curmapname+1
+		jsr draw_cavern_number
+		lda #4
+		sta repaint
+		lda #<CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET_FOR_THE_SECOND
+		sta curmapname
+		lda #>CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET_FOR_THE_SECOND
+		sta curmapname+1
+		jsr draw_cavern_number
+		pla
+		sta curmapname+1
+		pla
+		sta curmapname
+
+		lda #1 
+		sta dont_touch_menu
+		jsr setup_new_record_screen_colors
+
+		; Enable DLI
+		lda <dli_routine_new_record
+		sta VDSLST
+		lda >dli_routine_new_record
+		sta VDSLST+1
+		lda #192
+		sta NMIEN
+
+		ldx <DLNEW_RECORD
+		ldy >DLNEW_RECORD
+		stx SDLSTL
+		sty SDLSTL+1
+
+		jsr draw_new_record_header
+		jsr draw_enter_pseudonim
+
+		mwa #SCRMEM+TITLEOFFSET+31 ZX5_OUTPUT
+		lda #0
+		sta ppx
+		sta mvstate
+		lda #$ff
+		sta CH
+snrs_0	inc ppx
+		lda ppx
+		and #%01000000
+		cmp #%01000000
+		bne snrs_1
+		inc last_true_player_pos
+		lda #0
+		sta ppx
+snrs_1	#if last_true_player_pos > #$ff/2
+			lda #0
+		#else
+			lda #59+128
+		#end
+		ldy mvstate
+		sta (ZX5_OUTPUT),y
+
+		; Return	- $0c
+		; Backspace - $34
+		; Space     - $21
+
+		lda CH
+		cmp #$ff
+		beq snrs_0
+
+		pha
+		lda #0
+		sta last_true_player_pos
+		ldy mvstate
+		sta (ZX5_OUTPUT),y
+		pla
+
+		cmp #$0c	; Return pressed
+		bne snrs_9
+		cpy #0		; But we don't allow empty name
+		beq snrs_9
+
+		jsr store_new_high_score_entry
+		rts
+
+snrs_9	#if .byte @ = #$34
+			lda mvstate
+			beq snrs_3
+			dec mvstate
+snrs_3			
+		#else
+			jsr find_pressed_letter
+			cpx #$ff
+			beq snrs_2
+			cpx #CHAR_MAP_END-CHAR_MAP-1
+			bne snrs_5
+			lda #0
+			jmp snrs_8
+snrs_5		txa 
+			add #33
+snrs_8		sta (ZX5_OUTPUT),y 
+			lda mvstate
+			cmp #10
+			beq snrs_2
+			inc mvstate
+snrs_2
+		#end
+
+		lda #$ff
+		sta CH
+		jmp snrs_0
+
+		rts
+
 		
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"
@@ -5426,8 +5448,6 @@ flip_credits
 .align $100		
 CREDITS_BASE
 	ins "data\credits.dat"
-FOURTY_EMPTY_CHARS
-:40	dta b(0)
 	
 .proc disable_antic
 				lda SDMCTL

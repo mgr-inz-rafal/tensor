@@ -994,8 +994,6 @@ als_1
 			rts
 
 read_state
-			jsr os_gone
-
 			jsr find_last_burned_state
 			cpy #$ff
 			beq bs_X ; No stored state found
@@ -3883,7 +3881,12 @@ x2pmg_0	cpy #0
 		mva ptr2 psy
 		rts
 
+pizda_wisi jmp pizda_wisi
+
 synchro
+		lda os_gone_debug
+		cmp #1
+		beq pizda_wisi
 		inc sync
 		lda sync
 		and #%00000001
@@ -3937,6 +3940,7 @@ CP_1	sta (ptr0),y
 
 os_gone
 		jsr synchro
+		inc os_gone_debug
 		sei
 		lda #0
 		sta NMIEN
@@ -3945,7 +3949,8 @@ os_gone
 		rts
 
 os_back
-		jsr synchro
+		lda #0
+		dec os_gone_debug
 		lda #$ff
 		sta PORTB
 		lda os_back_nmien
@@ -4970,6 +4975,7 @@ disable_antic
 PERSISTENCY_LOADED
 	dta b(0)
 antic_tmp dta b(0)
+os_gone_debug dta b(0)
 
 
 .align	$400

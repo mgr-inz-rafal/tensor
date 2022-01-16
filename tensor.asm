@@ -4375,7 +4375,7 @@ sz_2	lda (ZX5_OUTPUT),y
 		bne sz_2
 
 		; TODO: unlock burning
-		jsr burn_state
+		jsr persistent_save
 
 		rts
 
@@ -4956,6 +4956,7 @@ FONT_SLOT_END equ FONT_SLOT_2+1024
 
 	org (FONT_SLOT_END)
 show_new_record_screen
+		jsr STOP_MUSIC
 		jsr load_intermission_fonts
 
 		lda #0

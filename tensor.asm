@@ -862,7 +862,6 @@ HIGH_SCORE_RECORD_END
 		   dta b($0),b($62),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
 		   dta b($0),b($63),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
 		   dta b($0),b($64),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($65),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
 HIGH_SCORE_TABLE_END
 
 ; wr555 the value from A
@@ -976,13 +975,6 @@ persistent_save
 			jsr burn_state
 			jsr os_back
 			rts
-
-persistent_load_no_rts	; TODO: For testing, to be removed
-			jsr os_gone
-			jsr read_state
-			jsr os_back
-			jsr apply_loaded_state
-			jmp skp
 
 persistent_load
 			jsr os_gone
@@ -1234,8 +1226,14 @@ ai8 enable_antic
 
 	jsr detect_ntsc
 	jsr clear_pmg
-	; TODO: Unlock!
-;	jsr persistent_load
+
+	; TODO: unlock burning
+	lda PERSISTENCY_LOADED
+	bne awwq
+	jsr persistent_load
+	inc PERSISTENCY_LOADED
+
+awwq
 	lda #6
 	sta ntsc_music_conductor
 	lda #1
@@ -1771,14 +1769,6 @@ raster_program_end
 	lda trig0		; FIRE #0
 	jeq handle_menu_item
 
-	lda consol		; START
-	and #1
-	jeq persistent_save
-
-	lda consol
-	and #%00000100
-	jeq persistent_load_no_rts
-
 	lda porta
 	cmp #253
 	bne @+
@@ -1798,8 +1788,8 @@ stop
 	sta:rne hposp0,x+
 
 	; TODO: Burn only if options are dirty
-	; TODO: UNLOCK!
-	;jsr persistent_save
+	; TODO: unlock burning
+	jsr persistent_save
 
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL
@@ -4384,6 +4374,9 @@ sz_2	lda (ZX5_OUTPUT),y
 		cpy #12
 		bne sz_2
 
+		; TODO: unlock burning
+		jsr burn_state
+
 		rts
 
 find_pressed_letter
@@ -4949,6 +4942,9 @@ CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET equ * - (MAP_01_NAME_END-MAP_01_N
 CURMAP_LOCATION_EMULATION_LOCATION_FOR_THE_SECOND
 	dta b($19),b($11)
 CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET_FOR_THE_SECOND equ * - (MAP_01_NAME_END-MAP_01_NAME) - 2
+
+PERSISTENCY_LOADED
+	dta b(0)
 
 ; TODO[RC]: Here we can also fit some data (before font slots)
 

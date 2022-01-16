@@ -4498,7 +4498,14 @@ sz_1	cpx #0
 		dex
 		jmp sz_1
 sz_0
-		ldy #2
+		ldy #0
+		lda current_score+1
+		sta (ptr0),y
+		iny
+		lda current_score
+		sta (ptr0),y
+		iny
+
 		dew ZX5_OUTPUT
 		dew ZX5_OUTPUT
 
@@ -5036,7 +5043,6 @@ SCORE_DIGIT_SIZE equ *-SCORE_DIGIT_DATA
 	dta b(%00111110)
 	dta b(%00000000)
 
-; TODO[RC]: Here we can also fit some data (before font slots)
 LEVEL_COMPLETION_BITS
 :8 dta b(%01010000)
 
@@ -5075,6 +5081,8 @@ CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET equ * - (MAP_01_NAME_END-MAP_01_N
 CURMAP_LOCATION_EMULATION_LOCATION_FOR_THE_SECOND
 	dta b($19),b($11)
 CURMAP_LOCATION_EMULATION_LOCATION_FAKE_OFFSET_FOR_THE_SECOND equ * - (MAP_01_NAME_END-MAP_01_NAME) - 2
+
+; TODO[RC]: Here we can also fit some data (before font slots)
 
 
 .align	$400

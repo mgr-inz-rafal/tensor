@@ -1228,7 +1228,7 @@ ai8
 	jsr clear_pmg
 
 	; TODO: unlock burning
-	;lda PERSISTENCY_LOADED
+	lda PERSISTENCY_LOADED
 	bne awwq
 	jsr persistent_load
 	inc PERSISTENCY_LOADED
@@ -1790,7 +1790,7 @@ stop
 
 	; TODO: Burn only if options are dirty
 	; TODO: unlock burning
-	;jsr persistent_save
+	jsr persistent_save
 
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL
@@ -4381,7 +4381,7 @@ sz_2	lda (ZX5_OUTPUT),y
 		bne sz_2
 
 		; TODO: unlock burning
-		;jsr persistent_save
+		jsr persistent_save
 
 		rts
 
@@ -5103,7 +5103,9 @@ snrs_1	#if last_true_player_pos > #$ff/2
 		cpy #0		; But we don't allow empty name
 		beq snrs_9
 
+		jsr disable_antic
 		jsr store_new_high_score_entry
+		jsr enable_antic
 		rts
 
 snrs_9	#if .byte @ = #$34

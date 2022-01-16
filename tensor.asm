@@ -1808,8 +1808,7 @@ stop
 	mva #$40 nmien		;only NMI interrupts, DLI disabled
 	cli			;IRQ enabled
 
-	jsr show_new_record_screen
-;	jsr show_level_selector
+	jsr show_level_selector
 
 	jmp run_here
 skp
@@ -2062,7 +2061,7 @@ gl_1	jsr move_element
 		dec reducer
 		ldx reducer
 		cpx #REDUCER_END_POS
-		jeq run_here
+		jeq handle_new_record
 		jmp game_loop		
 @		lda ignorestick
 		cmp #0
@@ -2311,21 +2310,7 @@ clear_intermission_screen
 		rts
 
 read_record_holder
-		mwa curmapname ptr0
-		adw ptr0 #(MAP_01_NAME_END-MAP_01_NAME)
-		ldy #0
-		lda (ptr0),y
-		sub #$10
-		asl
-		sta ludek_face
-		asl
-		asl
-		add ludek_face
-		sta ludek_face
-		iny
-		lda (ptr0),y
-		sub #$10
-		add ludek_face
+		jsr calculate_map_number
 
 		tax
 		mwa #HIGH_SCORE_TABLE ptr0
@@ -2565,6 +2550,10 @@ dcn_1	mwa curmapname ptr0
 		jsr draw_cavern_number_shadow
 		
 		rts
+
+handle_new_record
+		jsr show_new_record_screen
+		jmp run_here
 		
 draw_cavern_number_shadow
 		#if .byte movable > #0
@@ -4351,19 +4340,13 @@ load_intermission_fonts
 show_new_record_screen
 		jsr load_intermission_fonts
 
-		; TODO[RC]: Decompression of the map names here
-		; is needed only for debug builds
-		lda language
-		and #%00000001
-		beq slsAZ_1
-		mwa #ENGLISH_LEVEL_NAMES ZX5_INPUT
-		mwa #MAP_01_NAME ZX5_OUTPUT
-		jmp slsAZ_2
-slsAZ_1	mwa #POLISH_LEVEL_NAMES ZX5_INPUT
-		mwa #MAP_01_NAME ZX5_OUTPUT
-slsAZ_2	jsr decompress_data
+		lda #0
+		sta HPOSM0
+		sta HPOSP0
+		sta HPOSP1
+		sta HPOSP2
+		sta HPOSP3
 
-mariola
 		jsr clear_intermission_screen
 
 		lda curmapname
@@ -4447,7 +4430,15 @@ snrs_1	#if last_true_player_pos > #$ff/2
 		sta (ZX5_OUTPUT),y
 		pla
 
-		#if .byte @ = #$34
+		cmp #$0c	; Return pressed
+		bne snrs_9
+		cpy #0		; But we don't allow empty name
+		beq snrs_9
+
+		jsr store_new_high_score_entry
+		rts
+
+snrs_9	#if .byte @ = #$34
 			lda mvstate
 			beq snrs_3
 			dec mvstate
@@ -4476,6 +4467,50 @@ snrs_2
 
 		rts
 
+calculate_map_number
+		mwa curmapname ptr0
+		adw ptr0 #(MAP_01_NAME_END-MAP_01_NAME)
+		ldy #0
+		lda (ptr0),y
+		sub #$10
+		asl
+		sta ludek_face
+		asl
+		asl
+		add ludek_face
+		sta ludek_face
+		iny
+		lda (ptr0),y
+		sub #$10
+		add ludek_face
+		rts
+
+store_new_high_score_entry
+		jsr calculate_map_number
+		tax
+		dex
+		dex
+kromka
+		mwa #HIGH_SCORE_TABLE ptr0
+sz_1	cpx #0
+		beq sz_0
+		adw ptr0 #HIGH_SCORE_RECORD_END-HIGH_SCORE_RECORD_BEGIN
+		dex
+		jmp sz_1
+sz_0
+		ldy #2
+		dew ZX5_OUTPUT
+		dew ZX5_OUTPUT
+
+sz_2	lda (ZX5_OUTPUT),y
+		eor #%01000000
+		sta (ptr0),y
+		iny
+		cpy #12
+		bne sz_2
+
+		rts
+
 find_pressed_letter
 		sta target
 		ldx #0
@@ -4490,7 +4525,6 @@ fpl_1	lda CHAR_MAP,x
 fpl_0	rts		
 fpl_2	ldx #$ff
 		rts
-
 
 show_level_selector
 		; Define offset for caver number

@@ -965,7 +965,6 @@ bs_2		inw ptr0
 			ldx language
 			jsr write_byte_to_cart
 
-			jsr os_back
 bs_X		rts
 bs_7
 			jsr erase_state_sector
@@ -3280,6 +3279,8 @@ stick_internal
 		jsr count_score
 		jsr count_score
 		jsr draw_points
+		pla
+		pla
 		tya
 		pha
 		txa
@@ -3885,8 +3886,8 @@ pizda_wisi jmp pizda_wisi
 
 synchro
 		lda os_gone_debug
-		cmp #1
-		beq pizda_wisi
+		cmp #0
+		bne pizda_wisi
 		inc sync
 		lda sync
 		and #%00000001

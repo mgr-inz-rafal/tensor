@@ -5,3 +5,4 @@ tensor.car
 tensor.bin
 tensor.atr
 *.kloc
+*.atstate2

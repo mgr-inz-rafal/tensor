@@ -1225,10 +1225,10 @@ ai8
 	jsr clear_pmg
 
 	; TODO: unlock burning
-	lda PERSISTENCY_LOADED
-	bne awwq
-	jsr persistent_load
-	inc PERSISTENCY_LOADED
+	; lda PERSISTENCY_LOADED
+	; bne awwq
+	; jsr persistent_load
+	; inc PERSISTENCY_LOADED
 
 awwq
 	lda #6
@@ -1787,7 +1787,7 @@ stop
 
 	; TODO: Burn only if options are dirty
 	; TODO: unlock burning
-	jsr persistent_save
+	; jsr persistent_save
 
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL
@@ -2295,7 +2295,7 @@ clear_intermission_screen
 		bne @-
 		rts
 
-read_record_holder
+read_record_holder_internal
 		jsr calculate_map_number
 
 		tax
@@ -2304,7 +2304,10 @@ rrh_2	dex
 		beq rrh_1
 		adw ptr0 #(HIGH_SCORE_RECORD_END-HIGH_SCORE_RECORD_BEGIN)
 		jmp rrh_2
-rrh_1
+rrh_1	rts
+
+read_record_holder
+		jsr read_record_holder_internal
 		iny
 		lda (ptr0),y
 		cmp #$ff
@@ -2919,6 +2922,8 @@ show_intermission
 		mwa #DECORATION_DATA ZX5_INPUT
 		mwa #pmg_p0 ZX5_OUTPUT
 		jsr decompress_data
+
+		jsr load_intermission_fonts
 
 		lda #0
 		sta stop_intermission
@@ -4387,7 +4392,7 @@ sz_2	lda (ZX5_OUTPUT),y
 		bne sz_2
 
 		; TODO: unlock burning
-		jsr persistent_save
+		; jsr persistent_save
 
 		rts
 
@@ -5145,7 +5150,19 @@ snrs_2
 		rts
 
 is_better_score
-		lda #1
+		jsr read_record_holder
+		sbw ptr0 #HIGH_SCORE_RECORD_END-HIGH_SCORE_RECORD_BEGIN
+		ldy #1
+		lda (ptr0),y
+		sta ppy
+		dey
+		lda (ptr0),y
+		sta pby
+		#if .word current_score < ppy
+			lda #1
+		#else
+			lda #0
+		#end
 		rts
 		
 		org MUSICPLAYER

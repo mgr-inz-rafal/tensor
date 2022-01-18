@@ -3187,7 +3187,10 @@ RI_1	ldy #0
 		adw ptr2 #2
 		adw ptr3 #2
 		jmp RI_1
-RI_2	rts
+RI_2	jsr count_score
+		jsr count_score
+		jsr draw_points
+		rts
 
 rotate_clockwise
 		lda rotation_warmup
@@ -3284,9 +3287,6 @@ stick_internal
 		cmp #0
 		bne @+
 		jsr clear_player_sprite
-		jsr count_score
-		jsr count_score
-		jsr draw_points
 		pla
 		pla
 		tya

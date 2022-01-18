@@ -798,71 +798,71 @@ ZX5_INPUT         equ    *-2
 
 HIGH_SCORE_TABLE	; Can be moved under OS
 HIGH_SCORE_RECORD_BEGIN
-		   dta b($47),b($13),b('c'),b('z'),b('e'),b('s'),b('i'),b('e'),b('k'),b(0),b(0),b(0)
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
 HIGH_SCORE_RECORD_END
-		   dta b($23),b($12),b('b'),b('r'),b('o'),b('n'),b('i'),b('s'),b('l'),b('a'),b('w'),b(0)
-		   dta b($06),b($66),b('j'),b('e'),b('b'),b('a'),b('c'),b(0),b('p'),b('i'),b('s'),b(0)
-		   dta b($0),b($4),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($5),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($6),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($7),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($8),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($9),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($10),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($11),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($12),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($13),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($14),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($15),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($16),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($17),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($18),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($19),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($20),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($21),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($22),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($23),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($24),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($25),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($26),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($27),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($28),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($29),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($30),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($31),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($32),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($33),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($34),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($35),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($36),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($37),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($38),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($39),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($40),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($41),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($42),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($43),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($44),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($45),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($46),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($47),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($48),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($49),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($50),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($51),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($52),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($53),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($54),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($55),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($56),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($57),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($58),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($59),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($60),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($61),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($62),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($63),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
-		   dta b($0),b($64),b($ff),b('a'),b('f'),b('a'),b('l'),b(0),b(0),b(0),b(0),b('Q')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+		   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
 HIGH_SCORE_TABLE_END
 
 ; wr555 the value from A
@@ -2352,10 +2352,13 @@ rrh_4	lda (ptr0),y
 		iny
 		cpy #12
 		bne rrh_4
-		rts
+rrh_X	rts
 
 		; Paint "record unset" message
-rrh_5	lda #$04
+rrh_5	lda ludek_offset
+		cmp #0
+		beq rrh_X
+		lda #$04
 		sta record_holder_color
 		lda language
 		and #%00000001
@@ -4461,6 +4464,7 @@ sls_2	jsr decompress_data
 		jsr draw_selector_header
 		jsr draw_cavern_number
 		jsr draw_record_holder_header
+		mvx #1 ludek_offset
 		jsr read_record_holder
 		jsr draw_record_holder
 
@@ -4504,6 +4508,7 @@ set_next_starting_level
 			sbw curmapname #MAP_02_NAME-MAP_01_NAME
 		#end
 		jsr draw_cavern_number
+		mvx #1 ludek_offset
 		jsr read_record_holder
 		jsr draw_record_holder
 snsl_X	rts
@@ -4518,6 +4523,7 @@ set_previous_starting_level
 			adw curmapname #MAP_02_NAME-MAP_01_NAME
 		#end
 		jsr draw_cavern_number
+		mvx #1 ludek_offset
 		jsr read_record_holder
 		jsr draw_record_holder
 		rts		
@@ -5150,6 +5156,7 @@ snrs_2
 		rts
 
 is_better_score
+		mvx #0 ludek_offset
 		jsr read_record_holder
 		sbw ptr0 #HIGH_SCORE_RECORD_END-HIGH_SCORE_RECORD_BEGIN
 		ldy #1

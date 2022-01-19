@@ -4485,6 +4485,7 @@ sls_2	jsr decompress_data
 
 		lda #1 
 		sta dont_touch_menu
+		sta amygdala_type
 
 		jsr load_intermission_fonts
 		jsr setup_level_selector_colors
@@ -4559,6 +4560,13 @@ set_next_starting_level
 snsl_X	rts
 snsl_XX	lda SCRMEM+14+DIGITOFFSET
 		beq snsl_X
+		inc amygdala_type
+		lda amygdala_type
+		cmp #$ff
+		beq allow_kutka_override
+		jmp xxxx1
+
+allow_kutka_override
 		jmp xxxx1
 		
 set_previous_starting_level
@@ -4615,6 +4623,10 @@ DL_TOP_SCROL3
 			dta b($40)
 DL_BOT_SCROL3			
 			dta b(%10111)
+			dta b($70)
+			dta b(%11110000)
+			dta b($60)
+			dta b(%01000010),a(lock_override_text)
 			dta b($41),a(DLLEVELSELECTOR)
 DLINTERMISSIONFINAL
 	dta $70,$70,$70
@@ -5042,13 +5054,16 @@ PERSISTENCY_LOADED
 antic_tmp dta b(0)
 os_gone_debug dta b(0)
 
-
 .align	$400
 FONT_SLOT_1
 FONT_SLOT_2 equ FONT_SLOT_1+1024
 FONT_SLOT_END equ FONT_SLOT_2+1024
+	org(FONT_SLOT_END)
+lock_override_text
+			dta d'chuj chuj chuj chuj chuj chuj chuj chuj '
+CONTINUE_HERE
 
-	org (FONT_SLOT_END)
+	org (CONTINUE_HERE)
 show_new_record_screen
 		jsr disable_antic
 		jsr STOP_MUSIC
@@ -5374,6 +5389,8 @@ dli_routine_selector
 		bne @+
 		lda >FONT_SLOT_2
 		sta CHBASE
+		ldx LEVEL_SELECTOR_COLOR_3
+		stx COLOR2
 		jmp dli_end
 		
 @		cmp #$2C	; Digits
@@ -5415,13 +5432,22 @@ dli_routine_selector
 		sty COLOR1
 		jmp dli_end
 		
-@		lda >FONT_SLOT_2
+@		cmp #$4C	; Record holder name
+		bne @+
+		lda >FONT_SLOT_2
+		ldy LEVEL_SELECTOR_COLOR_3
+		sty COLOR3
 		ldy record_holder_color
 		sty COLOR1
 		ldy #$35
 		sty COLOR0
 		sta CHBASE
-		
+		jmp dli_end
+
+@		ldx #0
+		sta WSYNC
+		stx COLOR2
+	
 		jmp dli_end
 
 dli_routine_game

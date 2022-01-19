@@ -4361,6 +4361,7 @@ calculate_map_number
 		lda (ptr0),y
 		sub #$10
 		add ludek_face
+		sta ludek_face
 		rts
 
 store_new_high_score_entry
@@ -4414,6 +4415,57 @@ fpl_0	rts
 fpl_2	ldx #$ff
 		rts
 
+draw_level_info_common
+		jsr draw_cavern_number
+		mvx #1 ludek_offset
+		jsr read_record_holder
+		jsr draw_record_holder
+		jsr is_level_locked
+		cmp #0
+		beq dlic_1
+		jsr draw_kutka
+		jmp dlic_0
+dlic_1	jsr clear_kutka
+dlic_0	rts
+
+draw_kutka
+		lda #32
+		sta SCRMEM+14+DIGITOFFSET
+		rts
+
+clear_kutka
+		lda #0
+		sta SCRMEM+14+DIGITOFFSET
+		rts
+
+is_level_locked
+		dec ludek_face
+		lda ludek_face
+		lsr
+		lsr
+		lsr
+		tay
+		lda LEVEL_COMPLETION_BITS,y
+		pha
+ill_1
+		#if .byte ludek_face >= #8
+			sbb ludek_face #8
+			jmp ill_1
+		#end
+
+		lda #%00000001
+		ldx ludek_face
+ill_3	cpx #0
+		beq ill_2
+		asl
+		dex
+		jmp ill_3
+ill_2	sta ludek_face
+		pla
+		and ludek_face
+
+		rts
+
 show_level_selector
 		jsr disable_antic
 		; Define offset for caver number
@@ -4462,11 +4514,8 @@ sls_2	jsr decompress_data
 
 		jsr clear_intermission_screen
 		jsr draw_selector_header
-		jsr draw_cavern_number
 		jsr draw_record_holder_header
-		mvx #1 ludek_offset
-		jsr read_record_holder
-		jsr draw_record_holder
+		jsr draw_level_info_common
 
 		jsr enable_antic
 
@@ -4507,10 +4556,7 @@ set_next_starting_level
 			sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 			sbw curmapname #MAP_02_NAME-MAP_01_NAME
 		#end
-		jsr draw_cavern_number
-		mvx #1 ludek_offset
-		jsr read_record_holder
-		jsr draw_record_holder
+		jsr draw_level_info_common
 snsl_X	rts
 		
 set_previous_starting_level
@@ -4522,10 +4568,7 @@ set_previous_starting_level
 			adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 			adw curmapname #MAP_02_NAME-MAP_01_NAME
 		#end
-		jsr draw_cavern_number
-		mvx #1 ludek_offset
-		jsr read_record_holder
-		jsr draw_record_holder
+		jsr draw_level_info_common
 		rts		
 
 .align		$100
@@ -4938,8 +4981,16 @@ SCORE_DIGIT_SIZE equ *-SCORE_DIGIT_DATA
 	dta b(%00111110)
 	dta b(%00000000)
 
+; First 10 levels are unlocked by default
 LEVEL_COMPLETION_BITS
-:8 dta b(%01010000)
+	dta b(%11111111)
+	dta b(%00000011)
+	dta b(%00000000)	
+	dta b(%00000000)
+	dta b(%00000000)
+	dta b(%00000000)
+	dta b(%00000000)
+	dta b(%00000000)
 
 CHAR_MAP
 	dta b($3f)		; a

@@ -4483,9 +4483,8 @@ sls_1	mwa #POLISH_LEVEL_NAMES ZX5_INPUT
 		mwa #MAP_01_NAME ZX5_OUTPUT
 sls_2	jsr decompress_data
 
-		lda #1 
+		jsr reset_kutka_data
 		sta dont_touch_menu
-		sta amygdala_type
 
 		jsr load_intermission_fonts
 		jsr setup_level_selector_colors
@@ -4549,6 +4548,7 @@ xx1		lda ignorestick
 
 set_next_starting_level
 		jsr delayer_button_common
+		jsr reset_kutka_data
 		adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 		adw curmapname #MAP_02_NAME-MAP_01_NAME
 		nop
@@ -4566,11 +4566,22 @@ snsl_XX	lda SCRMEM+14+DIGITOFFSET
 		beq allow_kutka_override
 		jmp xxxx1
 
+reset_kutka_data
+		mwa #lock_override_text_empty LOCK_OVERRIDE_TEXT_ADDRESS
+		lda #1
+		sta amygdala_type
+		sta amygdala_color
+		rts
+
 allow_kutka_override
+		mwa #lock_override_text LOCK_OVERRIDE_TEXT_ADDRESS
+		lda #0
+		sta amygdala_color
 		jmp xxxx1
 		
 set_previous_starting_level
 		jsr delayer_button_common
+		jsr reset_kutka_data
 		sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 		sbw curmapname #MAP_02_NAME-MAP_01_NAME
 		nop
@@ -4626,7 +4637,9 @@ DL_BOT_SCROL3
 			dta b($70)
 			dta b(%11110000)
 			dta b($60)
-			dta b(%01000010),a(lock_override_text)
+			dta b(%01000010)
+LOCK_OVERRIDE_TEXT_ADDRESS
+			dta a(lock_override_text_empty)
 			dta b($41),a(DLLEVELSELECTOR)
 DLINTERMISSIONFINAL
 	dta $70,$70,$70
@@ -5059,8 +5072,12 @@ FONT_SLOT_1
 FONT_SLOT_2 equ FONT_SLOT_1+1024
 FONT_SLOT_END equ FONT_SLOT_2+1024
 	org(FONT_SLOT_END)
+lock_override_text_empty
+			dta d'                                        '
 lock_override_text
 			dta d'chuj chuj chuj chuj chuj chuj chuj chuj '
+lock_override_text_en
+			dta d'dick dick dick dick dick dick dick dick '
 CONTINUE_HERE
 
 	org (CONTINUE_HERE)

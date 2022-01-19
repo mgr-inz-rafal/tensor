@@ -4574,7 +4574,13 @@ reset_kutka_data
 		rts
 
 allow_kutka_override
+		lda language
+		and #%00000001
+		bne ako_0
 		mwa #lock_override_text LOCK_OVERRIDE_TEXT_ADDRESS
+		jmp ako_1
+ako_0	mwa #lock_override_text_en LOCK_OVERRIDE_TEXT_ADDRESS
+ako_1
 		lda #0
 		sta amygdala_color
 		jmp xxxx1

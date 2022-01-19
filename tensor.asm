@@ -4369,7 +4369,6 @@ store_new_high_score_entry
 		tax
 		dex
 		dex
-kromka
 		mwa #HIGH_SCORE_TABLE ptr0
 sz_1	cpx #0
 		beq sz_0
@@ -4544,7 +4543,7 @@ xaxx1	jsr synchro
 xx1		lda ignorestick
 		bne xxxx1
 		lda trig0
-		beq snsl_X
+		beq snsl_XX
 		jmp xxxx1
 
 set_next_starting_level
@@ -4558,6 +4557,9 @@ set_next_starting_level
 		#end
 		jsr draw_level_info_common
 snsl_X	rts
+snsl_XX	lda SCRMEM+14+DIGITOFFSET
+		beq snsl_X
+		jmp xxxx1
 		
 set_previous_starting_level
 		jsr delayer_button_common
@@ -4983,14 +4985,14 @@ SCORE_DIGIT_SIZE equ *-SCORE_DIGIT_DATA
 
 ; First 10 levels are unlocked by default
 LEVEL_COMPLETION_BITS
+	dta b(%00000000)
+	dta b(%11111100)
+	dta b(%11111111)	
 	dta b(%11111111)
-	dta b(%00000011)
-	dta b(%00000000)	
-	dta b(%00000000)
-	dta b(%00000000)
-	dta b(%00000000)
-	dta b(%00000000)
-	dta b(%00000000)
+	dta b(%11111111)
+	dta b(%11111111)
+	dta b(%11111111)
+	dta b(%11111111)
 
 CHAR_MAP
 	dta b($3f)		; a

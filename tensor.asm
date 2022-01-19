@@ -4467,7 +4467,7 @@ ill_2	sta ludek_face
 
 show_level_selector
 		jsr disable_antic
-		; Define offset for caver number
+		; Define offset for cavern number
 		ldx #2
 		stx repaint
 		inx
@@ -4544,6 +4544,9 @@ xx1		lda ignorestick
 		bne xxxx1
 		lda trig0
 		beq snsl_XX
+		#if .byte CONSOL = #5 .and .byte amygdala_color = #0
+			rts
+		#end
 		jmp xxxx1
 
 set_next_starting_level

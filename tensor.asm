@@ -5081,9 +5081,13 @@ FONT_SLOT_END equ FONT_SLOT_2+1024
 lock_override_text_empty
 			dta d'                                        '
 lock_override_text
-			dta d'chuj chuj chuj chuj chuj chuj chuj chuj '
+			dta d'        a spr',b(80),d'buj wdusi',b(86),d' '
+			dta d'SELECT'*
+			dta d'...      '
 lock_override_text_en
-			dta d'dick dick dick dick dick dick dick dick '
+			dta d'       perhaps '
+			dta d'SELECT'*
+			dta d' would help...     '
 CONTINUE_HERE
 
 	org (CONTINUE_HERE)
@@ -5468,8 +5472,10 @@ dli_routine_selector
 		jmp dli_end
 
 @		ldx #0
+		ldy #$02
 		sta WSYNC
 		stx COLOR2
+		sty COLOR1
 	
 		jmp dli_end
 

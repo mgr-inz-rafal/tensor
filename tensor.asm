@@ -69,6 +69,7 @@ REDUCER_START_POS equ $ff/2-4-19
 REDUCER_END_POS equ $10
 
 .zpvar	.byte	stop_intermission
+.zpvar	.byte	antic_tmp
 .zpvar	.word	curmap
 .zpvar	.word	curmapname
 .zpvar	.word	ptr0
@@ -3259,7 +3260,7 @@ RCC_1	jsr show_backup_buffer
 		lda level_rotation
 		and #%00000001
 		bne RCAX_2
-:12	 	jsr synchro
+:9	 	jsr synchro
 RCAX_2	rts
 
 show_backup_buffer
@@ -5093,7 +5094,6 @@ disable_antic
 			rts
 PERSISTENCY_LOADED
 	dta b(0)
-antic_tmp dta b(0)
 os_gone_debug dta b(0)
 unlock_level_on_intermission dta b(0)
 temp_level_completion_bits_calculation dta b(0)
@@ -5319,7 +5319,7 @@ MAP_BUFFER_START
 		  ; dta d' %         %'		
 		  ; dta d' %%%%%%%%%%%'
 MAP_BUFFER_END
-MAP_LAST
+MAP_LAST equ MAP_BUFFER_START+(MAP_BUFFER_END-MAP_BUFFER_START)*(MAPCOUNT)
 
 SCREEN_MARGIN_DATA
 		ins "data\ekran.dat"

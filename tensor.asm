@@ -1225,10 +1225,10 @@ ai8
 	jsr clear_pmg
 
 	; TODO: unlock burning
-	lda PERSISTENCY_LOADED
-	bne awwq
-	jsr persistent_load
-	inc PERSISTENCY_LOADED
+	; lda PERSISTENCY_LOADED
+	; bne awwq
+	; jsr persistent_load
+	; inc PERSISTENCY_LOADED
 
 awwq
 	lda #6
@@ -1787,7 +1787,7 @@ stop
 
 	; TODO: Burn only if options are dirty
 	; TODO: unlock burning
-	jsr persistent_save
+	; jsr persistent_save
 
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL
@@ -2931,7 +2931,7 @@ show_intermission
 		sta LEVEL_COMPLETION_BITS,y
 
 		; TODO: unlock burning
-		jsr persistent_save
+		; jsr persistent_save
 
 si_01	; Define offset for caver number
 		ldx #0
@@ -3256,8 +3256,11 @@ RCC_2	ldy credits_timer
 		jmp RCC_2
 
 RCC_1	jsr show_backup_buffer
-:6	 	jsr synchro
-		rts
+		lda level_rotation
+		and #%00000001
+		bne RCAX_2
+:12	 	jsr synchro
+RCAX_2	rts
 
 show_backup_buffer
 		ldy #SCWIDTH*MAPSIZE-1
@@ -4413,7 +4416,7 @@ sz_2	lda (ZX5_OUTPUT),y
 		bne sz_2
 
 		; TODO: unlock burning
-		jsr persistent_save
+		; jsr persistent_save
 
 		rts
 

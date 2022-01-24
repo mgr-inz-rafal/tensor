@@ -1225,10 +1225,10 @@ ai8
 	jsr clear_pmg
 
 	; TODO: unlock burning
-	; lda PERSISTENCY_LOADED
-	; bne awwq
-	; jsr persistent_load
-	; inc PERSISTENCY_LOADED
+	lda PERSISTENCY_LOADED
+	bne awwq
+	jsr persistent_load
+	inc PERSISTENCY_LOADED
 
 awwq
 	lda #6
@@ -1787,7 +1787,7 @@ stop
 
 	; TODO: Burn only if options are dirty
 	; TODO: unlock burning
-	; jsr persistent_save
+	jsr persistent_save
 
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL
@@ -1996,6 +1996,7 @@ game_loop
 		cpx #0
 		bne gl_0
 		#if .byte reducer = #REDUCER_START_POS
+			mva #1 unlock_level_on_intermission
 			adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 			adw curmapname #MAP_02_NAME-MAP_01_NAME
 			mva #GS_FIN gstate
@@ -2915,7 +2916,24 @@ draw_happy_docent
 show_intermission
 		jsr disable_antic
 
-		; Define offset for caver number
+		; Try to unlock level
+		lda unlock_level_on_intermission
+		beq si_01
+
+		; But check if it is unlocked already
+		jsr is_level_locked
+		cmp #0
+		beq si_01
+
+		lda temp_level_completion_bits_calculation
+		eor ludek_face
+		ldy temp_level_completion_bits_calculation_y_reg
+		sta LEVEL_COMPLETION_BITS,y
+
+		; TODO: unlock burning
+		jsr persistent_save
+
+si_01	; Define offset for caver number
 		ldx #0
 		stx repaint
 		inx
@@ -4395,7 +4413,7 @@ sz_2	lda (ZX5_OUTPUT),y
 		bne sz_2
 
 		; TODO: unlock burning
-		; jsr persistent_save
+		jsr persistent_save
 
 		rts
 
@@ -4437,7 +4455,7 @@ clear_kutka
 		sta SCRMEM+14+DIGITOFFSET
 		rts
 
-is_level_locked
+calculate_level_lock_bits_data
 		dec ludek_face
 		lda ludek_face
 		lsr
@@ -4445,7 +4463,8 @@ is_level_locked
 		lsr
 		tay
 		lda LEVEL_COMPLETION_BITS,y
-		pha
+		sty temp_level_completion_bits_calculation_y_reg
+		sta temp_level_completion_bits_calculation
 ill_1
 		#if .byte ludek_face >= #8
 			sbb ludek_face #8
@@ -4459,10 +4478,7 @@ ill_3	cpx #0
 		asl
 		dex
 		jmp ill_3
-ill_2	sta ludek_face
-		pla
-		and ludek_face
-
+ill_2	
 		rts
 
 show_level_selector
@@ -4545,6 +4561,7 @@ xx1		lda ignorestick
 		lda trig0
 		beq snsl_XX
 		#if .byte CONSOL = #5 .and .byte amygdala_color = #0
+			mva #0 unlock_level_on_intermission
 			rts
 		#end
 		jmp xxxx1
@@ -5075,6 +5092,16 @@ PERSISTENCY_LOADED
 	dta b(0)
 antic_tmp dta b(0)
 os_gone_debug dta b(0)
+unlock_level_on_intermission dta b(0)
+temp_level_completion_bits_calculation dta b(0)
+temp_level_completion_bits_calculation_y_reg dta b(0)
+
+is_level_locked
+		jsr calculate_level_lock_bits_data
+		sta ludek_face
+		lda temp_level_completion_bits_calculation
+		and ludek_face
+		rts
 
 .align	$400
 FONT_SLOT_1

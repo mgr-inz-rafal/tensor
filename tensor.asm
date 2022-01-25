@@ -11,6 +11,7 @@
 
 ; These use some stack
 STACK_STARTED_WITH_KUTKA_OVERRIDE equ $100
+STACK_CURRENT_PERSISTENCY_BANK equ $101
 
 FONT_SLOT_1 equ $1800
 FONT_SLOT_2 equ FONT_SLOT_1+1024
@@ -115,7 +116,6 @@ REDUCER_END_POS equ $10
 .zpvar	.word	len      
 .zpvar	.word	pnb      
 .zpvar	.word	current_persistency_address	; ...$BA
-.zpvar  .byte   last_true_player_pos
 
 ; Rest of ZP
 ; $CB - $DC - RMT player
@@ -861,7 +861,7 @@ HIGH_SCORE_TABLE_END
 
 ; wr555 the value from A
 wr555
-			bit current_persistency_bank
+			bit STACK_CURRENT_PERSISTENCY_BANK
 			bvs _wr5c2
 			sta $d502   
 			sta $b555
@@ -873,7 +873,7 @@ _wr5c2
 
 ; wr222 the value from A
 wr222
-			bit current_persistency_bank
+			bit STACK_CURRENT_PERSISTENCY_BANK
 			bvs _wr2c2
 			sta $d501
 			sta $aaaa
@@ -916,7 +916,7 @@ burn_state
 bs_8		jsr find_persistency_slot
 			cpy #$ff
 			beq bs_7
-			sty current_persistency_bank
+			sty STACK_CURRENT_PERSISTENCY_BANK
 bs_6		cpy #0
 			beq bs_5
 			inw current_persistency_address
@@ -1219,10 +1219,10 @@ ai8
 	jsr clear_pmg
 
 	; TODO: unlock burning
-	; lda PERSISTENCY_LOADED
-	; bne awwq
-	; jsr persistent_load
-	; inc PERSISTENCY_LOADED
+	lda PERSISTENCY_LOADED
+	bne awwq
+	jsr persistent_load
+	inc PERSISTENCY_LOADED
 
 awwq
 	lda #6
@@ -1781,7 +1781,7 @@ stop
 
 	; TODO: Burn only if options are dirty
 	; TODO: unlock burning
-	; jsr persistent_save
+	jsr persistent_save
 
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL
@@ -2930,7 +2930,7 @@ show_intermission
 		sta LEVEL_COMPLETION_BITS,y
 
 		; TODO: unlock burning
-		; jsr persistent_save
+		jsr persistent_save
 
 si_01	; Define offset for caver number
 		ldx #0
@@ -4415,7 +4415,7 @@ sz_2	lda (ZX5_OUTPUT),y
 		bne sz_2
 
 		; TODO: unlock burning
-		; jsr persistent_save
+		jsr persistent_save
 
 		rts
 
@@ -5648,11 +5648,11 @@ gstate				dta(0)
 compared			dta(0)
 sync				dta(0)
 collect				dta(0)
-current_persistency_bank dta(0)
 workpages			dta(0)
 record_holder_color	dta(0)
 os_back_nmien		dta(0)
 current_score		dta($12),($34)
+last_true_player_pos dta(0)
 offset  dta(0),(0)
 offset2 dta(0),(0)
 offset3 dta(0),(0)

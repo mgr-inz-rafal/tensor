@@ -2540,12 +2540,13 @@ dcn_1	mwa curmapname ptr0
 
 handle_new_record
 		lda STACK_STARTED_WITH_KUTKA_OVERRIDE
-		bne hnr_1
+		bne hnr_2
 		jsr is_better_score
 		cmp #1
 		bne hnr_1
 		jsr show_new_record_screen
 hnr_1	jmp run_here
+hnr_2	jmp main
 		
 draw_cavern_number_shadow
 		#if .byte movable > #0

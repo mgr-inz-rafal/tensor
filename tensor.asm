@@ -2546,7 +2546,9 @@ handle_new_record
 		bne hnr_1
 		jsr show_new_record_screen
 hnr_1	jmp run_here
-hnr_2	jmp main
+hnr_2	sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
+		sbw curmapname #MAP_02_NAME-MAP_01_NAME
+		jmp main
 		
 draw_cavern_number_shadow
 		#if .byte movable > #0

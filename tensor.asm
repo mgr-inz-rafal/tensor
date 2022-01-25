@@ -9,6 +9,9 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
+FONT_SLOT_1 equ $1800
+FONT_SLOT_2 equ FONT_SLOT_1+1024
+FONT_SLOT_END equ FONT_SLOT_2+1024
 CREDITCOLSTART	equ $00
 CREDITCOLEND	equ	CREDITCOLSTART+$0f
 LEVELFLIPDELAY	equ %00000011
@@ -21,7 +24,7 @@ DIGITOFFSET		equ 6
 SHADOWOFFSET 	equ 60
 TITLEOFFSET 	equ 60+20
 MAPCOUNT 		equ 51
-MUSICPLAYER		equ $9600
+MUSICPLAYER		equ $a300
 MAPSIZE			equ	12
 SCWIDTH 		equ 20
 MARGIN 			equ	(SCWIDTH-MAPSIZE)/2
@@ -68,6 +71,7 @@ SCORE_DLI_LINE equ $6b
 REDUCER_START_POS equ $ff/2-4-19
 REDUCER_END_POS equ $10
 
+.zpvar   .byte  any_moved
 .zpvar	.byte	stop_intermission
 .zpvar	.byte	antic_tmp
 .zpvar	.word	curmap
@@ -105,9 +109,6 @@ REDUCER_END_POS equ $10
 .zpvar  .byte   dont_touch_menu
 .zpvar	.word	ZX5_OUTPUT
 .zpvar	.word	copysrc 
-.zpvar	.word	offset  
-.zpvar	.word	offset2 
-.zpvar	.word	offset3 
 .zpvar	.word	len      
 .zpvar	.word	pnb      
 .zpvar	.word	current_persistency_address	; ...$BA
@@ -638,12 +639,6 @@ INSTRUCTION_DATA_EN
 	dta b(124),d'Lorem ipsum dolor9for INGLISZ speaking',b(124)
 	dta b(124),d'Lorem ipsum dolorAfor INGLISZ speaking',b(124)
 
-FONT_MAPPER
-		dta b(>FONT_SLOT_1)			; North
-		dta b(>FONT_SLOT_1+2)		; West
-		dta b(>FONT_SLOT_2)			; South
-		dta b(>FONT_SLOT_2+2)		; East
-
 unZX5         lda   #$ff
               sta   offset
               sta   offset+1
@@ -791,11 +786,6 @@ dzx5s_elias_backtrack
               rol   len
               rol   len+1
               jmp   dzx5s_elias_loop
-
-_GET_BYTE         lda    $ffff
-ZX5_INPUT         equ    *-2
-                  inw    ZX5_INPUT
-                  rts			  
 
 HIGH_SCORE_TABLE	; Can be moved under OS
 HIGH_SCORE_RECORD_BEGIN
@@ -4884,7 +4874,7 @@ enable_antic
 PRE_PMG_DATA_END
 
 ; Nothing more fits here, we're overwriting the first byte of the missile, anyway
-; pmg_m0 should stay fixed at $8180
+; pmg_m0 should stay fixed at $x180
 
 pmg_m0			equ pmg_base+$180
 pmg_p0			equ pmg_base+$200
@@ -4901,40 +4891,6 @@ SCRMEM_BACKUP equ SCRMEM_BUFFER+SCWIDTH*MAPSIZE
 SCRMEM_END equ SCRMEM_BACKUP+SCWIDTH*MAPSIZE
 
 	org SCRMEM_END
-
-; TODO[RC]: Remove these `dta(0)` and just leave the buffer
-credits_flips		dta(0)
-credits_timer		dta(0)
-credits_color		dta(0)
-credits_state		dta(0)
-scroll_tmp			dta(0)	
-scroll				dta(0)	
-old_instafall		dta(0)	
-rotation_warmup		dta(0)	
-instafall			dta(0)	
-rotation_speed		dta(0)	
-first_run			dta(0)	
-amygdala_color		dta(0)	
-amygdala_type		dta(0)	
-reducer				dta(0)	
-collecting			dta(0)	
-delayer				dta(0)	
-delayer_button		dta(0)	
-showsummary			dta(0)	
-mapnumber			dta(0)	
-mvcntr				dta(0)
-ignorestick			dta(0)
-moved				dta(0)
-gstate				dta(0)
-compared			dta(0)
-sync				dta(0)
-any_moved			dta(0)
-collect				dta(0)
-current_persistency_bank dta(0)
-workpages			dta(0)
-record_holder_color	dta(0)
-os_back_nmien		dta(0)
-current_score		dta($12),($34)
 
 SCORE_DIGIT_DATA
 ;0
@@ -5106,11 +5062,6 @@ is_level_locked
 		and ludek_face
 		rts
 
-.align	$400
-FONT_SLOT_1
-FONT_SLOT_2 equ FONT_SLOT_1+1024
-FONT_SLOT_END equ FONT_SLOT_2+1024
-	org(FONT_SLOT_END)
 lock_override_text_empty
 			dta d'                                        '
 lock_override_text
@@ -5324,8 +5275,6 @@ MAP_LAST equ MAP_BUFFER_START+(MAP_BUFFER_END-MAP_BUFFER_START)*(MAPCOUNT)
 SCREEN_MARGIN_DATA
 		ins "data\ekran.dat"
 SCREEN_MARGIN_DATA_END
-music_start_table
-	dta b($00),b($1e),b($6c),b($45),b($5d),b($74),b($57),b($91) ; $5d
 
 dli_routine
 		phr
@@ -5658,6 +5607,55 @@ ROTATE_LUT_BEGIN
 ROTATE_LUT_END
 ROTATE_LUT_SIZE	equ ROTATE_LUT_END-ROTATE_LUT_BEGIN
 
+; TODO[RC]: Remove these `dta(0)` and just leave the buffer
+credits_flips		dta(0)
+credits_timer		dta(0)
+credits_color		dta(0)
+credits_state		dta(0)
+scroll_tmp			dta(0)	
+scroll				dta(0)	
+old_instafall		dta(0)	
+rotation_warmup		dta(0)	
+instafall			dta(0)	
+rotation_speed		dta(0)	
+first_run			dta(0)	
+amygdala_color		dta(0)	
+amygdala_type		dta(0)	
+reducer				dta(0)	
+collecting			dta(0)	
+delayer				dta(0)	
+delayer_button		dta(0)	
+showsummary			dta(0)	
+mapnumber			dta(0)	
+mvcntr				dta(0)
+ignorestick			dta(0)
+moved				dta(0)
+gstate				dta(0)
+compared			dta(0)
+sync				dta(0)
+collect				dta(0)
+current_persistency_bank dta(0)
+workpages			dta(0)
+record_holder_color	dta(0)
+os_back_nmien		dta(0)
+current_score		dta($12),($34)
+offset  dta(0),(0)
+offset2 dta(0),(0)
+offset3 dta(0),(0)
+music_start_table
+	dta b($00),b($1e),b($6c),b($45),b($5d),b($74),b($57),b($91) ; $5d
+music_start_table_end
+FONT_MAPPER
+		dta b(>FONT_SLOT_1)			; North
+		dta b(>FONT_SLOT_1+2)		; West
+		dta b(>FONT_SLOT_2)			; South
+		dta b(>FONT_SLOT_2+2)		; East
+FONT_MAPPER_END
+_GET_BYTE         lda    $ffff
+ZX5_INPUT         equ    *-2
+                  inw    ZX5_INPUT
+                  rts			  
+
 	org curmap
 	dta a(MAP_BUFFER_START)
 	org curmapname
@@ -5672,7 +5670,7 @@ ROTATE_LUT_SIZE	equ ROTATE_LUT_END-ROTATE_LUT_BEGIN
 	dta b(0)
 	org dont_touch_menu
 	dta b(0)
-	
+
 	
 ; Notes
 ;

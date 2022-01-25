@@ -74,7 +74,6 @@ SCORE_DLI_LINE equ $6b
 REDUCER_START_POS equ $ff/2-4-19
 REDUCER_END_POS equ $10
 
-.zpvar   .byte  any_moved
 .zpvar	.byte	stop_intermission
 .zpvar	.byte	antic_tmp
 .zpvar	.word	curmap
@@ -106,6 +105,7 @@ REDUCER_END_POS equ $10
 .zpvar  .word	current_menu
 .zpvar  .byte   menu_state
 .zpvar  .byte	level_rotation
+.zpvar  .byte   any_moved
 .zpvar	.byte   language
 .zpvar  .word   options_screen_ptr	; TODO[RC]: Can use any of the "in-game" ZP variables
 .zpvar  .word   main_menu_screen_ptr	; TODO[RC]: Can use any of the "in-game" ZP variables

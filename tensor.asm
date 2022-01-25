@@ -9,6 +9,9 @@
 	; Selected ATARI registes
 	icl "include\atari.inc"
 
+; These use some stack
+STACK_STARTED_WITH_KUTKA_OVERRIDE equ $100
+
 FONT_SLOT_1 equ $1800
 FONT_SLOT_2 equ FONT_SLOT_1+1024
 FONT_SLOT_END equ FONT_SLOT_2+1024
@@ -2536,6 +2539,8 @@ dcn_1	mwa curmapname ptr0
 		rts
 
 handle_new_record
+		lda STACK_STARTED_WITH_KUTKA_OVERRIDE
+		bne hnr_1
 		jsr is_better_score
 		cmp #1
 		bne hnr_1
@@ -4555,6 +4560,8 @@ xx1		lda ignorestick
 		lda trig0
 		beq snsl_XX
 		#if .byte CONSOL = #5 .and .byte amygdala_color = #0
+			lda #1
+			sta STACK_STARTED_WITH_KUTKA_OVERRIDE
 			mva #0 unlock_level_on_intermission
 			rts
 		#end
@@ -4573,12 +4580,16 @@ set_next_starting_level
 		jsr draw_level_info_common
 snsl_X	rts
 snsl_XX	lda SCRMEM+14+DIGITOFFSET
-		beq snsl_X
+		beq snsl_XY
 		inc amygdala_type
 		lda amygdala_type
 		cmp #$ff
 		beq allow_kutka_override
 		jmp xxxx1
+snsl_XY		
+		lda #0
+		sta STACK_STARTED_WITH_KUTKA_OVERRIDE
+		rts
 
 reset_kutka_data
 		mwa #lock_override_text_empty LOCK_OVERRIDE_TEXT_ADDRESS

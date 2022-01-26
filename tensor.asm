@@ -5186,7 +5186,7 @@ snrs_0	inc ppx
 		inc last_true_player_pos
 		lda #0
 		sta ppx
-snrs_1	#if last_true_player_pos > #$ff/2
+snrs_1	#if .byte last_true_player_pos > #$ff/2
 			lda #0
 		#else
 			lda #59+128

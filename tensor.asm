@@ -4487,6 +4487,9 @@ ill_2
 
 show_level_selector
 		jsr disable_antic
+		lda #$ff
+		sta CH
+
 		; Define offset for cavern number
 		ldx #2
 		stx repaint
@@ -4550,7 +4553,13 @@ xxxx1
 
 xaxx1	jsr synchro
 		jsr handle_delayers
-		lda porta
+		ldx CH
+		cpx #$1c	; ESC
+		bne XaqW2
+		ldx #$ff
+		stx CH
+		jmp main
+XaqW2	lda porta
 		cmp #247	; 251
 		bne @+
 		jsr set_next_starting_level

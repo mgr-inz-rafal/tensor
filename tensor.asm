@@ -12,6 +12,7 @@
 ; These use some stack
 STACK_STARTED_WITH_KUTKA_OVERRIDE equ $100
 STACK_CURRENT_PERSISTENCY_BANK equ $101
+STACK_ON_PROPER_CART equ $102
 
 FONT_SLOT_1 equ $1800
 FONT_SLOT_2 equ FONT_SLOT_1+1024
@@ -63,6 +64,7 @@ MAIN_MENU_LABEL_LEN equ 18
 PERSISTENCY_BANK_CTL equ $d500
 PERSISTENCY_BANK_START equ PERSISTENCY_BANK_END-7
 PERSISTENCY_BANK_END equ $3f
+PERSISTENCY_BANK_CHECK equ PERSISTENCY_BANK_START-1
 SAVE_SLOT_LEN 	equ 780 ; See 'memory_map.txt'
 CART_RAM_SIZE   equ $2000
 CART_RAM_START	equ $a000
@@ -1218,6 +1220,7 @@ ai8
 	jsr detect_ntsc
 	jsr clear_pmg
 
+	jsr are_we_on_proper_cart
 	; TODO: unlock burning
 	lda PERSISTENCY_LOADED
 	bne awwq
@@ -5274,6 +5277,52 @@ is_better_score
 		#else
 			lda #0
 		#end
+		rts
+
+are_we_on_proper_cart
+		jsr os_gone
+		ldy #PERSISTENCY_BANK_CHECK
+		sta PERSISTENCY_BANK_CTL,y
+		sta wsync
+
+		ldy #0
+		ldx #1
+		lda CART_RAM_START,y
+		cmp #$4a	; 'J'
+		bne awioc_0
+		iny
+		lda CART_RAM_START,y
+		cmp #$65	; 'e'
+		bne awioc_0
+		iny
+		lda CART_RAM_START,y
+		cmp #$62	; 'b'
+		bne awioc_0
+		iny
+		lda CART_RAM_START,y
+		cmp #$61	; 'a'
+		bne awioc_0
+		iny
+		lda CART_RAM_START,y
+		cmp #$63	; 'c'
+		bne awioc_0
+		iny
+		lda CART_RAM_START,y
+		cmp #$50	; 'P'
+		bne awioc_0
+		iny
+		lda CART_RAM_START,y
+		cmp #$69	; 'i'
+		bne awioc_0
+		iny
+		lda CART_RAM_START,y
+		cmp #$53	; 'S'
+		bne awioc_0
+		jmp awioc_1
+awioc_0 dex
+awioc_1	stx STACK_ON_PROPER_CART
+		jsr cart_off
+		jsr os_back
 		rts
 		
 		org MUSICPLAYER

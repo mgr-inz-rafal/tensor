@@ -324,6 +324,7 @@ TITLE_BOTTOM_BORDER
 	dta b(72)
 	dta b(73)
 	dta b(127)
+FLASH_BURN_SIGN
 	dta b(125)
 	dta b(92)
 MENU_0_DATA
@@ -967,12 +968,16 @@ bs_7
 			jmp bs_8
 
 persistent_save
+			lda STACK_ON_PROPER_CART
+			beq yhha2
 			jsr os_gone
 			jsr burn_state
 			jsr os_back
-			rts
+yhha2		rts
 
 persistent_load
+			lda STACK_ON_PROPER_CART
+			beq yhha2
 			jsr os_gone
 			jsr read_state
 			jsr os_back
@@ -1221,7 +1226,13 @@ ai8
 	jsr clear_pmg
 
 	jsr are_we_on_proper_cart
+	lda STACK_ON_PROPER_CART
+	bne sqm7
+	lda #32
+	sta FLASH_BURN_SIGN
+	
 	; TODO: unlock burning
+sqm7
 	lda PERSISTENCY_LOADED
 	bne awwq
 	jsr persistent_load

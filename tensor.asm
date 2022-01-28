@@ -110,7 +110,6 @@ REDUCER_END_POS equ $10
 .zpvar  .word	current_menu
 .zpvar  .byte   menu_state
 .zpvar  .byte	level_rotation
-.zpvar  .byte   any_moved
 .zpvar	.byte   language
 .zpvar  .word   options_screen_ptr	; TODO[RC]: Can use any of the "in-game" ZP variables
 .zpvar  .word   main_menu_screen_ptr	; TODO[RC]: Can use any of the "in-game" ZP variables
@@ -120,6 +119,7 @@ REDUCER_END_POS equ $10
 .zpvar	.word	len      
 .zpvar	.word	pnb      
 .zpvar	.word	current_persistency_address	; ...$BA
+.zpvar  .word   any_moved
 
 ; Rest of ZP
 ; $CB - $DC - RMT player
@@ -2717,13 +2717,13 @@ header_text_new_record
 		dta d'   dorodny wynik',b(EXCLAMATION_MARK_CHAR+64),d'   '
 header_text_new_record_END
 header_text_new_record_en
-		dta d'distinguished score',b(+64)
+		dta d'distinguished score',b(EXCLAMATION_MARK_CHAR+64)
 header_text_new_record_en_END
 header_text_selector
 		dta d' kt',b(5+64),d'ra pieczara',b(30+64),' '
 header_text_selector_END
 header_text_selector_en
-		dta d'  which cavern',b(30+64),' '
+		dta d'  which cavern',b(30+64),d' '
 header_text_selector_en_END
 header_record_holder_text
 		dta d'wzorcowy wynik:'*
@@ -5757,6 +5757,8 @@ ZX5_INPUT         equ    *-2
 	org language
 	dta b(0)
 	org dont_touch_menu
+	dta b(0)
+	org any_moved+1
 	dta b(0)
 
 	

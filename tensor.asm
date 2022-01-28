@@ -417,7 +417,7 @@ MENU_1_DATA
 	dta b(124),d'     Przyspieszenie  grawitacyjne     ',b(124)
 	dta b(124),d'          '
 GRAVITY_LABEL
-	dta d'     POTEZNE      '*
+	dta d'    STONOWANE     '*
 	dta d'          ',b(124)
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'           Obrot  pieczary            ',b(124)
@@ -439,7 +439,7 @@ MENU_1_DATA_EN
 	dta b(124),d'         Gravity acceleration         ',b(124)
 	dta b(124),d'          '
 GRAVITY_LABEL_1
-	dta d'      MIGHTY      '*
+	dta d'      FAINT       '*
 	dta d'          ',b(124)
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'           Level  rotation            ',b(124)
@@ -4241,13 +4241,13 @@ handle_delayers
 @		rts
 
 GRAVITY_1
-	dta d'    STONOWANE     '*
-GRAVITY_2
 	dta d'     POTEZNE      '*
+GRAVITY_2
+	dta d'    STONOWANE     '*
 GRAVITY_1_EN
-	dta d'      FAINT       '*
-GRAVITY_2_EN
 	dta d'      MIGHTY      '*
+GRAVITY_2_EN
+	dta d'      FAINT       '*
 ROTATION_1
 	dta d'    ANIMOWANY     '*
 ROTATION_2
@@ -4294,15 +4294,15 @@ flip_failing_speed
 		jsr synchro
 
 		mwa #GRAVITY_LABEL_1 ptr1
-		mwa #GRAVITY_1_EN ptr3
-		mwa #GRAVITY_2_EN ppx
+		mwa #GRAVITY_2_EN ptr3
+		mwa #GRAVITY_1_EN ppx
 
 		jsr instafall_common
 		jsr flip_menu_option_common
 
 		mwa #GRAVITY_LABEL ptr1
-		mwa #GRAVITY_1 ptr3
-		mwa #GRAVITY_2 ppx
+		mwa #GRAVITY_2 ptr3
+		mwa #GRAVITY_1 ppx
 		
 		jsr instafall_common
 		jsr flip_menu_option_common
@@ -5751,7 +5751,7 @@ ZX5_INPUT         equ    *-2
 	org first_run
 	dta b(0)
 	org instafall
-	dta b(1)
+	dta b(0)
 	org level_rotation
 	dta b(0)
 	org language

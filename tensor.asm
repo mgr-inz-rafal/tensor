@@ -14,6 +14,8 @@ STACK_STARTED_WITH_KUTKA_OVERRIDE equ $100
 STACK_CURRENT_PERSISTENCY_BANK equ $101
 STACK_ON_PROPER_CART equ $102
 
+RECORD_ENTER_CURSOR_CHAR equ 31
+EXCLAMATION_MARK_CHAR equ 28
 FONT_SLOT_1 equ $1800
 FONT_SLOT_2 equ FONT_SLOT_1+1024
 FONT_SLOT_END equ FONT_SLOT_2+1024
@@ -296,28 +298,29 @@ TITLE_TOP_BORDER
 TITLE_BOTTOM_BORDER
 	dta b(91)
 :1	dta b(125)
-	dta b(125)
+	dta b(126)
 
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
-	dta b(125)
+	; http://github.com/mgr-inz-rafal/tensor
+	dta b(66)
+	dta b(83)
+	dta b(79)
+	dta b(90)
+	dta b(76)
+	dta b(65)
+	dta b(84)
+	dta b(67)
+	dta b(69)
+	dta b(96)
+	dta b(27)
+	dta b(59)
+	dta b(60)
+	dta b(61)
+	dta b(120)
+	dta b(89)
+	dta b(8)
+	dta b(7)
 
-	dta b(125)
+	dta b(127)
 :12	dta b(125)
 
 	dta b(126)
@@ -1228,7 +1231,7 @@ ai8
 	jsr are_we_on_proper_cart
 	lda STACK_ON_PROPER_CART
 	bne sqm7
-	lda #32
+	lda #64
 	sta FLASH_BURN_SIGN
 	
 	; TODO: unlock burning
@@ -2711,16 +2714,16 @@ header_text_en
 		dta d' cavern '
 header_text_en_END
 header_text_new_record
-		dta d'   dorodny wynik',b(61+64),d'   '
+		dta d'   dorodny wynik',b(EXCLAMATION_MARK_CHAR+64),d'   '
 header_text_new_record_END
 header_text_new_record_en
-		dta d'distinguished score',b(61+64)
+		dta d'distinguished score',b(+64)
 header_text_new_record_en_END
 header_text_selector
-		dta d' kt',b(5+64),d'ra pieczara| '
+		dta d' kt',b(5+64),d'ra pieczara',b(30+64),' '
 header_text_selector_END
 header_text_selector_en
-		dta d'  which cavern|  '
+		dta d'  which cavern',b(30+64),' '
 header_text_selector_en_END
 header_record_holder_text
 		dta d'wzorcowy wynik:'*
@@ -5214,7 +5217,7 @@ snrs_0	inc ppx
 snrs_1	#if .byte last_true_player_pos > #$ff/2
 			lda #0
 		#else
-			lda #59+128
+			lda #RECORD_ENTER_CURSOR_CHAR+128
 		#end
 		ldy mvstate
 		sta (ZX5_OUTPUT),y

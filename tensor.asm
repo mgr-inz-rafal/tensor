@@ -4804,6 +4804,8 @@ RECORD_PSEUDONIM_COLOR_2
 	dta b($ff)
 RECORD_PSEUDONIM_COLOR_3
 	dta b($94)
+RECORD_PSEUDONIM_COLOR_4
+	dta b($4a)
 COLOR_TABLE_END
 COLOR_COUNT equ 	COLOR_TABLE_END - COLOR_TABLE_START
 
@@ -4843,10 +4845,11 @@ LOGO_COLOR_3_NTSC
 	dta b($7b-2)
 	dta b($7b-4)
 	dta b($7b-6)
-	dta b($6b)
-	dta b($26)
-	dta b($38)
-	dta b($94)
+	dta b($7b)
+	dta b($36)
+	dta b($ff)
+	dta b($a4)
+	dta b($5a)
 
 ; Sprites
 .align		$1000
@@ -5470,9 +5473,7 @@ dli_routine_new_record
 		jmp dli_end
 		
 @		lda >FONT_SLOT_2
-		ldy record_holder_color
-		sty COLOR1
-		ldy #$35
+		ldy RECORD_PSEUDONIM_COLOR_4
 		sty COLOR0
 		sta CHBASE
 		

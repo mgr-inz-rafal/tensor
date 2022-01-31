@@ -13,6 +13,7 @@
 STACK_STARTED_WITH_KUTKA_OVERRIDE equ $100
 STACK_CURRENT_PERSISTENCY_BANK equ $101
 STACK_ON_PROPER_CART equ $102
+STACK_GOING_FROM_PREVIOUS_LEVEL equ $103
 
 RECORD_ENTER_CURSOR_CHAR equ 31
 EXCLAMATION_MARK_CHAR equ 28
@@ -2011,6 +2012,7 @@ game_loop
 			adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 			adw curmapname #MAP_02_NAME-MAP_01_NAME
 			mva #GS_FIN gstate
+			mva #1 STACK_GOING_FROM_PREVIOUS_LEVEL
 		#end
 gl_0	
 		lda instafall
@@ -2973,6 +2975,7 @@ si_01	; Define offset for caver number
 			lda #$36
 		#end
 		jsr INIT_MUSIC
+		mwa #lock_override_text_empty SELECT_TO_RETRY_TEXT_ADDRESS
 
 		lda #0
 		sta $d008 
@@ -3027,6 +3030,15 @@ si_01	; Define offset for caver number
 			jsr draw_cavern_number
 :4			jsr sleep_for_some_time
 			jsr draw_level_name
+			#if .byte STACK_GOING_FROM_PREVIOUS_LEVEL = #1
+				lda language
+				and #%00000001
+				bne q31a
+				mwa #retry_previous_level_text SELECT_TO_RETRY_TEXT_ADDRESS
+				jmp a31a
+q31a			mwa #retry_previous_level_text_en SELECT_TO_RETRY_TEXT_ADDRESS
+a31a
+			#end
 		#else
 			jsr draw_happy_docent
 		#end
@@ -4498,6 +4510,9 @@ ill_2
 		rts
 
 show_level_selector
+		lda #0
+		sta STACK_GOING_FROM_PREVIOUS_LEVEL
+
 		jsr disable_antic
 		lda #$ff
 		sta CH
@@ -4686,6 +4701,12 @@ DL_TOP_SCROL
 			dta b($40)
 DL_BOT_SCROL			
 			dta b(%10111)
+			dta b($70)
+			dta b(%11110000)
+			dta b($60)
+			dta b(%01000010)
+SELECT_TO_RETRY_TEXT_ADDRESS
+			dta a(lock_override_text_empty)
 			dta b($41),a(DLINTERMISSION)
 DLLEVELSELECTOR
 :8			dta b($60)
@@ -5124,6 +5145,14 @@ lock_override_text_en
 			dta d'       perhaps '
 			dta d'SELECT'*
 			dta d' would help...     '
+retry_previous_level_text
+			dta d'      '
+			dta d'SELECT'*
+			dta d' - jeszcze raz              '
+retry_previous_level_text_en
+			dta d'       '
+			dta d'SELECT'*
+			dta d' - try again               '
 CONTINUE_HERE
 
 	org (CONTINUE_HERE)
@@ -5432,7 +5461,47 @@ dli_routine
 		
 @		lda >FONT_SLOT_2
 		sta CHBASE
-		
+		ldx #0
+		ldy #$02
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		stx COLOR2
+		sty COLOR1		
 dli_end		
 		plr
 		rti

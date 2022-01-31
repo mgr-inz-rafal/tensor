@@ -3119,11 +3119,6 @@ init_game
 
 		jsr enable_sprites
 
-		ldy <vbi_routine
-		ldx >vbi_routine
-		lda #7
-		jsr SETVBV
-
 		lda #0
 		sta current_score
 		sta current_score+1
@@ -4558,6 +4553,18 @@ sls_2	jsr decompress_data
 
 		jsr enable_antic
 
+		ldx #<MODUL
+		ldy #>MODUL
+		lda #$3e
+		jsr INIT_MUSIC
+		lda #1
+		sta rmt_player_halt 
+
+		ldy <vbi_routine
+		ldx >vbi_routine
+		lda #7
+		jsr SETVBV
+
 		jmp xxxx1
 xx56
 		inc ignorestick
@@ -5200,6 +5207,13 @@ show_new_record_screen
 
 		jsr draw_new_record_header
 		jsr draw_enter_pseudonim
+
+		ldx #<MODUL
+		ldy #>MODUL
+		lda #$3e
+		jsr INIT_MUSIC
+		lda #1
+		sta rmt_player_halt 
 
 		jsr enable_antic
 

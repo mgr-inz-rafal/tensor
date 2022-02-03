@@ -20,6 +20,17 @@ for %%f in (maps\*.*) do (
 echo DONE
 echo=
 
+echo Compressing PMG data...
+tools\zx5.exe -f data\decoration.pmg data\decoration.pmg.kloc 2>&1 >NUL
+echo DONE
+echo=
+
+echo Compressing Level Names...
+tools\zx5.exe -f data\level_names.obx data\level_names.obx.kloc 2>&1 >NUL
+tools\zx5.exe -f data\level_names_en.obx data\level_names_en.obx.kloc 2>&1 >NUL
+echo DONE
+echo=
+
 echo Building Tensor...
 
 tools\mads.exe tensor.asm -o:tensor.xex -l:tensor.lst -t:tensor.lab

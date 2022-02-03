@@ -31,7 +31,7 @@ PMGDECOOFFSET 	equ 12
 DIGITOFFSET		equ 6
 SHADOWOFFSET 	equ 60
 TITLEOFFSET 	equ 60+20
-MAPCOUNT 		equ 51
+MAPCOUNT 		equ 54
 MUSICPLAYER		equ $a300
 MAPSIZE			equ	12
 SCWIDTH 		equ 20
@@ -615,6 +615,15 @@ MAP_02_NAME
 		dta d'                '
 		dta d'                '
 		dta d'  '
+		dta d'                '
+		dta d'                '
+		dta d'52'
+		dta d'                '
+		dta d'                '
+		dta d'53'
+		dta d'                '
+		dta d'                '
+		dta d'54'
 MAP_NAME_LAST
 		dta b($9b)
 

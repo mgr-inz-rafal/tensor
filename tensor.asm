@@ -3025,7 +3025,7 @@ si_01	; Define offset for caver number
 		#if .word curmap <> #MAP_LAST
 			jsr draw_header
 			lda stop_intermission
-			bne di_X
+			jne di_X
 :4			jsr sleep_for_some_time
 			jsr draw_cavern_number
 :4			jsr sleep_for_some_time
@@ -3043,8 +3043,15 @@ a31a
 			jsr draw_happy_docent
 		#end
 
-@		lda trig0		; FIRE #0
-		bne @-
+szz2	lda trig0		; FIRE #0
+		beq di_X
+
+		#if .byte STACK_GOING_FROM_PREVIOUS_LEVEL = #1 .and .byte CONSOL = #5
+			sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
+			sbw curmapname #MAP_02_NAME-MAP_01_NAME
+			jmp stop
+		#end
+		jmp szz2
 
 di_X	ldx #$ff
 		stx CH

@@ -3047,6 +3047,10 @@ szz2	lda trig0		; FIRE #0
 		beq di_X
 
 		#if .byte STACK_GOING_FROM_PREVIOUS_LEVEL = #1 .and .byte CONSOL = #5
+			pla
+			pla
+			pla
+			pla
 			sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
 			sbw curmapname #MAP_02_NAME-MAP_01_NAME
 			jmp stop

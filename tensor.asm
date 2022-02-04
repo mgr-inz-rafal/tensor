@@ -2740,7 +2740,7 @@ header_record_holder_text_en
 		dta d'  best score:  '*
 header_record_holder_text_en_END
 header_record_enter_pseudonim
-		dta d'podaj imie bohaterze'*
+		dta d'podaj imi'*,b(1+128+64),d' bohaterze'*
 header_record_enter_pseudonim_END
 header_record_enter_pseudonim_en
 		dta d'enter your name here'*

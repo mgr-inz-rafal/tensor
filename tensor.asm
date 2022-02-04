@@ -122,6 +122,7 @@ REDUCER_END_POS equ $10
 .zpvar	.word	pnb      
 .zpvar	.word	current_persistency_address	; ...$BA
 .zpvar  .word   any_moved
+.zpvar  .byte   instafall	
 
 ; Rest of ZP
 ; $CB - $DC - RMT player
@@ -969,7 +970,7 @@ bs_2		inw ptr0
 			jsr write_byte_to_cart
 
 			inw ptr0
-			ldx rotation_speed
+			ldx level_rotation
 			jsr write_byte_to_cart
 
 			inw ptr0
@@ -1041,7 +1042,7 @@ rs_2		inw ptr0
 
 			iny
 			lda (ptr0),y
-			sta rotation_speed
+			sta level_rotation
 
 			iny
 			lda (ptr0),y
@@ -5811,8 +5812,6 @@ scroll_tmp			dta(0)
 scroll				dta(0)	
 old_instafall		dta(0)	
 rotation_warmup		dta(0)	
-instafall			dta(0)	
-rotation_speed		dta(0)	
 first_run			dta(0)	
 amygdala_color		dta(0)	
 amygdala_type		dta(0)	

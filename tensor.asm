@@ -14,6 +14,7 @@ STACK_STARTED_WITH_KUTKA_OVERRIDE equ $100
 STACK_CURRENT_PERSISTENCY_BANK equ $101
 STACK_ON_PROPER_CART equ $102
 STACK_GOING_FROM_PREVIOUS_LEVEL equ $103
+STACK_HERE_P2 equ $104
 
 RECORD_ENTER_CURSOR_CHAR equ 31
 EXCLAMATION_MARK_CHAR equ 28
@@ -2174,7 +2175,7 @@ move_element
 		dec mvcntr
 		inc psx
 		ldx psx
-		stx HPOSP2
+		stx STACK_HERE_P2
 		#if .byte moved = #PL_CHR
 			stx HPOSP3
 			stx last_true_player_pos
@@ -2190,7 +2191,7 @@ move_element
 		dec mvcntr
 		dec psx
 		ldx psx
-		stx HPOSP2
+		stx STACK_HERE_P2
 		#if .byte moved = #PL_CHR
 			stx HPOSP3
 			stx last_true_player_pos
@@ -2205,7 +2206,7 @@ move_element
 		jeq me_finD
 		dec mvcntr
 		ldx psx
-		stx HPOSP2
+		stx STACK_HERE_P2
 :2		jsr sprite_down
 :2		jsr player_sprite_down
 		lda #0
@@ -3424,7 +3425,7 @@ set_falling_sprite_color
 init_movement
 		#if .byte VCOUNT < #SCORE_DLI_LINE
 			lda #0
-			sta HPOSP2
+			sta STACK_HERE_P2
 		#end
 		lda mvstate
 		cmp #MV_IDLE
@@ -5652,6 +5653,8 @@ dli_routine_game
 		cmp #SCORE_DLI_LINE
 		beq daas_1
 		; Drawing game board
+		lda STACK_HERE_P2
+		sta HPOSP2
 		lda MARGIN_COLOR
 		sta COLPM1
 		sta COLPM0
@@ -5670,7 +5673,6 @@ dli_routine_game
 		pla
 		rti
 daas_1	; Drawing points
-		sta WSYNC
 		lda #0
 		sta SIZEP0
 		sta SIZEP1

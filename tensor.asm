@@ -2173,6 +2173,7 @@ move_element
 		cpx #0
 		jeq me_finR
 		dec mvcntr
+;		jsr SYNCHRO
 		inc psx
 		ldx psx
 		stx STACK_HERE_P2
@@ -2190,6 +2191,7 @@ move_element
 		jeq me_finL
 		dec mvcntr
 		dec psx
+;		jsr SYNCHRO
 		ldx psx
 		stx STACK_HERE_P2
 		#if .byte moved = #PL_CHR
@@ -3418,7 +3420,7 @@ set_falling_sprite_color
 			pla
 			rts
 		#end
-		mva amygdala_color PCOLR2
+;		mva amygdala_color PCOLR2
 		pla
 		rts
 		
@@ -3426,6 +3428,7 @@ init_movement
 		#if .byte VCOUNT < #SCORE_DLI_LINE
 			lda #0
 			sta STACK_HERE_P2
+			sta HPOSP2
 		#end
 		lda mvstate
 		cmp #MV_IDLE
@@ -5653,7 +5656,11 @@ dli_routine_game
 		cmp #SCORE_DLI_LINE
 		beq daas_1
 		; Drawing game board
-		lda STACK_HERE_P2
+		#if .byte instafall = #1
+			lda #0
+		#else
+			lda STACK_HERE_P2
+		#end
 		sta HPOSP2
 		lda MARGIN_COLOR
 		sta COLPM1

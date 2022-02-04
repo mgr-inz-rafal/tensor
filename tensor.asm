@@ -2174,9 +2174,7 @@ move_element
 		dec mvcntr
 		inc psx
 		ldx psx
-		#if .byte VCOUNT < #SCORE_DLI_LINE
-			stx HPOSP2
-		#end
+		stx HPOSP2
 		#if .byte moved = #PL_CHR
 			stx HPOSP3
 			stx last_true_player_pos
@@ -2192,9 +2190,7 @@ move_element
 		dec mvcntr
 		dec psx
 		ldx psx
-		#if .byte VCOUNT < #SCORE_DLI_LINE
-			stx HPOSP2
-		#end
+		stx HPOSP2
 		#if .byte moved = #PL_CHR
 			stx HPOSP3
 			stx last_true_player_pos
@@ -2209,9 +2205,7 @@ move_element
 		jeq me_finD
 		dec mvcntr
 		ldx psx
-		#if .byte VCOUNT < #SCORE_DLI_LINE
-			stx HPOSP2
-		#end
+		stx HPOSP2
 :2		jsr sprite_down
 :2		jsr player_sprite_down
 		lda #0
@@ -2750,7 +2744,6 @@ header_record_enter_pseudonim_en
 header_record_enter_pseudonim_en_END
 
 draw_decoration
-
 		ldy #0
 @		lda decoration_sine_table,y
 		sta HPOSP0
@@ -3917,7 +3910,7 @@ p2pmg_1	cpy #0
 		jmp p2pmg_1
 @		sta psx
 		
-		mwa #pmg_p2+TOPMARG ptr1
+		mwa #pmg_p2+TOPMARG-4 ptr1
 		
 		ldy py
 p2pmg_0	cpy #0
@@ -3926,7 +3919,7 @@ p2pmg_0	cpy #0
 		adw ptr1 #8
 		jmp p2pmg_0
 @		sbw ptr1 #pmg_p2 ptr2
-		adb ptr2 #8-4
+		adb ptr2 #8
 		mva ptr2 psy
 		rts
 

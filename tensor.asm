@@ -618,13 +618,13 @@ MAP_02_NAME
 		dta d'  '
 		dta d'                '
 		dta d'                '
-		dta d'52'
+		dta d'  '
 		dta d'                '
 		dta d'                '
-		dta d'53'
+		dta d'  '
 		dta d'                '
 		dta d'                '
-		dta d'54'
+		dta d'  '
 MAP_NAME_LAST
 		dta b($9b)
 

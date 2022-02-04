@@ -154,5 +154,14 @@ MAP_02_NAME
 		dta d' dwa anihilanty '*
 		dta d'ZNAMION KALECTWA'*
 		dta d'51'
+		dta d'nowy level vidol'*
+		dta d'JEDEN           '*
+		dta d'52'
+		dta d'nowy level vidol'*
+		dta d'DWA             '*
+		dta d'53'
+		dta d'nowy level vidol'*
+		dta d'TRZY            '*
+		dta d'54'
 MAP_NAME_LAST
 		dta b($9b)

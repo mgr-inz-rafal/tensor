@@ -154,5 +154,14 @@ MAP_02_NAME
 		dta d'ENGLISH NAME    '*
 		dta d' FOR LAST CAVERN'*
 		dta d'51'
+		dta d'new  level vidol'*
+		dta d'ONE             '*
+		dta d'52'
+		dta d'new  level vidol'*
+		dta d'TWO             '*
+		dta d'53'
+		dta d'new  level vidol'*
+		dta d'THREEE          '*
+		dta d'54'
 MAP_NAME_LAST
 		dta b($9b)

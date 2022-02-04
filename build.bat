@@ -25,6 +25,18 @@ tools\zx5.exe -f data\decoration.pmg data\decoration.pmg.kloc 2>&1 >NUL
 echo DONE
 echo=
 
+echo Compiling level names
+tools\mads.exe data\level_names.asm -b:0000 -o:data\level_names.obx
+tools\mads.exe data\level_names_en.asm -b:0000 -o:data\level_names_en.obx
+echo DONE
+echo=
+
+echo Stripping level name binaries
+tools\strip_header.exe data\level_names.obx
+tools\strip_header.exe data\level_names_en.obx
+echo DONE
+echo=
+
 echo Compressing Level Names...
 tools\zx5.exe -f data\level_names.obx data\level_names.obx.kloc 2>&1 >NUL
 tools\zx5.exe -f data\level_names_en.obx data\level_names_en.obx.kloc 2>&1 >NUL

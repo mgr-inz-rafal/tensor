@@ -6,3 +6,4 @@ tensor.bin
 tensor.atr
 *.kloc
 *.atstate2
+*.obx

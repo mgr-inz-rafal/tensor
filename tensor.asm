@@ -5680,6 +5680,7 @@ dli_routine_game
 		pla
 		rti
 daas_1	; Drawing points
+		sta WSYNC
 		lda #0
 		sta SIZEP0
 		sta SIZEP1

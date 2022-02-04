@@ -4,8 +4,8 @@ MAP_01_NAME
 MAP_01_NAME_END
 		dta d'01'
 MAP_02_NAME
-		dta d'                '*
-		dta d'                '*
+		dta d'  the  ancient  '*
+		dta d' SKULLISH PATIO '*
 		dta d'02'
 		dta d' rotten pothole '*
 		dta d'  OF OBESE CAT  '*
@@ -22,38 +22,38 @@ MAP_02_NAME
 		dta d'poultry and cock'*
 		dta d'SQUEEZING ALCOVE'*
 		dta d'07'
-		dta d'                '*
-		dta d'                '*
+		dta d'   molybdenum   '*
+		dta d'  ENTITY  SPOT  '*
 		dta d'08'
-		dta d'                '*
-		dta d'                '*
+		dta d'just carved hole'*
+		dta d'OF ZENON THE BUG'*
 		dta d'09'
-		dta d'                '*
-		dta d'                '*
+		dta d'   grim  evil   '*
+		dta d'   SOAKS HERE   '*
 		dta d'10'
-		dta d'                '*
-		dta d'                '*
+		dta d' venom spitting '*
+		dta d'BAPTIZATION  BOX'*
 		dta d'11'
-		dta d'                '*
-		dta d'                '*
+		dta d' mushrooms fork '*
+		dta d'LIGHTBULB  ROBOT'*
 		dta d'12'
-		dta d'                '*
-		dta d'                '*
+		dta d'submerged  vault'*
+		dta d'WITH MEAT N DOGS'*
 		dta d'13'
-		dta d'                '*
-		dta d'                '*
+		dta d' crater of evil '*
+		dta d' AND FOAMY FOAM '*
 		dta d'14'
-		dta d'                '*
-		dta d'                '*
+		dta d' den of  morbid '*
+		dta d'   SETTLEMENT   '*
 		dta d'15'
-		dta d'                '*
-		dta d'                '*
+		dta d'dream chamber of'*
+		dta d' CHUBBY  SATAN  '*
 		dta d'16'
-		dta d'                '*
-		dta d'                '*
+		dta d'puncture of the '*
+		dta d' TWILIGHT ZONE  '*
 		dta d'17'
-		dta d'                '*
-		dta d'                '*
+		dta d'burnt  shed full'*
+		dta d'   OF MITOSIS   '*
 		dta d'18'
 		dta d'                '*
 		dta d'                '*

@@ -1,6 +1,6 @@
 MAP_01_NAME
-		dta d'ENGLISH NAME    '*
-		dta d'FOR FIRST CAVERN'*
+		dta d' left and right '*
+		dta d'ROTATION STATION'*
 MAP_01_NAME_END
 		dta d'01'
 MAP_02_NAME
@@ -49,110 +49,110 @@ MAP_02_NAME
 		dta d'dream chamber of'*
 		dta d' CHUBBY  SATAN  '*
 		dta d'16'
+		dta d'   collimation  '*
+		dta d'  OF THE CLUTCH '*
+		dta d'17'
+		dta d'grim nook of the'*
+		dta d' SNOTTY  BODIES '*
+		dta d'18'
 		dta d'puncture of the '*
 		dta d' TWILIGHT ZONE  '*
-		dta d'17'
+		dta d'19'
 		dta d'burnt  shed full'*
 		dta d'   OF MITOSIS   '*
-		dta d'18'
-		dta d'                '*
-		dta d'                '*
-		dta d'19'
-		dta d'                '*
-		dta d'                '*
 		dta d'20'
-		dta d'                '*
-		dta d'                '*
+		dta d' eerie gibbons  '*
+		dta d'  DEVOUR HERE   '*
 		dta d'21'
-		dta d'                '*
-		dta d'                '*
+		dta d'house of mom dad'*
+		dta d'SISTER AND UNCLE'*
 		dta d'22'
-		dta d'                '*
-		dta d'                '*
+		dta d'   underwater   '*
+		dta d' INFINITY FIELD '*
 		dta d'23'
-		dta d'                '*
-		dta d'                '*
+		dta d'bunch of rancid '*
+		dta d'PUMPKIN VISCERA '*
 		dta d'24'
-		dta d'                '*
-		dta d'                '*
+		dta d'once operational'*
+		dta d'   FLOODGATE    '*
 		dta d'25'
-		dta d'                '*
-		dta d'                '*
+		dta d'    foyer of    '*
+		dta d'WOODCARVING DOGS'*
 		dta d'26'
-		dta d'                '*
-		dta d'                '*
+		dta d' tank full  of  '*
+		dta d' DERMATOPHYTES  '*
 		dta d'27'
-		dta d'                '*
-		dta d'                '*
+		dta d'sunburnt  esther'*
+		dta d'  BURIAL PLACE  '*
 		dta d'28'
-		dta d'                '*
-		dta d'                '*
+		dta d'uncanny loft and'*
+		dta d' BLOODY  CHAPEL '*
 		dta d'29'
-		dta d'                '*
-		dta d'                '*
+		dta d'  library with  '*
+		dta d' DEAD MAGAZINES '*
 		dta d'30'
-		dta d'                '*
-		dta d'                '*
+		dta d'cracked  ceiling'*
+		dta d'  MAY COLLAPSE  '*
 		dta d'31'
-		dta d'                '*
-		dta d'                '*
+		dta d'   victorian    '*
+		dta d'     BOLT       '*
 		dta d'32'
-		dta d'                '*
-		dta d'                '*
+		dta d' pit under the  '*
+		dta d' CITY OF DECAY  '*
 		dta d'33'
-		dta d'                '*
-		dta d'                '*
+		dta d'worst nightmare '*
+		dta d'   AIR DRAFT    '*
 		dta d'34'
-		dta d'                '*
-		dta d'                '*
+		dta d'endless  meadows'*
+		dta d'   OF OGLEYON   '*
 		dta d'35'
-		dta d'                '*
-		dta d'                '*
+		dta d'the cave of the '*
+		dta d'OMINOUS KINTARO '*
 		dta d'36'
-		dta d'                '*
-		dta d'                '*
+		dta d' untranslatable '*
+		dta d'  CAVERN  NAME  '*
 		dta d'37'
-		dta d'                '*
-		dta d'                '*
+		dta d'   pass of the  '*
+		dta d'    STABLEMEN   '*
 		dta d'38'
-		dta d'                '*
-		dta d'                '*
+		dta d'   rzygulin     '*
+		dta d'    ODDITY      '*
 		dta d'39'
-		dta d'                '*
-		dta d'                '*
+		dta d'  choir of the  '*
+		dta d'    DRUMMERS    '*
 		dta d'40'
-		dta d'                '*
-		dta d'                '*
+		dta d'  alley of the  '*
+		dta d'LOUSY  TECTONICS'*
 		dta d'41'
-		dta d'                '*
-		dta d'                '*
+		dta d'  sauna of the  '*
+		dta d'   LIVING GOD   '*
 		dta d'42'
-		dta d'                '*
-		dta d'                '*
+		dta d' sanitation hut '*
+		dta d' OVER THE ABYSS '*
 		dta d'43'
-		dta d'                '*
-		dta d'                '*
+		dta d' excavation of  '*
+		dta d'DOCTOR KAMINSKA '*
 		dta d'44'
-		dta d'                '*
-		dta d'                '*
+		dta d'   paul morty   '*
+		dta d'KOHORTY GERIATRY'*
 		dta d'45'
-		dta d'                '*
-		dta d'                '*
+		dta d'  subterranean  '*
+		dta d'ABBEY OF CRUELTY'*
 		dta d'46'
-		dta d'                '*
-		dta d'                '*
+		dta d' the  boundless '*
+		dta d'   WILDERNESS   '*
 		dta d'47'
-		dta d'                '*
-		dta d'                '*
+		dta d'buried fish and '*
+		dta d'CHEESE EXCHANGE '*
 		dta d'48'
-		dta d'                '*
-		dta d'                '*
+		dta d'sanctuary of the'*
+		dta d' CORRUPTED ONES '*
 		dta d'49'
-		dta d'                '*
-		dta d'                '*
+		dta d' flooded tunnel '*
+		dta d' FOR  SMUGGLERS '*
 		dta d'50'
-		dta d'ENGLISH NAME    '*
-		dta d' FOR LAST CAVERN'*
+		dta d'annihilator for '*
+		dta d'SIGNS OF INJURY '*
 		dta d'51'
 		dta d'new  level vidol'*
 		dta d'ONE             '*

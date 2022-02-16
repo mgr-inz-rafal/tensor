@@ -154,14 +154,14 @@ MAP_02_NAME
 		dta d' dwa anihilanty '*
 		dta d'ZNAMION KALECTWA'*
 		dta d'51'
-		dta d'nowy level vidol'*
-		dta d'JEDEN           '*
+		dta d' drewniany dom  '*
+		dta d'   ZE  SZK'*,b(11+64*2),d'A    '*
 		dta d'52'
-		dta d'nowy level vidol'*
-		dta d'DWA             '*
+		dta d'obrotowy o'*,b(11+64*3),d'tarz '*
+		dta d'     BOJOWY     '*
 		dta d'53'
-		dta d'nowy level vidol'*
-		dta d'TRZY            '*
+		dta d' ',b(5+64*3),d'sme wcielenie '*
+		dta d'   AMENHOTEPA   '*
 		dta d'54'
 MAP_NAME_LAST
 		dta b($9b)

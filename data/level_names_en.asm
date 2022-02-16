@@ -154,14 +154,14 @@ MAP_02_NAME
 		dta d'annihilator for '*
 		dta d'SIGNS OF INJURY '*
 		dta d'51'
-		dta d'new  level vidol'*
-		dta d'ONE             '*
+		dta d'  wooden house  '*
+		dta d'    OF GLASS    '*
 		dta d'52'
-		dta d'new  level vidol'*
-		dta d'TWO             '*
+		dta d' rotary assault '*
+		dta d'     ALTAR      '*
 		dta d'53'
-		dta d'new  level vidol'*
-		dta d'THREEE          '*
+		dta b(24+64*3), d'th  incarnation'*
+		dta d'  OF AMENHOTEP  '*
 		dta d'54'
 MAP_NAME_LAST
 		dta b($9b)

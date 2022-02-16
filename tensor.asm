@@ -635,17 +635,17 @@ COMPRESSED_MAPS_LUT
 .endr
 
 INSTRUCTION_DATA
-	dta b(124),d'Lorem ipsum dolor0sit amet, consectetu',b(124)
-	dta b(124),d'Lorem ipsum dolor1sit amet, consectetu',b(124)
-	dta b(124),d'Lorem ipsum dolor2sit amet, consectetu',b(124)
-	dta b(124),d'Lorem ipsum dolor3sit amet, consectetu',b(124)
-	dta b(124),d'Lorem ipsum dolor4sit amet, consectetu',b(124)
-	dta b(124),d'Lorem ipsum dolor5sit amet, consectetu',b(124)
-	dta b(124),d'Lorem ipsum dolor6sit amet, consectetu',b(124)
-	dta b(124),d'Lorem ipsum dolor7sit amet, consectetu',b(124)
-	dta b(124),d'Lorem ipsum dolor8sit amet, consectetu',b(124)
-	dta b(124),d'Lorem ipsum dolor9sit amet, consectetu',b(124)
-	dta b(124),d'Lorem ipsum dolorAsit amet, consectetu',b(124)
+	dta b(124),d' Docent Ireneusz Trzaskowski poszukuje',b(124)
+	dta b(124),d'na Jowiszu mistycznych migda',b(123),b(80),d'w. Nie  ',b(124)
+	dta b(124),d'umie on skaka',b(86),d' bo zakazi',b(123),d' si',b(68),d' osteopo-',b(124)
+	dta b(124),d'roz',b(81),d'. Nie mo',b(88),d'e te',b(88),d' strzela',b(86),d' bo sko',b(77),d'-  ',b(124)
+	dta b(124),d'czy',b(123),d'y mu si',b(68),d' naboje. Natomiast to co  ',b(124)
+	dta b(124),d'mo',b(88),d'e i co z dzik',b(81),d' furi',b(81),d' robi, to u',b(88),d'ywa',b(124)
+	dta b(124),b(95),d'Tensora Miotu Grawitacyjnego',b(95),d' aby    ',b(124)
+	dta b(124),d'miesza',b(86),d' przestrzeni',b(81),d' i powodowa',b(86),d' opad ',b(124)
+	dta b(124),d'rzeczy. Pom',b(80),b(88),d' mu wypr',b(80),b(88),d'ni',b(86),d' wszystkie  ',b(124)
+	dta b(124),d'pieczary, a uwolnisz ',b(87),d'wiat od Z',b(123),d'ego   ',b(124)
+	dta b(124),d'Pana i dostaniesz w nagrod',b(68),d' kilo sera.',b(124)
 
 INSTRUCTION_DATA_EN
 	dta b(124),d'Lorem ipsum dolor0for INGLISZ speaking',b(124)

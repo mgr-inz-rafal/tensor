@@ -345,51 +345,12 @@ MENU_0_DATA
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'              Wyjscie                 ',b(124)
-LUDEK_DATA
-		dta b($62)
-		dta b($16)
-		dta b($38)
-		dta b($18)
-		dta b($70)
-		dta b($30)
-		dta b($70)
-		dta b($00)
-		
-		dta b($30)
-		dta b($1C)
-		dta b($18)
-		dta b($18)
-		dta b($10)
-		dta b($38)
-		dta b($18)
-		dta b($38)
-		
-		dta b($18)
-		dta b($18)
-		dta b($1C)
-		dta b($18)
-		dta b($10)
-		dta b($38)
-		dta b($18)
-		dta b($38)
-
-		dta b($0C)
-		dta b($30)
-		dta b($18)
-		dta b($18)
-		dta b($10)
-		dta b($38)
-		dta b($18)
-		dta b($38)
-
-AMYGDALA_DATA_5	; Miecz
-	dta b(0),b(192),b(160),b(84),b(44),b(24),b(52),b(2),b($64),b($74)
-
-AMYGDALA_DATA_6	; Pierscionek
-	dta b(0),b(60),b(24),b(52),b(82),b(64),b(66),b(52),b($a6),b($b6)
 
 AMYGDALA_DATA_7	; Robak
 	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($34),b($44)
+
+AMYGDALA_DATA_6	; Pierscionek
+	dta b(0),b(60),b(24),b(52),b(82),b(64),b(66),b(52),b($a6),b($b6)
 
 scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00
 	.he 00 00 00 00 42 00 03 04 05 06 87 00 00 00 00 00 00 00 00 00
@@ -629,11 +590,6 @@ MAP_02_NAME
 MAP_NAME_LAST
 		dta b($9b)
 
-COMPRESSED_MAPS_LUT
-.rept MAPCOUNT #+1
-		dta a(COMPRESSED_MAP:1)
-.endr
-
 INSTRUCTION_DATA
 	dta b(124),d' Docent Ireneusz Trzaskowski poszukuje',b(124)
 	dta b(124),d'na Jowiszu mistycznych migda',b(123),b(80),d'w. Nie  ',b(124)
@@ -648,17 +604,62 @@ INSTRUCTION_DATA
 	dta b(124),d'Pana i dostaniesz w nagrod',b(68),d' kilo sera.',b(124)
 
 INSTRUCTION_DATA_EN
-	dta b(124),d'Lorem ipsum dolor0for INGLISZ speaking',b(124)
-	dta b(124),d'Lorem ipsum dolor1for INGLISZ speaking',b(124)
-	dta b(124),d'Lorem ipsum dolor2for INGLISZ speaking',b(124)
-	dta b(124),d'Lorem ipsum dolor3for INGLISZ speaking',b(124)
-	dta b(124),d'Lorem ipsum dolor4for INGLISZ speaking',b(124)
-	dta b(124),d'Lorem ipsum dolor5for INGLISZ speaking',b(124)
-	dta b(124),d'Lorem ipsum dolor6for INGLISZ speaking',b(124)
-	dta b(124),d'Lorem ipsum dolor7for INGLISZ speaking',b(124)
-	dta b(124),d'Lorem ipsum dolor8for INGLISZ speaking',b(124)
-	dta b(124),d'Lorem ipsum dolor9for INGLISZ speaking',b(124)
-	dta b(124),d'Lorem ipsum dolorAfor INGLISZ speaking',b(124)
+	dta b(124),d' Ireneusz Trzaskowski, the assistant  ',b(124)
+	dta b(124),d'professor is looking for mystical al- ',b(124)
+	dta b(124),d'monds on the planet Jupiter. He can',b(94),d't ',b(124)
+	dta b(124),d'jump due to osteoporosis and his gun  ',b(124)
+	dta b(124),d'is useless due to lack of ammo. He    ',b(124)
+	dta b(124),d'can, however, use the ',b(95),d'Gravitational  ',b(124)
+	dta b(124),d'Tensor Gear',b(95),d' to blunge and mingle the ',b(124)
+	dta b(124),d'space continuum and make the things   ',b(124)
+	dta b(124),d'fall down. Please help him aggregate  ',b(124)
+	dta b(124),d'all the mystical almonds, to save the ',b(124)
+	dta b(124),d'world from Evil, and get some cheese. ',b(124)
+
+LUDEK_DATA
+		dta b($62)
+		dta b($16)
+		dta b($38)
+		dta b($18)
+		dta b($70)
+		dta b($30)
+		dta b($70)
+		dta b($00)
+		
+		dta b($30)
+		dta b($1C)
+		dta b($18)
+		dta b($18)
+		dta b($10)
+		dta b($38)
+		dta b($18)
+		dta b($38)
+		
+		dta b($18)
+		dta b($18)
+		dta b($1C)
+		dta b($18)
+		dta b($10)
+		dta b($38)
+		dta b($18)
+		dta b($38)
+
+		dta b($0C)
+		dta b($30)
+		dta b($18)
+		dta b($18)
+		dta b($10)
+		dta b($38)
+		dta b($18)
+		dta b($38)
+
+AMYGDALA_DATA_5	; Miecz
+	dta b(0),b(192),b(160),b(84),b(44),b(24),b(52),b(2),b($64),b($74)
+
+COMPRESSED_MAPS_LUT
+.rept MAPCOUNT #+1
+		dta a(COMPRESSED_MAP:1)
+.endr
 
 unZX5         lda   #$ff
               sta   offset

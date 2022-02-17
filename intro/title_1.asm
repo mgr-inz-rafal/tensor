@@ -58,6 +58,21 @@ COLOR_TABLE_START
 COLOR_TABLE_END
 COLOR_COUNT equ 	COLOR_TABLE_END - COLOR_TABLE_START
 ntsc dta(0)
+ntsc_music_conductor DTA(6)
+
+CONDUCT_MUSIC
+		lda ntsc
+		cmp #0
+		beq CM_1
+		dec ntsc_music_conductor
+		beq CM_2
+		jmp CM_1
+CM_2	lda #6
+		sta ntsc_music_conductor
+		rts
+CM_1	jsr RASTERMUSICTRACKER+3
+CM_3	rts
+
 
 	org $f0
 
@@ -526,7 +541,7 @@ c8	lda COLOR_TABLE_START+14
 	mwa #DLI.dli_start dliv	;set the first address of DLI interrupt
 
 ;this area is for yours routines
-	jsr RASTERMUSICTRACKER+3
+	jsr CONDUCT_MUSIC
 
 quit
 	lda regA

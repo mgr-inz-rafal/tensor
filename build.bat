@@ -44,7 +44,11 @@ echo DONE
 echo=
 
 echo Building Tensor...
-
 tools\mads.exe tensor.asm -o:tensor.xex -l:tensor.lst -t:tensor.lab
+echo Done
 
+echo Building Title Screen...
+cd intro
+..\tools\mads.exe title_1.asm -o:title_1.xex -l:title_1.lst -t:title_1.lab
+cd ..
 echo Done

@@ -16,6 +16,49 @@
 MODUL 		equ 6000
 MUSICPLAYER	equ 8000
 
+		org $a123
+COLOR_TABLE_START_NTSC
+	dta b($26) ; Wlosy
+	dta b($48) ; Odcien jakby skory
+	dta b($44) ; Jezyk i paszcza
+	dta b($26) ; Buty
+	dta b($0a) ; Prawa dlon
+	dta b($96) ; Spodnie odcien
+	dta b($aA) ; Koszula
+	dta b($F4) ; Buty odcien
+	dta b($48) ; Prawa dlon odcien
+	dta b($9A) ; Nogawki
+	dta b($b6) ; Flaczki na podlodze
+	dta b($04) ; Pieczara tlo
+	dta b($0A) ; Troche twarzy, kasku oraz Tensora
+	dta b($a6) ; Zielonkawosc jaskini
+	dta b($b6) ; Czubeczek i baza Tensora
+	dta b($48) ; Cien pod wlosami
+	dta b($aA) ; Lewy rekaw
+
+COLOR_TABLE_START
+	dta b($16) ; Wlosy
+	dta b($38) ; Odcien jakby skory
+	dta b($34) ; Jezyk i paszcza
+	dta b($16) ; Buty
+	dta b($0a) ; Prawa dlon
+	dta b($86) ; Spodnie odcien
+	dta b($9A) ; Koszula
+	dta b($F4) ; Buty odcien
+	dta b($38) ; Prawa dlon odcien
+	dta b($8A) ; Nogawki
+	dta b($A6) ; Flaczki na podlodze
+	dta b($04) ; Pieczara tlo
+	dta b($0A) ; Troche twarzy, kasku oraz Tensora
+	dta b($96) ; Zielonkawosc jaskini
+	dta b($A6) ; Czubeczek i baza Tensora
+	dta b($38) ; Cien pod wlosami
+	dta b($9A) ; Lewy rekaw
+
+COLOR_TABLE_END
+COLOR_COUNT equ 	COLOR_TABLE_END - COLOR_TABLE_START
+ntsc dta(0)
+
 	org $f0
 
 fcnt	.ds 2
@@ -69,6 +112,31 @@ synchr2	cmp VCOUNT
 		rts
 
 main
+; thanks to mono
+detect_ntsc
+		sei
+	  	lda #0
+		sta ntsc
+sync1 	ldx VCOUNT
+      	bpl sync1
+sync2 	txa
+      	ldx VCOUNT
+      	bmi sync2
+
+      	cmp #[312+262]/2/2		
+	  	bcs dn_1
+		inc ntsc
+
+		ldy #0
+DNTSC_1	lda COLOR_TABLE_START_NTSC,y
+		sta COLOR_TABLE_START,y
+		iny 
+		cpy #COLOR_COUNT
+		bne DNTSC_1
+
+dn_1  	cli
+
+
 ; ---	init PMG
 
 	lda #00
@@ -164,7 +232,7 @@ dli_start
 dli12
 	sta regA
 
-c9	lda #$16
+c9	lda COLOR_TABLE_START+0
 	sta wsync		;line=40
 	sta color3
 	DLINEW DLI.dli2 1 0 0
@@ -179,10 +247,10 @@ dli2
 dli13
 	sta regA
 
-c10	lda #$38
+c10	lda COLOR_TABLE_START+1
 	sta wsync		;line=64
 	sta color3
-c11	lda #$34
+c11	lda COLOR_TABLE_START+2
 	sta wsync		;line=65
 	sta colpm2
 	sta wsync		;line=66
@@ -221,7 +289,7 @@ x10	ldx #$74
 	sta wsync		;line=86
 x11	lda #$6E
 x12	ldx #$A6
-c12	ldy #$16
+c12	ldy COLOR_TABLE_START+3
 	sta wsync		;line=87
 	sta hposp1
 	stx hposm0
@@ -235,7 +303,7 @@ x13	lda #$46
 	sta wsync		;line=92
 s4	lda #$00
 x14	ldx #$40
-c13	ldy #$0A
+c13	ldy COLOR_TABLE_START+4
 	sta wsync		;line=93
 	sta sizep3
 	stx hposp3
@@ -244,19 +312,19 @@ c13	ldy #$0A
 x15	lda #$6D
 	sta wsync		;line=95
 	sta hposp1
-c14	lda #$86
+c14	lda COLOR_TABLE_START+5
 	sta wsync		;line=96
 	sta color3
-c15	lda #$9A
+c15	lda COLOR_TABLE_START+6
 x16	ldx #$A2
-c16	ldy #$F4
+c16	ldy COLOR_TABLE_START+7
 	sta wsync		;line=97
 	sta color1
 	stx hposp2
 	sty colpm2
 s5	lda #$00
 x17	ldx #$3E
-c17	ldy #$38
+c17	ldy COLOR_TABLE_START+8
 	sta wsync		;line=98
 	sta sizep1
 	stx hposp1
@@ -276,7 +344,7 @@ dli4
 	sta wsync		;line=108
 s6	lda #$03
 x18	ldx #$88
-c18	ldy #$8A
+c18	ldy COLOR_TABLE_START+9
 	sta wsync		;line=109
 	sta sizep1
 	stx hposp1
@@ -312,7 +380,7 @@ dli5
 	sta wsync		;line=131
 	sta wsync		;line=132
 	sta wsync		;line=133
-c19	lda #$8A
+c19	lda COLOR_TABLE_START+9
 	sta wsync		;line=134
 	sta color1
 	DLINEW dli6 1 0 0
@@ -346,7 +414,7 @@ x24	lda #$8E
 	sta hposp2
 	sta wsync		;line=194
 	sta wsync		;line=195
-c20	lda #$A6
+c20	lda COLOR_TABLE_START+10
 	sta wsync		;line=196
 	sta color3
 x25	lda #$8F
@@ -415,13 +483,13 @@ c0	lda #$00
 	sta sizep1
 	sta sizep2
 
-c1	lda #$04
+c1	lda COLOR_TABLE_START+11
 	sta color0
-c2	lda #$0A
+c2	lda COLOR_TABLE_START+12
 	sta color1
-c3	lda #$96
+c3	lda COLOR_TABLE_START+13
 	sta color2
-c4	lda #$A6
+c4	lda COLOR_TABLE_START+14
 	sta color3
 	lda #$02
 	sta chrctl
@@ -429,7 +497,7 @@ c4	lda #$A6
 	sta gtictl
 x0	lda #$97
 	sta hposm2
-c5	lda #$38
+c5	lda COLOR_TABLE_START+15
 	sta colpm2
 s1	lda #$01
 	sta sizep3
@@ -447,11 +515,11 @@ x6	lda #$83
 	sta hposm1
 x7	lda #$3F
 	sta hposm3
-c6	lda #$38
+c6	lda COLOR_TABLE_START+15
 	sta colpm0
-c7	lda #$9A
+c7	lda COLOR_TABLE_START+16
 	sta colpm1
-c8	lda #$A6
+c8	lda COLOR_TABLE_START+14
 	sta colpm3
 
 	

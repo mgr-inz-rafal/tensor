@@ -7,3 +7,6 @@ tensor.atr
 *.kloc
 *.atstate2
 *.obx
+intro/title_1.lab
+intro/title_1.lst
+intro/title_1.xex

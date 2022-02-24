@@ -2071,6 +2071,7 @@ gl_1	jsr move_element
 		iny
 		sta pmg_p3,y
 		dec reducer
+		jsr synchro17
 		ldx reducer
 		cpx #REDUCER_END_POS
 		jeq handle_new_record
@@ -2758,7 +2759,7 @@ draw_decoration
 		sta HPOSP2
 		add #8
 		sta HPOSP3
-:5		jsr synchro
+		jsr synchro17
 		iny
 		cpy #90
 		bne @-
@@ -2998,32 +2999,25 @@ si_01	; Define offset for caver number
 			sta CHBAS
 		
 			; Enable DLI
-			lda <dli_routine_final
-			sta VDSLST
-			lda >dli_routine_final
-			sta VDSLST+1
-			lda #192
-			sta NMIEN
+			ldx <dli_routine_final
+			ldy >dli_routine_final
+			jsr SET_DLI_ROUTINE
 
 			ldx <DLINTERMISSIONFINAL
 			ldy >DLINTERMISSIONFINAL
 			stx SDLSTL
 			sty SDLSTL+1
 		#else
-			; Enable DLI
-			lda <dli_routine
-			sta VDSLST
-			lda >dli_routine
-			sta VDSLST+1
-			lda #192
-			sta NMIEN
-
 			ldx <DLINTERMISSION
 			ldy >DLINTERMISSION
 			stx SDLSTL
 			sty SDLSTL+1
+
+			ldx <dli_routine
+			ldy >dli_routine
+			jsr SET_DLI_ROUTINE
 		#end
-		
+
 		jsr clear_intermission_screen
 		jsr enable_antic
 
@@ -3179,12 +3173,9 @@ init_game
 		ldy #>MODUL
 		jsr INIT_MUSIC
 
-		lda <dli_routine_game
-		sta VDSLST
-		lda >dli_routine_game
-		sta VDSLST+1
-		lda #192
-		sta NMIEN
+		ldx <dli_routine_game
+		ldy >dli_routine_game
+		jsr SET_DLI_ROUTINE
 
 		lda RANDOM
 		and #%00000111
@@ -3961,20 +3952,50 @@ synchro
 		lda os_gone_debug
 		cmp #0
 		bne pizda_wisi
-		inc sync
-		lda sync
-		and #%00000001
-		cmp #1
-		beq @+
 		lda PAL
 		cmp #1
-		bne synchr1
-		lda #145	; PAL
-		jmp synchr2
-synchr1 lda #120	; NTSC
-synchr2	cmp VCOUNT
-		bne synchr2
+		beq syn_pal
+saas112
+		#if .byte VCOUNT >= #117
+			rts
+		#end
+		jmp saas112
+		rts
+syn_pal
+		#if .byte VCOUNT >= #150
+			rts
+		#end
+		jmp syn_pal
+		rts
+
+
+synchro17
+		ldx #17
+sa911	cpx #0
+		beq @+
+		jsr synchro
+		dex
+		jmp sa911
 @		rts
+
+;synchro2
+;		lda os_gone_debug
+;		cmp #0
+;		bne pizda_wisi
+;		inc sync
+;		lda sync
+;		and #%00000001
+;		cmp #1
+;		beq @+
+;		lda PAL
+;		cmp #1
+;		bne synchr1
+;		lda #145	; PAL
+;		jmp synchr2
+;synchr1 lda #120	; NTSC
+;synchr2	cmp VCOUNT
+;		bne synchr2
+;@		rts
 
 ; thanks to mono
 detect_ntsc
@@ -4562,12 +4583,9 @@ sls_2	jsr decompress_data
 		sta ignorestick
 
 		; Enable DLI
-		lda <dli_routine_selector
-		sta VDSLST
-		lda >dli_routine_selector
-		sta VDSLST+1
-		lda #192
-		sta NMIEN
+		ldx <dli_routine_selector
+		ldy >dli_routine_selector
+		jsr SET_DLI_ROUTINE
 
 		ldx <DLLEVELSELECTOR
 		ldy >DLLEVELSELECTOR
@@ -4609,7 +4627,7 @@ xxxx1
 		cmp #$ff
 		beq xx56
 
-xaxx1	jsr synchro
+xaxx1	jsr synchro17
 		jsr handle_delayers
 		ldx CH
 		cpx #$1c	; ESC
@@ -5241,12 +5259,9 @@ show_new_record_screen
 		jsr setup_new_record_screen_colors
 
 		; Enable DLI
-		lda <dli_routine_new_record
-		sta VDSLST
-		lda >dli_routine_new_record
-		sta VDSLST+1
-		lda #192
-		sta NMIEN
+		ldx <dli_routine_new_record
+		ldy >dli_routine_new_record
+		jsr SET_DLI_ROUTINE
 
 		ldx <DLNEW_RECORD
 		ldy >DLNEW_RECORD
@@ -5402,6 +5417,13 @@ awioc_0 dex
 awioc_1	stx STACK_ON_PROPER_CART
 		jsr cart_off
 		jsr os_back
+		rts
+
+SET_DLI_ROUTINE
+		stx VDSLST
+		sty VDSLST+1
+		lda #192
+		sta NMIEN
 		rts
 		
 		org MUSICPLAYER

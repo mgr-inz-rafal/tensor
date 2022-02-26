@@ -2239,6 +2239,7 @@ me_fin	mva #MV_IDLE mvstate
 		dec collecting
 @		jsr display_player
 		jsr clear_sprite
+		mva #0 STACK_HERE_P2
 		rts
 		
 clear_player_sprite
@@ -3433,7 +3434,7 @@ init_movement
 		#if .byte VCOUNT < #SCORE_DLI_LINE
 			lda #0
 			sta STACK_HERE_P2
-			sta HPOSP2 ; TODO: Not needed?
+		;	sta HPOSP2 ; TODO: Not needed?
 		#end
 		lda mvstate
 		cmp #MV_IDLE

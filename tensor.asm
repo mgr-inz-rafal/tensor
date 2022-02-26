@@ -15,6 +15,7 @@ STACK_CURRENT_PERSISTENCY_BANK equ $101
 STACK_ON_PROPER_CART equ $102
 STACK_GOING_FROM_PREVIOUS_LEVEL equ $103
 STACK_HERE_P2 equ $104
+STACK_SKIP_MUSIC_CONDUCT equ $105
 
 RECORD_ENTER_CURSOR_CHAR equ 31
 EXCLAMATION_MARK_CHAR equ 28
@@ -1348,7 +1349,10 @@ chuj
 
 	jmp raster_program_end
 
-LOOP	lda vcount		;synchronization for the first screen line
+LOOP	
+	lda #0
+	sta STACK_SKIP_MUSIC_CONDUCT
+	lda vcount		;synchronization for the first screen line
 	cmp #$02
 	bne LOOP
 
@@ -4292,6 +4296,8 @@ hmi_4
 
 hmi_5		cmp #2
 			bne hmi_6
+			lda #1
+			sta STACK_SKIP_MUSIC_CONDUCT
 			jsr flip_language
 			jmp skp
 
@@ -4323,7 +4329,6 @@ hmi_3
 
 show_options
 		jsr delayer_button_common
-		jsr synchro ; TODO[RC]: Instead of synchro, reject call when we're in the process of drawing the logo (in all "text-redrawing" functions)
 		lda #MS_OPTIONS
 		sta menu_state
 		ldy #0
@@ -4332,7 +4337,6 @@ show_options
 
 show_instruction
 		jsr delayer_button_common
-		jsr synchro
 		lda #MS_INSTRUCTION
 		sta menu_state
 		lda language
@@ -4371,6 +4375,8 @@ INIT_MUSIC
 CONDUCT_MUSIC
 		lda rmt_player_halt
 		beq CM_3
+		lda STACK_SKIP_MUSIC_CONDUCT
+		bne CM_3
 		lda ntsc
 		cmp #0
 		beq CM_1
@@ -5226,7 +5232,7 @@ is_level_locked
 		sta ludek_face
 		lda temp_level_completion_bits_calculation
 		and ludek_face
-		lda #0 ; Uncomment to have all levels unlocked
+		;lda #0 ; Uncomment to have all levels unlocked
 		rts
 
 lock_override_text_empty

@@ -353,17 +353,74 @@ AMYGDALA_DATA_7	; Robak
 AMYGDALA_DATA_6	; Pierscionek
 	dta b(0),b(60),b(24),b(52),b(82),b(64),b(66),b(52),b($a6),b($b6)
 
-scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 42 00 03 04 05 06 87 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 00 08 09 0a 0b 0c 00 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 4d 00 0e 0f 10 d1 d2 00 93 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 00 00 d4 15 d4 00 00 00 00 00 00 00 00 00 00 00
- 	.he 00 00 00 00 00 16 17 18 99 9a 00 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 00 00 1b 5c 9d 00 00 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 00 00 1e 1f a0 00 00 00 00 00 00 00 00 00 00 00
-	.he 00 00 00 61+128 62+128 63+128 00+128 64+128 65+128 66+128 67+128 68+128 00 00 00 00 00 00 00 00
-	.he 00 00 00 00 69 6a 6b 6c 6d 6e 6f 79+128 00 00 00 00 00 00 00 00
-	.he 00 00 00 70+128 71+128 72+128 73+128 74+128 75+128 76+128 77+128 78+128 00 00 00 00 00 00 00 00
+calculate_level_lock_bits_data
+		dec ludek_face
+		lda ludek_face
+		lsr
+		lsr
+		lsr
+		tay
+		lda LEVEL_COMPLETION_BITS,y
+		sty temp_level_completion_bits_calculation_y_reg
+		sta temp_level_completion_bits_calculation
+ill_1
+		#if .byte ludek_face >= #8
+			sbb ludek_face #8
+			jmp ill_1
+		#end
+
+		lda #%00000001
+		ldx ludek_face
+ill_3	cpx #0
+		beq ill_2
+		asl
+		dex
+		jmp ill_3
+ill_2	
+		rts
+
+
+allow_kutka_override
+		lda language
+		and #%00000001
+		bne ako_0
+		mwa #lock_override_text LOCK_OVERRIDE_TEXT_ADDRESS
+		jmp ako_1
+ako_0	mwa #lock_override_text_en LOCK_OVERRIDE_TEXT_ADDRESS
+ako_1
+		lda #0
+		sta amygdala_color
+		jmp xxxx1
+		
+set_previous_starting_level
+		jsr delayer_button_common
+		jsr reset_kutka_data
+		sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
+		sbw curmapname #MAP_02_NAME-MAP_01_NAME
+		nop
+		#if .word curmapname = #MAP_01_NAME-(MAP_02_NAME-MAP_01_NAME)
+			adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
+			adw curmapname #MAP_02_NAME-MAP_01_NAME
+		#end
+		jsr draw_level_info_common
+		rts		
+
+is_better_score
+		mvx #0 ludek_offset
+		jsr read_record_holder
+		sbw ptr0 #HIGH_SCORE_RECORD_END-HIGH_SCORE_RECORD_BEGIN
+		ldy #1
+		lda (ptr0),y
+		sta ppy
+		dey
+		lda (ptr0),y
+		sta pby
+		#if .word current_score < ppy
+			lda #1
+		#else
+			lda #0
+		#end
+		rts
 
 MENU_0_DATA_EN
 	dta b(124),d'              Play                    ',b(124)
@@ -2951,9 +3008,31 @@ draw_happy_docent
 		ldy #0
 @		lda scr_head,y
 		sta SCRMEM,y
-:5		jsr synchro
+		jsr synchro17
 		iny
-		cpy #11*20
+		cpy #(11-3)*20
+		bne @-
+
+		ldy #0
+
+zgon
+		lda language
+		and #%00000001
+		bne dhd_0
+
+@		lda scr_head_text_polish,y
+		sta SCRMEM+8*20,y
+		jsr synchro17
+		iny
+		cpy #3*20
+		bne @-
+		rts
+dhd_0
+@		lda scr_head_text_english,y
+		sta SCRMEM+8*20,y
+		jsr synchro17
+		iny
+		cpy #3*20
 		bne @-
 		rts
 		
@@ -4550,32 +4629,6 @@ clear_kutka
 		sta SCRMEM+14+DIGITOFFSET
 		rts
 
-calculate_level_lock_bits_data
-		dec ludek_face
-		lda ludek_face
-		lsr
-		lsr
-		lsr
-		tay
-		lda LEVEL_COMPLETION_BITS,y
-		sty temp_level_completion_bits_calculation_y_reg
-		sta temp_level_completion_bits_calculation
-ill_1
-		#if .byte ludek_face >= #8
-			sbb ludek_face #8
-			jmp ill_1
-		#end
-
-		lda #%00000001
-		ldx ludek_face
-ill_3	cpx #0
-		beq ill_2
-		asl
-		dex
-		jmp ill_3
-ill_2	
-		rts
-
 show_level_selector
 		lda #0
 		sta STACK_GOING_FROM_PREVIOUS_LEVEL
@@ -4701,7 +4754,7 @@ snsl_XX	lda SCRMEM+14+DIGITOFFSET
 		inc amygdala_type
 		lda amygdala_type
 		cmp #$ff
-		beq allow_kutka_override
+		jeq allow_kutka_override
 		jmp xxxx1
 snsl_XY		
 		lda #0
@@ -4714,31 +4767,6 @@ reset_kutka_data
 		sta amygdala_type
 		sta amygdala_color
 		rts
-
-allow_kutka_override
-		lda language
-		and #%00000001
-		bne ako_0
-		mwa #lock_override_text LOCK_OVERRIDE_TEXT_ADDRESS
-		jmp ako_1
-ako_0	mwa #lock_override_text_en LOCK_OVERRIDE_TEXT_ADDRESS
-ako_1
-		lda #0
-		sta amygdala_color
-		jmp xxxx1
-		
-set_previous_starting_level
-		jsr delayer_button_common
-		jsr reset_kutka_data
-		sbw curmap #MAP_BUFFER_END-MAP_BUFFER_START
-		sbw curmapname #MAP_02_NAME-MAP_01_NAME
-		nop
-		#if .word curmapname = #MAP_01_NAME-(MAP_02_NAME-MAP_01_NAME)
-			adw curmap #MAP_BUFFER_END-MAP_BUFFER_START
-			adw curmapname #MAP_02_NAME-MAP_01_NAME
-		#end
-		jsr draw_level_info_common
-		rts		
 
 .align		$100
 DLGAME
@@ -4801,7 +4829,8 @@ DLINTERMISSIONFINAL
      	dta $87
 	:2 dta $07
 	dta $87
-	:2 dta $07
+	dta $07
+	dta $07
 	dta b($07)
 	dta b($07)
 	dta b($07)
@@ -5197,6 +5226,7 @@ is_level_locked
 		sta ludek_face
 		lda temp_level_completion_bits_calculation
 		and ludek_face
+		lda #0 ; Uncomment to have all levels unlocked
 		rts
 
 lock_override_text_empty
@@ -5383,23 +5413,6 @@ snrs_2
 
 		rts
 
-is_better_score
-		mvx #0 ludek_offset
-		jsr read_record_holder
-		sbw ptr0 #HIGH_SCORE_RECORD_END-HIGH_SCORE_RECORD_BEGIN
-		ldy #1
-		lda (ptr0),y
-		sta ppy
-		dey
-		lda (ptr0),y
-		sta pby
-		#if .word current_score < ppy
-			lda #1
-		#else
-			lda #0
-		#end
-		rts
-
 are_we_on_proper_cart
 		jsr os_gone
 		ldy #PERSISTENCY_BANK_CHECK
@@ -5452,7 +5465,25 @@ SET_DLI_ROUTINE
 		lda #192
 		sta NMIEN
 		rts
-		
+	
+
+scr_head     .he 00 00 00 00 00 00 00 c1 00 00 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 42 00 03 04 05 06 87 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 08 09 0a 0b 0c 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 4d 00 0e 0f 10 d1 d2 00 93 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 00 d4 15 d4 00 00 00 00 00 00 00 00 00 00 00
+ 	.he 00 00 00 00 00 16 17 18 99 9a 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 00 1b 5c 9d 00 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 00 1e 1f a0 00 00 00 00 00 00 00 00 00 00 00
+scr_head_text_polish
+	.he 00 00 00 61+64 62+64 63+64 00+64 64+64 65+64 66+64 67+64 68+64 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 69 6a 6b 6c 6d 6e 6f 79+128 00 00 00 00 00 00 00 00
+	.he 00 00 00 70+128 71+128 72+128 73+128 74+128 75+128 76+128 77+128 78+128 00 00 00 00 00 00 00 00
+scr_head_text_english
+	.he 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+	.he 00 00 00 7a+64 65+64+64 7b 6b+64 76+64+64 6d 7c+64 66+64+64 7d 00 00 00 00 00 00 00 00
+	.he 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"
 
@@ -5798,7 +5829,7 @@ pr1
 pr1_a	lda #$ff
 		rti
 	
-pr2		sta pr2_a+1
+pr2		sta a_ret+1
 		lda #$3a ;-twarz
 		sta $d017
 		pha
@@ -5812,7 +5843,23 @@ pr2		sta pr2_a+1
 		sta $200
 		lda >pr1
 		sta $201
-pr2_a	lda #$ff
+pr2_a	
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		sta WSYNC
+		lda #$df
+		sta WSYNC
+		sta $d018
+		lda #$b7
+		sta $d019
+		lda #$17
+		sta $D017	
+a_ret   lda #$ff
 		rti
 		
 flip_credits

@@ -1005,9 +1005,25 @@ apply_loaded_state
 			lda language
 			and #%00000001
 			beq als_1
-			jsr enable_english		
+			jsr enable_english
 			mwa main_menu_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-als_1			
+als_1
+			lda instafall
+			and #%00000001
+			beq als_2
+			dec instafall
+			jsr flip_failing_speed
+als_2			
+			lda level_rotation
+			and #%00000001
+			beq als_3
+			dec level_rotation
+			jsr flip_level_rotation
+			lda #1
+			sta options_cursor_index
+			jsr invert_options_menu_cursor
+			dec options_cursor_index
+als_3
 			rts
 
 read_state

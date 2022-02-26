@@ -3397,14 +3397,19 @@ stick_left
 		jmp game_loop
 		
 set_falling_sprite_color
+;		pha
+;		jsr synchro
+;		pla
 		pha
 		sta ptr0+1
 		#if .byte ptr0+1 = #2
+bolec0		
 			mva amygdala_color PCOLR2
 			pla
 			rts
 		#end
 		#if .byte ptr0+1 >= #3 .and .byte ptr0+1 <= #4
+bolec1		
 			lda ntsc
 			and #%0000001
 			bne sao2
@@ -3415,11 +3420,12 @@ sao7		pla
 			rts
 		#end
 		#if .byte ptr0+1 = #PL_CHR
+bolec2		
 			mva #C_PLAYR PCOLR2
 			pla
 			rts
 		#end
-;		mva amygdala_color PCOLR2
+bolec3	mva #0 PCOLR2
 		pla
 		rts
 		

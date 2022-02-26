@@ -48,6 +48,7 @@ MV_CTRD			equ 4	  ; Single move distance when falling down
 MV_CTR			equ 8	  ; Single move distance when moving left or right
 C_PLAYR			equ	$5d	  ; Player color
 C_OBSTA			equ	$76	  ; Obstacles
+C_OBSTAN		equ	$86	  ; Obstacles NTSC
 C_WALL1			equ	$54	  ; Wall #1
 C_WALL2			equ	$14	  ; Wall #2
 GS_GRAV			equ	0	  ; Making sure everything is on the ground
@@ -3404,8 +3405,13 @@ set_falling_sprite_color
 			rts
 		#end
 		#if .byte ptr0+1 >= #3 .and .byte ptr0+1 <= #4
+			lda ntsc
+			and #%0000001
+			bne sao2
 			mva #C_OBSTA PCOLR2
-			pla
+			jmp sao7
+sao2		mva #C_OBSTAN PCOLR2
+sao7		pla
 			rts
 		#end
 		#if .byte ptr0+1 = #PL_CHR
@@ -3421,7 +3427,7 @@ init_movement
 		#if .byte VCOUNT < #SCORE_DLI_LINE
 			lda #0
 			sta STACK_HERE_P2
-			sta HPOSP2
+			sta HPOSP2 ; TODO: Not needed?
 		#end
 		lda mvstate
 		cmp #MV_IDLE
@@ -3929,7 +3935,7 @@ x2pmg_1	cpy #0
 		clc
 		adc #8
 		jmp x2pmg_1
-@		sta HPOSP3
+@		;sta HPOSP3
 		sta psx
 		sta last_true_player_pos
 		

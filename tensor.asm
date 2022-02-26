@@ -4368,7 +4368,6 @@ ffs_2	rts
 
 flip_failing_speed
 		jsr delayer_button_common
-		jsr synchro
 
 		mwa #GRAVITY_LABEL_1 ptr1
 		mwa #GRAVITY_2_EN ptr3
@@ -4398,7 +4397,6 @@ flr_2	rts
 
 flip_level_rotation
 		jsr delayer_button_common
-		jsr synchro
 
 		mwa #ROTATION_LABEL_1 ptr1
 		mwa #ROTATION_1_EN ptr3
@@ -4419,7 +4417,6 @@ flip_level_rotation
 
 flip_language
 		jsr delayer_button_common
-		jsr synchro
 
 		mwa #LANGUAGE_LABEL ptr1
 		lda language

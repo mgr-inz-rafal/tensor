@@ -4399,7 +4399,7 @@ handle_delayers
 		lda delayer_button
 		cmp #$ff
 		bne @+
-		ind delayer_button
+		inc delayer_button
 @		rts
 
 GRAVITY_1

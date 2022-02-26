@@ -3153,7 +3153,8 @@ init_game
 ;		mwa #MAP_LAST curmap		; TODO: Remove after happy docent is integrated
 		jsr show_intermission
 
-		jsr disable_antic
+czubek	jsr disable_antic
+		jsr disable_antic ; To increase sureness, wtf? ;)
 
 		mwa #GAME_FONT ZX5_INPUT
 		mwa #FONT_SLOT_1 ZX5_OUTPUT
@@ -3209,7 +3210,7 @@ init_game
 		sta ignorestick
 		lda #PL_CHR
 		sta moved
-		jsr enable_antic
+		;jsr enable_antic
 		rts
 
 rotate_internal_1

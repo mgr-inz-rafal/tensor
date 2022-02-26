@@ -3291,7 +3291,7 @@ RCC_1	jsr show_backup_buffer
 		lda level_rotation
 		and #%00000001
 		bne RCAX_2
-:9	 	jsr synchro
+:3	 	jsr synchro17
 RCAX_2	rts
 
 show_backup_buffer

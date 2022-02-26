@@ -345,7 +345,7 @@ MENU_0_DATA
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
-	dta b(124),d'              Wyjscie                 ',b(124)
+	dta b(124),d'              Wyj',b(87),d'cie                 ',b(124)
 
 AMYGDALA_DATA_7	; Robak
 	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($34),b($44)
@@ -385,20 +385,20 @@ GRAVITY_LABEL
 	dta d'    STONOWANE     '*
 	dta d'          ',b(124)
 	dta b(124),d'                                      ',b(124)
-	dta b(124),d'           Obrot  pieczary            ',b(124)
+	dta b(124),d'           Obr',b(80),d't  pieczary            ',b(124)
 	dta b(124),d'          '
 ROTATION_LABEL
 	dta d'    ANIMOWANY     '
 	dta d'          ',b(124)
 	dta b(124),d'                                      ',b(124)
-	dta b(124),d'        Jezyk stosowany w grze        ',b(124)
+	dta b(124),d'        J',b(68),d'zyk stosowany w grze        ',b(124)
 	dta b(124),d'              '
 LANGUAGE_LABEL
 	dta d'  POLSKI '
 	dta d'               ',b(124)
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
-	dta b(124),d'                Powrot                ',b(124)
+	dta b(124),d'                Powr',b(80),d't                ',b(124)
 
 MENU_1_DATA_EN
 	dta b(124),d'         Gravity acceleration         ',b(124)
@@ -4318,7 +4318,7 @@ handle_delayers
 @		rts
 
 GRAVITY_1
-	dta d'     POTEZNE      '*
+	dta d'     POT'*,b(1+128),b(10+128),d'NE      '*
 GRAVITY_2
 	dta d'    STONOWANE     '*
 GRAVITY_1_EN

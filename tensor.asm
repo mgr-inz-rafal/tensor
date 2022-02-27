@@ -481,7 +481,6 @@ LANGUAGE_LABEL_1
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                 Back                 ',b(124)
 
-
 ZENEK_START
 MAP_01_NAME
 MAP_01_NAME_END equ MAP_01_NAME+16*2
@@ -506,19 +505,6 @@ INSTRUCTION_DATA
 	dta b(124),d'rzeczy. Pom',b(80),b(88),d' mu wypr',b(80),b(88),d'ni',b(86),d' wszystkie  ',b(124)
 	dta b(124),d'pieczary, a uwolnisz ',b(87),d'wiat od Z',b(123),d'ego   ',b(124)
 	dta b(124),d'Pana i dostaniesz w nagrod',b(68),d' kilo sera.',b(124)
-
-INSTRUCTION_DATA_EN
-	dta b(124),d' Ireneusz Trzaskowski, the assistant  ',b(124)
-	dta b(124),d'professor is looking for mystical al- ',b(124)
-	dta b(124),d'monds on the planet Jupiter. He can',b(94),d't ',b(124)
-	dta b(124),d'jump due to osteoporosis and his gun  ',b(124)
-	dta b(124),d'is useless due to lack of ammo. He    ',b(124)
-	dta b(124),d'can, however, use the ',b(95),d'Gravitational  ',b(124)
-	dta b(124),d'Tensor Gear',b(95),d' to blunge and mingle the ',b(124)
-	dta b(124),d'space continuum and make the things   ',b(124)
-	dta b(124),d'fall down. Please help him aggregate  ',b(124)
-	dta b(124),d'all the mystical almonds, to save the ',b(124)
-	dta b(124),d'world from Evil, and get some cheese. ',b(124)
 
 LUDEK_DATA
 		dta b($62)
@@ -5334,6 +5320,21 @@ scr_head_text_english
 	.he 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 	.he 00 00 00 7a+64 65+64+64 7b 6b+64 76+64+64 6d 7c+64 66+64+64 7d 00 00 00 00 00 00 00 00
 	.he 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+INSTRUCTION_DATA_EN
+	dta b(124),d' Ireneusz Trzaskowski, the assistant  ',b(124)
+	dta b(124),d'professor is looking for mystical al- ',b(124)
+	dta b(124),d'monds on the planet Jupiter. He can',b(94),d't ',b(124)
+	dta b(124),d'jump due to osteoporosis and his gun  ',b(124)
+	dta b(124),d'is useless due to lack of ammo. He    ',b(124)
+	dta b(124),d'can, however, use the ',b(95),d'Gravitational  ',b(124)
+	dta b(124),d'Tensor Gear',b(95),d' to blunge and mingle the ',b(124)
+	dta b(124),d'space continuum and make the things   ',b(124)
+	dta b(124),d'fall down. Please help him aggregate  ',b(124)
+	dta b(124),d'all the mystical almonds, to save the ',b(124)
+	dta b(124),d'world from Evil, and get some cheese. ',b(124)
+
+
 
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"

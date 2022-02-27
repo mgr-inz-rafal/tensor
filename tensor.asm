@@ -2977,6 +2977,7 @@ a31a
 		#end
 
 szz2	lda trig0		; FIRE #0
+		sta ATRACT
 		beq di_X
 
 		#if .byte STACK_GOING_FROM_PREVIOUS_LEVEL = #1 .and .byte CONSOL = #5
@@ -4565,6 +4566,7 @@ XaqW2	lda porta
 xx1		lda ignorestick
 		bne xxxx1
 		lda trig0
+		sta ATRACT
 		beq snsl_XX
 		#if .byte CONSOL = #5 .and .byte amygdala_color = #0
 			lda #1

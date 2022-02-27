@@ -907,7 +907,7 @@ als_2
 			and #%00000001
 			beq als_3
 			dec level_rotation
-			jsr flip_level_rotation
+			jsr flip_level_rotation_2
 			lda #1
 			sta options_cursor_index
 			jsr invert_options_menu_cursor
@@ -4312,9 +4312,7 @@ rotation_common
 flr_1	mwa ppx ptr0
 flr_2	rts
 
-flip_level_rotation
-		jsr delayer_button_common
-
+flip_level_rotation_2
 		mwa #ROTATION_LABEL_1 ptr1
 		mwa #ROTATION_1_EN ptr3
 		mwa #ROTATION_2_EN ppx
@@ -4330,6 +4328,12 @@ flip_level_rotation
 		jsr flip_menu_option_common
 
 		inc level_rotation
+		rts
+
+flip_level_rotation
+		jsr delayer_button_common
+		jsr flip_level_rotation_2
+
 		rts
 
 flip_language

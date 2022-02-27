@@ -647,6 +647,9 @@ MAP_02_NAME
 		dta d'                '
 		dta d'  '
 MAP_NAME_LAST
+		dta d'XXXXXXXXXXXXXXXX'
+		dta d'XXXXXXXXXXXXXXXX'
+		dta d'55'
 		dta b($9b)
 
 INSTRUCTION_DATA

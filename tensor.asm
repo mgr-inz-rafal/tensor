@@ -408,6 +408,10 @@ set_previous_starting_level
 		rts		
 
 is_better_score
+		; Uncomment to always be the best!
+		lda #1
+		rts
+
 		mvx #0 ludek_offset
 		jsr read_record_holder
 		sbw ptr0 #HIGH_SCORE_RECORD_END-HIGH_SCORE_RECORD_BEGIN
@@ -1925,6 +1929,12 @@ run_here
 		jsr show_level
 
 game_loop
+		; Uncomment to enable the "press SPACE to finish level cheat"
+		#if .byte CH = #33
+			lda #0
+			sta collectibles
+		#end
+
 		ldx collectibles
 		cpx #0
 		bne gl_0

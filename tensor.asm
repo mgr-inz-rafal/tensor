@@ -16,6 +16,7 @@ STACK_ON_PROPER_CART equ $102
 STACK_GOING_FROM_PREVIOUS_LEVEL equ $103
 STACK_HERE_P2 equ $104
 STACK_SKIP_MUSIC_CONDUCT equ $105
+workpages equ $106
 
 RECORD_ENTER_CURSOR_CHAR equ 31
 EXCLAMATION_MARK_CHAR equ 28
@@ -1001,12 +1002,15 @@ flbs_4
 
 erase_state_sector
 			ldy #PERSISTENCY_BANK_START
+			sty STACK_CURRENT_PERSISTENCY_BANK
 			sta PERSISTENCY_BANK_CTL,y
+			sta WSYNC
 			jsr unlock_cart
 			lda #$80
 			jsr wr555
 			jsr unlock_cart
 			sta PERSISTENCY_BANK_CTL,y
+			sta WSYNC
 			lda #$30
 			sta CART_RAM_START
 			jsr wait_to_complete
@@ -5793,7 +5797,6 @@ gstate				dta(0)
 compared			dta(0)
 sync				dta(0)
 collect				dta(0)
-workpages			dta(0)
 record_holder_color	dta(0)
 os_back_nmien		dta(0)
 current_score		dta($12),($34)

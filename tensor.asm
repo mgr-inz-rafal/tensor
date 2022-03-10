@@ -879,6 +879,8 @@ bs_7
 			jmp bs_8
 
 persistent_save
+			jsr STOP_MUSIC
+			sta WSYNC
 			lda STACK_ON_PROPER_CART
 			beq yhha2
 			jsr os_gone

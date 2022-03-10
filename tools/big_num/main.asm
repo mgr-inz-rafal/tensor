@@ -32,27 +32,12 @@ SHB_0   lda NUMBUF,y
 
 INCREMENT
         ldy #5
+INCREMENT_LOOP
         jsr INCREMENT_NUM
         cpx #1
         bne INCREMENT_EXIT
-        ldy #4
-        jsr INCREMENT_NUM
-        cpx #1
-        bne INCREMENT_EXIT
-        ldy #3
-        jsr INCREMENT_NUM
-        cpx #1
-        bne INCREMENT_EXIT
-        ldy #2
-        jsr INCREMENT_NUM
-        cpx #1
-        bne INCREMENT_EXIT
-        ldy #1
-        jsr INCREMENT_NUM
-        cpx #1
-        bne INCREMENT_EXIT
-        ldy #0
-        jsr INCREMENT_NUM
+        dey
+        jmp INCREMENT_LOOP
 INCREMENT_EXIT        
         rts
 
@@ -90,8 +75,8 @@ syn_pal
 
 NUMBUF
         dta b(1)
-        dta b(9)
-        dta b(9)
+        dta b(2)
+        dta b(3)
         dta b(4)
         dta b(5)
         dta b(6)

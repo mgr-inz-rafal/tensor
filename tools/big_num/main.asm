@@ -5,6 +5,9 @@ VCOUNT  equ	$D40B
 
         org $2000
 
+.zpvar  ptr0            .word
+.zpvar  ptr1            .word
+
 LOOP
         lda #$ff
         sta CH
@@ -17,8 +20,10 @@ LOOP
 
         bne LOOP
 
-        jsr INCREMENT
-        jmp LOOP
+        jsr SUM_RECORDS
+        jsr SHOW_BUF
+
+CHUJ    jmp CHUJ
 
 SHOW_BUF
         ldy #0
@@ -29,6 +34,40 @@ SHB_0   lda NUMBUF,y
         cpy #6
         bne SHB_0
         rts
+
+SUM_RECORDS
+        mwa #HIGH_SCORE_TABLE ptr0
+SUM_RECORDS_CONTINUE_WITH_NEXT_ROW
+        ldy #0
+        lda (ptr0),y
+        sta ptr1+1
+        iny
+        lda (ptr0),y
+        sta ptr1
+
+        ; ptr1 now contains the number of times we need to call INCREMENT
+SUM_RECORDS_LOOP
+        jsr INCREMENT
+        sed
+        sec
+        lda ptr1
+        sbc #<1
+        sta ptr1
+        lda ptr1+1
+        sbc #>1
+        sta ptr1+1
+        cld
+        #if .word ptr1 == #0
+                jmp SUM_RECORDS_NEXT_ROW
+        #end
+        jmp SUM_RECORDS_LOOP
+SUM_RECORDS_NEXT_ROW
+        adw ptr0 #(HIGH_SCORE_RECORD_END-HIGH_SCORE_RECORD_BEGIN)
+        nop        
+        #if .word ptr0 = #HIGH_SCORE_TABLE_END
+                rts
+        #end
+        jmp SUM_RECORDS_CONTINUE_WITH_NEXT_ROW
 
 INCREMENT
         ldy #5
@@ -56,27 +95,96 @@ INCREMENT_NUM_OVERFLOW
         rts
 
 synchro
-		lda PAL
-		cmp #1
-		beq syn_pal
+        lda PAL
+        cmp #1
+        beq syn_pal
 saas112
-		#if .byte VCOUNT >= #117
-			rts
-		#end
-		jmp saas112
-		rts
+        #if .byte VCOUNT >= #117
+                rts
+        #end
+        jmp saas112
+        rts
 syn_pal
-		#if .byte VCOUNT >= #150
-			rts
-		#end
-		jmp syn_pal
-		rts
-
+        #if .byte VCOUNT >= #150
+                rts
+        #end
+        jmp syn_pal
+        rts
 
 NUMBUF
-        dta b(1)
-        dta b(2)
-        dta b(3)
-        dta b(4)
-        dta b(5)
-        dta b(6)
+        dta b(0)
+        dta b(0)
+        dta b(0)
+        dta b(0)
+        dta b(0)
+        dta b(0)
+
+HIGH_SCORE_TABLE	; Can be moved under OS
+HIGH_SCORE_RECORD_BEGIN
+                   dta b($02),b($14),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+HIGH_SCORE_RECORD_END
+                   dta b($03),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($a9),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+HIGH_SCORE_TABLE_END
+        

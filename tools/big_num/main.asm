@@ -20,8 +20,8 @@ LOOP
 
         bne LOOP
 
-        ;jsr SUM_RECORDS
-        jsr SUM_RECORDS_ADD_9999
+        jsr SUM_RECORDS
+        ;jsr SUM_RECORDS_ADD_9999
         jsr SHOW_BUF
 
         jmp LOOP
@@ -39,10 +39,10 @@ SHB_0   lda NUMBUF,y
 SUM_RECORDS
         mwa #HIGH_SCORE_TABLE ptr0
 SUM_RECORDS_CONTINUE_WITH_NEXT_ROW
-        ldy #2
-        lda (ptr0),y
-        cmp #$ff
-        beq SUM_RECORDS_ADD_9999
+;        ldy #2
+;        lda (ptr0),y
+;        cmp #$ff
+;        beq SUM_RECORDS_ADD_9999
         ldy #0
         lda (ptr0),y
         sta ptr1+1
@@ -115,6 +115,7 @@ INCREMENT_NUM_OVERFLOW
         rts
 
 synchro
+        rts
         lda PAL
         cmp #1
         beq syn_pal
@@ -141,9 +142,9 @@ NUMBUF
 
 HIGH_SCORE_TABLE	; Can be moved under OS
 HIGH_SCORE_RECORD_BEGIN
-                   dta b($99),b($99),b($fa),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($00),b($01),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
 HIGH_SCORE_RECORD_END
-                   dta b($99),b($99),b($fa),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($00),b($02),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
                    dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
                    dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
                    dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')

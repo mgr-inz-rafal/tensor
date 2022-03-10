@@ -4173,6 +4173,8 @@ hmi_2	cmp #2
 hmi_3
 		pla
 		pla
+		pla
+		pla
 		rts
 
 show_options

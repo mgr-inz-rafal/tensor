@@ -1098,6 +1098,7 @@ pmg	.ds $0300
 ant	ANTIC_PROGRAM scr,ant
 
 main
+	jsr SUM_RECORDS
 		lda #$40
 		sta os_back_nmien
 
@@ -1170,8 +1171,6 @@ sqm7
 	bne awwq
 	jsr persistent_load
 	inc PERSISTENCY_LOADED
-
-	jsr SUM_RECORDS
 
 awwq
 	lda #6

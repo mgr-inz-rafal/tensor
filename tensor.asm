@@ -4211,7 +4211,12 @@ back_to_main_menu
 		sta menu_state
 		ldy #0
 		mwa main_menu_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
-		mwa #SCORE_LINE_BUFFER ANTIC_PROGRAM0.SCORE_LINE_BUFFER_ADDRESS
+		lda language
+		and #%00000001
+		beq siia_1
+		mwa #SCORE_LINE_BUFFER_EN ANTIC_PROGRAM0.SCORE_LINE_BUFFER_ADDRESS
+		jmp skp
+siia_1	mwa #SCORE_LINE_BUFFER ANTIC_PROGRAM0.SCORE_LINE_BUFFER_ADDRESS
 		jmp skp
 
 STOP_MUSIC
@@ -5397,6 +5402,7 @@ ASV_GOT_BASE
 ASV_LOOP2        
         lda (ptr0),y
         sta NUMBUF,y
+		sta NUMBUF_EN,y
         iny
         cpy #6
         bne ASV_LOOP2
@@ -5445,6 +5451,7 @@ ASV_LOOP4
 				lda NUMBUF,y
 				add #16
 				sta NUMBUF,y
+				sta NUMBUF_EN,y
 				iny
 				cpy #6
 				bne ASV_LOOP4
@@ -5467,6 +5474,7 @@ INCREMENT_NUM
         lda NUMBUF,y
         add #1
         sta NUMBUF,y
+		sta NUMBUF_EN,y
         cmp #26-16
         beq INCREMENT_NUM_OVERFLOW
         ldx #0
@@ -5474,6 +5482,7 @@ INCREMENT_NUM
 INCREMENT_NUM_OVERFLOW
         lda #0
         sta NUMBUF,y
+		sta NUMBUF_EN,y
         ldx #1
         rts
 
@@ -5537,7 +5546,7 @@ MUL9999_LUT_ROW_END
 MUL9999_LUT_END
 
 SCORE_LINE_BUFFER
-		dta b(124),d'   Globalny rekord punktow: '
+		dta b(124),d'   Globalny rekord punkt',b(80),d'w: '
 NUMBUF
         dta b(0)
         dta b(0)
@@ -5546,6 +5555,17 @@ NUMBUF
         dta b(0)
         dta b(0)
 		dta d'    ',b(124)
+
+SCORE_LINE_BUFFER_EN
+		dta b(124),d'       Global highscore: '
+NUMBUF_EN
+        dta b(0)
+        dta b(0)
+        dta b(0)
+        dta b(0)
+        dta b(0)
+        dta b(0)
+		dta d'       ',b(124)
 
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"

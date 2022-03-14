@@ -348,6 +348,8 @@ MENU_0_DATA
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
+; Next line could potentially be removed, but it'll break the memory alignment.
+; Consider removing if happen to change the memory layout anyway.
 	dta b(124),d'              Wyj',b(87),d'cie                 ',b(124)
 
 AMYGDALA_DATA_7	; Robak
@@ -440,7 +442,6 @@ MENU_0_DATA_EN
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
-	dta b(124),d'              Quit                    ',b(124)
 
 MENU_1_DATA
 	dta b(124),d'     Przyspieszenie  grawitacyjne     ',b(124)

@@ -904,6 +904,7 @@ apply_loaded_state
 			and #%00000001
 			beq als_1
 			jsr enable_english
+			mwa #SCORE_LINE_BUFFER_EN ANTIC_PROGRAM0.SCORE_LINE_BUFFER_ADDRESS
 			mwa main_menu_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
 als_1
 			lda instafall

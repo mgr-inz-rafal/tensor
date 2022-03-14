@@ -509,6 +509,7 @@ INSTRUCTION_DATA
 	dta b(124),d'miesza',b(86),d' przestrzeni',b(81),d' i powodowa',b(86),d' opad ',b(124)
 	dta b(124),d'rzeczy. Pom',b(80),b(88),d' mu wypr',b(80),b(88),d'ni',b(86),d' wszystkie  ',b(124)
 	dta b(124),d'pieczary, a uwolnisz ',b(87),d'wiat od Z',b(123),d'ego   ',b(124)
+INSTRUCTION_LAST_LINE
 	dta b(124),d'Pana i dostaniesz w nagrod',b(68),d' kilo sera.',b(124)
 
 LUDEK_DATA
@@ -1797,6 +1798,7 @@ TEXT_PANEL_ADDRESS
 	dta b($02)
 	dta b($02)
 	dta b($42)
+SCORE_LINE_BUFFER_ADDRESS
 	dta a(SCORE_LINE_BUFFER)
 	dta b($42)
 	dta a(TITLE_BOTTOM_BORDER)
@@ -4196,8 +4198,10 @@ show_instruction
 		and #%00000001
 		beq sii_1
 		mwa #INSTRUCTION_DATA_EN ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		mwa #INSTRUCTION_LAST_LINE_EN ANTIC_PROGRAM0.SCORE_LINE_BUFFER_ADDRESS
 		jmp sii_0
 sii_1	mwa #INSTRUCTION_DATA ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		mwa #INSTRUCTION_LAST_LINE ANTIC_PROGRAM0.SCORE_LINE_BUFFER_ADDRESS
 sii_0	jmp skp
 
 back_to_main_menu
@@ -4207,6 +4211,7 @@ back_to_main_menu
 		sta menu_state
 		ldy #0
 		mwa main_menu_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		mwa #SCORE_LINE_BUFFER ANTIC_PROGRAM0.SCORE_LINE_BUFFER_ADDRESS
 		jmp skp
 
 STOP_MUSIC
@@ -5358,6 +5363,7 @@ INSTRUCTION_DATA_EN
 	dta b(124),d'space continuum and make the things   ',b(124)
 	dta b(124),d'fall down. Please help him aggregate  ',b(124)
 	dta b(124),d'all the mystical almonds, to save the ',b(124)
+INSTRUCTION_LAST_LINE_EN
 	dta b(124),d'world from Evil, and get some cheese. ',b(124)
 
 FIND_START_VALUE

@@ -4083,7 +4083,6 @@ menu_cursor_down_common
 		lda #MENU_CURSOR_DELAY
 		sta delayer
 		ldy #0
-		lda #3
 		rts
 mcc_0	pla
 		pla
@@ -4092,6 +4091,7 @@ mcc_0	pla
 menu_cursor_down
 		#if .byte menu_state = #MS_MAIN
 			jsr menu_cursor_down_common
+			lda #2
 			#if .byte @ > menu_cursor_index
 				jsr invert_menu_cursor
 				inc menu_cursor_index
@@ -4100,6 +4100,7 @@ menu_cursor_down
 		#end
 		#if .byte menu_state = #MS_OPTIONS
 			jsr menu_cursor_down_common
+			lda #3
 			#if .byte @ > options_cursor_index
 				jsr invert_options_menu_cursor
 				inc options_cursor_index

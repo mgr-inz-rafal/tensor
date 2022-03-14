@@ -462,6 +462,7 @@ LANGUAGE_LABEL
 	dta d'               ',b(124)
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
+BACK_LABEL
 	dta b(124),d'                Powr',b(80),d't                ',b(124)
 
 MENU_1_DATA_EN
@@ -484,6 +485,7 @@ LANGUAGE_LABEL_1
 	dta d'          ',b(124)
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
+BACK_LABEL_EN	
 	dta b(124),d'                 Back                 ',b(124)
 
 ZENEK_START
@@ -4189,6 +4191,12 @@ show_options
 		sta menu_state
 		ldy #0
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		lda language
+		and #%00000001
+		beq siq_1
+		mwa #BACK_LABEL_EN ANTIC_PROGRAM0.SCORE_LINE_BUFFER_ADDRESS
+		jmp skp
+siq_1	mwa #BACK_LABEL ANTIC_PROGRAM0.SCORE_LINE_BUFFER_ADDRESS
 		jmp skp
 
 show_instruction
@@ -4392,6 +4400,7 @@ enable_english
 		mwa #MENU_1_DATA_EN options_screen_ptr
 		ldy #0
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		mwa #BACK_LABEL_EN ANTIC_PROGRAM0.SCORE_LINE_BUFFER_ADDRESS
 		rts
 
 enable_polish
@@ -4400,6 +4409,7 @@ enable_polish
 		mwa #MENU_1_DATA options_screen_ptr
 		ldy #0
 		mwa options_screen_ptr,y ANTIC_PROGRAM0.TEXT_PANEL_ADDRESS
+		mwa #BACK_LABEL ANTIC_PROGRAM0.SCORE_LINE_BUFFER_ADDRESS
 		rts
 
 load_intermission_fonts

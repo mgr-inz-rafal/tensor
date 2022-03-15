@@ -174,9 +174,9 @@ COMPRESSED_MAP:1 equ *-$2000 + MAP_STORAGE
 ENGLISH_LEVEL_NAMES equ *-$2000 + MAP_STORAGE		
 		ins "data\level_names_en.obx.kloc"
 ENGLISH_LEVEL_NAMES_END equ *-$2000 + MAP_STORAGE		
-DECORATION_DATA equ *-$2000 + MAP_STORAGE		
-		ins "data\decoration.pmg.kloc"
-DECORATION_DATA_END equ *-$2000 + MAP_STORAGE		
+POLISH_LEVEL_NAMES equ *-$2000 + MAP_STORAGE		
+		ins "data\level_names.obx.kloc"
+POLISH_LEVEL_NAMES_END equ *-$2000 + MAP_STORAGE		
 MAPS_END equ *
 MAPS_END_IN_STORAGE equ MAPS_END + MAP_STORAGE - $2000
 
@@ -241,9 +241,9 @@ DIGITS_FONT_END equ *-$2000 + FONTS_STORAGE
 GAME_FONT_2 equ *-$2000 + FONTS_STORAGE		
 		ins "fonts\fontek2.fnt.kloc"
 GAME_FONT_2_END equ *-$2000 + FONTS_STORAGE		
-POLISH_LEVEL_NAMES equ *-$2000 + FONTS_STORAGE		
-		ins "data\level_names.obx.kloc"
-POLISH_LEVEL_NAMES_END equ *-$2000 + FONTS_STORAGE		
+DECORATION_DATA equ *-$2000 + FONTS_STORAGE		
+		ins "data\decoration.pmg.kloc"
+DECORATION_DATA_END equ *-$2000 + FONTS_STORAGE		
 FONTS_END equ *
 
 

@@ -160,20 +160,20 @@ MAP_02_NAME
 		dta d' rotary assault '*
 		dta d'     ALTAR      '*
 		dta d'53'
+		dta d' venom spitting '*
+		dta d'BAPTIZATION  BOX'*
+		dta d'54'
+		dta d' hallucinations '*
+		dta d' OF DRUG ADDICT '*
+		dta d'55'
+		dta d' mushroom farm  '*
+		dta d' OF THE BISHOP  '*
+		dta d'56'
+		dta d'  cementery of  '*
+		dta d'    THE DEAD    '*
+		dta d'57'
 		dta b(24+64*3), d'th  incarnation'*
 		dta d'  OF AMENHOTEP  '*
-		dta d'54'
-		dta d' venom spitting '*
-		dta d'BAPTIZATION  BOX'*
-		dta d'55'
-		dta d' venom spitting '*
-		dta d'BAPTIZATION  BOX'*
-		dta d'56'
-		dta d' venom spitting '*
-		dta d'BAPTIZATION  BOX'*
-		dta d'57'
-		dta d' venom spitting '*
-		dta d'BAPTIZATION  BOX'*
 		dta d'58'
 MAP_NAME_LAST
 		dta b($9b)

@@ -160,20 +160,20 @@ MAP_02_NAME
 		dta d'obrotowy o'*,b(11+64*3),d'tarz '*
 		dta d'     BOJOWY     '*
 		dta d'53'
+		dta d'   halucynacja  '*
+		dta d'  PANA LEKOMANA '*
+		dta d'54'
+		dta d'miejsce  hodowli'*
+		dta d'SZTUCZNEGO '*,b(2+64*2),d'LUZU'*
+		dta d'55'
+		dta d' pieczarkarnia  '*
+		dta d'PANA PROBOSZCZA '*
+		dta d'56'
+		dta d' cmentarzysko   '*
+		dta d'   UMAR'*,b(11+64*2),d'YCH     '*
+		dta d'57'
 		dta d' ',b(5+64*3),d'sme wcielenie '*
 		dta d'   AMENHOTEPA   '*
-		dta d'54'
-		dta d' podziemny targ '*
-		dta d'Z RYBAMI I SEREM'*
-		dta d'55'
-		dta d' podziemny targ '*
-		dta d'Z RYBAMI I SEREM'*
-		dta d'56'
-		dta d' podziemny targ '*
-		dta d'Z RYBAMI I SEREM'*
-		dta d'57'
-		dta d' podziemny targ '*
-		dta d'Z RYBAMI I SEREM'*
 		dta d'58'
 MAP_NAME_LAST
 		dta b($9b)

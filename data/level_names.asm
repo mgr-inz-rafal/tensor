@@ -163,5 +163,17 @@ MAP_02_NAME
 		dta d' ',b(5+64*3),d'sme wcielenie '*
 		dta d'   AMENHOTEPA   '*
 		dta d'54'
+		dta d' podziemny targ '*
+		dta d'Z RYBAMI I SEREM'*
+		dta d'55'
+		dta d' podziemny targ '*
+		dta d'Z RYBAMI I SEREM'*
+		dta d'56'
+		dta d' podziemny targ '*
+		dta d'Z RYBAMI I SEREM'*
+		dta d'57'
+		dta d' podziemny targ '*
+		dta d'Z RYBAMI I SEREM'*
+		dta d'58'
 MAP_NAME_LAST
 		dta b($9b)

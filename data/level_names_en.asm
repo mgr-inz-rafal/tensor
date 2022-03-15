@@ -163,5 +163,17 @@ MAP_02_NAME
 		dta b(24+64*3), d'th  incarnation'*
 		dta d'  OF AMENHOTEP  '*
 		dta d'54'
+		dta d' venom spitting '*
+		dta d'BAPTIZATION  BOX'*
+		dta d'55'
+		dta d' venom spitting '*
+		dta d'BAPTIZATION  BOX'*
+		dta d'56'
+		dta d' venom spitting '*
+		dta d'BAPTIZATION  BOX'*
+		dta d'57'
+		dta d' venom spitting '*
+		dta d'BAPTIZATION  BOX'*
+		dta d'58'
 MAP_NAME_LAST
 		dta b($9b)

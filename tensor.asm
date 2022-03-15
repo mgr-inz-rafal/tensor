@@ -34,7 +34,7 @@ PMGDECOOFFSET 	equ 12
 DIGITOFFSET		equ 6
 SHADOWOFFSET 	equ 60
 TITLEOFFSET 	equ 60+20
-MAPCOUNT 		equ 54
+MAPCOUNT 		equ 58
 MUSICPLAYER		equ $a300
 MAPSIZE			equ	12
 SCWIDTH 		equ 20
@@ -83,7 +83,7 @@ SCORE_SPRITE_START equ 113-4
 SCORE_DLI_LINE equ $6b
 REDUCER_START_POS equ $ff/2-4-19
 REDUCER_END_POS equ $10
-MAP_NAMES_BUFFER_SIZE equ (16*2+2)*54+16*2
+MAP_NAMES_BUFFER_SIZE equ (16*2+2)*MAPCOUNT+16*2
 
 .zpvar	.byte	stop_intermission
 .zpvar	.byte	antic_tmp
@@ -498,7 +498,7 @@ MAP_NAME_LAST equ AFTER_MAPS-16*2
 ZENEK_TOTAL equ ZENEK_END - ZENEK_START
 		org *+MAP_NAMES_BUFFER_SIZE
 AFTER_MAPS
-		dta d'55'
+		dta d'59'
 		dta b($9b)
 
 INSTRUCTION_DATA
@@ -765,11 +765,11 @@ HIGH_SCORE_RECORD_END
                    dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
                    dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
                    dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
+                   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
 HIGH_SCORE_TABLE_TRUE_END
-                   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
-                   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
-                   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
-                   dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
                    dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
                    dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
                    dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
@@ -5556,6 +5556,10 @@ MUL9999_LUT_ROW_END
         dta b(5),b(1),b(9),b(9),b(4),b(8)  ; *52
         dta b(5),b(2),b(9),b(9),b(4),b(7)  ; *53
         dta b(5),b(3),b(9),b(9),b(4),b(6)  ; *54
+        dta b(5),b(4),b(9),b(9),b(4),b(5)  ; *55
+        dta b(5),b(5),b(9),b(9),b(4),b(4)  ; *56
+        dta b(5),b(6),b(9),b(9),b(4),b(3)  ; *57
+        dta b(5),b(7),b(9),b(9),b(4),b(2)  ; *58
 MUL9999_LUT_END
 
 SCORE_LINE_BUFFER

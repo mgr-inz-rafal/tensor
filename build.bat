@@ -43,6 +43,21 @@ tools\zx5.exe -f data\level_names_en.obx data\level_names_en.obx.kloc 2>&1 >NUL
 echo DONE
 echo=
 
+echo Building Datamatrix
+tools\mads.exe datamatrix.asx -o:datamatrix.xex -l:datamatrix.lst -t:datamatrix.lab
+echo Done
+echo=
+
+echo Stripping datamatrix binary
+tools\strip_header.exe datamatrix.xex
+echo DONE
+echo=
+
+echo Compressing Datamatrix...
+tools\zx5.exe -f datamatrix.xex datamatrix.kloc 2>&1 >NUL
+echo DONE
+echo=
+
 echo Building Tensor...
 tools\mads.exe tensor.asm -o:tensor.xex -l:tensor.lst -t:tensor.lab
 echo Done

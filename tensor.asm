@@ -18,6 +18,10 @@ STACK_HERE_P2 equ $104
 STACK_SKIP_MUSIC_CONDUCT equ $105
 workpages equ $106
 
+DataMatrix_data equ $4525	; Must be the same as MAP_01_NAME in both `tensor.asm` and `datamatrix.asx`
+DataMatrix_code equ DataMatrix_data+832
+DataMatrix_EOF	equ	255
+
 RECORD_ENTER_CURSOR_CHAR equ 31
 EXCLAMATION_MARK_CHAR equ 28
 FONT_SLOT_1 equ $1800
@@ -244,6 +248,9 @@ GAME_FONT_2_END equ *-$2000 + FONTS_STORAGE
 DECORATION_DATA equ *-$2000 + FONTS_STORAGE		
 		ins "data\decoration.pmg.kloc"
 DECORATION_DATA_END equ *-$2000 + FONTS_STORAGE		
+COMPRESSED_DATAMATRIX_DATA equ *-$2000 + FONTS_STORAGE		
+		ins "datamatrix.kloc"
+COMPRESSED_DATAMATRIX_DATA_END equ *-$2000 + FONTS_STORAGE		
 FONTS_END equ *
 
 
@@ -1713,6 +1720,16 @@ raster_program_end
 // -----------------------------------------------------------
 //	EXIT
 // -----------------------------------------------------------
+
+	#if .byte CONSOL = #5
+		jsr show_datamatrix
+		ldy #3
+akutas2	jsr sleep_for_some_time
+		dey
+		cpy #0
+		bne akutas2
+		jmp skp
+	#end
 
 	lda trig0		; FIRE #0
 	jeq handle_menu_item
@@ -4740,6 +4757,15 @@ DL_BOT_SCROL2
 			dta b(%10111)
 			dta b($41),a(DLLEVELSELECTOR)
 
+DLQRCODE
+			dta b($70)
+			dta b($70)
+			dta b($70)
+			dta b($42)
+			dta a(pmg_p0)
+:23			dta b($02)
+			dta b($41),a(DLQRCODE)
+
 
 COLOR_TABLE_START
 COLOR_1_INSTRUCTION_TEXT
@@ -5416,6 +5442,8 @@ ASV_LOOP2
         lda (ptr0),y
         sta NUMBUF,y
 		sta NUMBUF_EN,y
+		add #$20
+		sta NUMBUF_FOR_DATAMATRIX,y
         iny
         cpy #6
         bne ASV_LOOP2
@@ -5465,6 +5493,8 @@ ASV_LOOP4
 				add #16
 				sta NUMBUF,y
 				sta NUMBUF_EN,y
+				add #$20
+				sta NUMBUF_FOR_DATAMATRIX,y
 				iny
 				cpy #6
 				bne ASV_LOOP4
@@ -5488,6 +5518,9 @@ INCREMENT_NUM
         add #1
         sta NUMBUF,y
 		sta NUMBUF_EN,y
+		add #$20
+		sta NUMBUF_FOR_DATAMATRIX,y
+		sub #$20
         cmp #26-16
         beq INCREMENT_NUM_OVERFLOW
         ldx #0
@@ -5496,6 +5529,8 @@ INCREMENT_NUM_OVERFLOW
         lda #0
         sta NUMBUF,y
 		sta NUMBUF_EN,y
+		add #$20
+		sta NUMBUF_FOR_DATAMATRIX,y
         ldx #1
         rts
 
@@ -5576,13 +5611,25 @@ NUMBUF
 SCORE_LINE_BUFFER_EN
 		dta b(124),d'       Global highscore: '
 NUMBUF_EN
-        dta b(0)
-        dta b(0)
-        dta b(0)
-        dta b(0)
-        dta b(0)
-        dta b(0)
+        dta b(9)
+        dta b(8)
+        dta b(7)
+        dta b(6)
+        dta b(5)
+        dta b(4)
 		dta d'       ',b(124)
+
+DATAMATRIX_STRING
+		dta c'http://atari.pl/hsc/?x=000'
+NUMBUF_FOR_DATAMATRIX
+        dta b(0)
+        dta b(0)
+        dta b(0)
+        dta b(0)
+        dta b(0)
+        dta b(0)
+		dta DataMatrix_EOF
+DATAMATRIX_STRING_END		
 
 		org MUSICPLAYER
 		icl "music\rmtplayr.a65"
@@ -6063,6 +6110,79 @@ ZX5_INPUT         equ    *-2
 	org any_moved+1
 	dta b(0)
 
+	org $55e9 ; To fit before align from ift USESPRITES
+show_datamatrix
+		jsr stop_music
+		mwa #pmg_p0 ptr0
+		ldy #0
+sdm_5	lda #0
+		sta (ptr0),y
+		inw ptr0
+		#if .word ptr0 = #pmg_p0+24*40
+			jmp sdm_6
+		#end
+		jmp sdm_5
+
+sdm_6
+		lda #0
+		sta HPOSP0
+		sta HPOSP1
+		sta HPOSP2
+		sta HPOSP3
+		sta HPOSM0
+		sta HPOSM1
+		sta HPOSM2
+		sta HPOSM3
+		sta CLR1
+		lda #$0f
+		sta CLR2
+		sta CLR4
+
+		ldx <DLQRCODE
+		ldy >DLQRCODE
+		stx SDLSTL
+		sty SDLSTL+1
+
+		mwa #COMPRESSED_DATAMATRIX_DATA ZX5_INPUT
+		mwa #DataMatrix_code ZX5_OUTPUT
+		jsr decompress_data
+
+		ldy #DATAMATRIX_STRING_END-DATAMATRIX_STRING-1
+sdm_0	lda DATAMATRIX_STRING,y
+		sta DataMatrix_data,y
+		dey
+		cpy #$ff
+		bne sdm_0
+
+		jsr DataMatrix_code
+
+		ldy #0
+		ldx #0
+		mwa #DataMatrix_data+$100 ptr0
+		mwa #pmg_p0+(40-24)/2 ptr1
+sdm_1	lda (ptr0),y
+		#if .byte @ = #0
+			lda #0
+		#else
+			lda #0+128
+		#end
+		sta (ptr1),y
+		inw ptr1
+		inw ptr0
+		inx
+		cpx #24
+		beq sdm_2
+sdm_3
+		#if .word ptr0 = #DataMatrix_data+$100+24*24
+sdm_B		lda trig0
+			bne sdm_B
+			rts
+		#end
+		jmp sdm_1
+sdm_2
+		adw ptr1 #40-24
+		ldx #0
+		jmp sdm_3
 	
 ; Notes
 ;

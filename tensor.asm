@@ -1183,6 +1183,7 @@ sqm7
 	bne awwq
 	jsr persistent_load
 	inc PERSISTENCY_LOADED
+	jsr SUM_RECORDS
 
 awwq
 	lda #6
@@ -6142,8 +6143,10 @@ sdm_5	lda #0
 		jmp sdm_5
 
 sdm_6
+	lda #$22	; Default SDMCTL value
+	sta SDMCTL
 		ldx #$0f
-		ldy #$00
+		ldy #$0
 		sty HPOSP0
 		sty HPOSP1
 		sty HPOSP2
@@ -6153,11 +6156,16 @@ sdm_6
 		sty HPOSM2
 		sty HPOSM3
 		stx CLR0
-		stx CLR1
 		stx CLR2
 		stx CLR3
 		stx CLR4
+		stx $D016
+		stx $D018
+		stx $D019
+		stx $D01a
+
 		sty CLR1
+		sty $D017
 
 		ldx <DLQRCODE
 		ldy >DLQRCODE

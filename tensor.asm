@@ -6179,6 +6179,8 @@ sdm_B		lda trig0
 			ldx #<MODUL
 			ldy #>MODUL
 			jsr INIT_MUSIC
+			lda #%10000000
+			sta NMIEN
 			lda COLOR_1_INSTRUCTION_TEXT
 			sta color2
 			lda #0

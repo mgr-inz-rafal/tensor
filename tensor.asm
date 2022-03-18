@@ -6138,19 +6138,22 @@ sdm_5	lda #0
 		jmp sdm_5
 
 sdm_6
-		lda #0
-		sta HPOSP0
-		sta HPOSP1
-		sta HPOSP2
-		sta HPOSP3
-		sta HPOSM0
-		sta HPOSM1
-		sta HPOSM2
-		sta HPOSM3
-		sta CLR1
-		lda #$0f
-		sta CLR2
-		sta CLR4
+		ldx #$0f
+		ldy #$00
+		sty HPOSP0
+		sty HPOSP1
+		sty HPOSP2
+		sty HPOSP3
+		sty HPOSM0
+		sty HPOSM1
+		sty HPOSM2
+		sty HPOSM3
+		stx CLR0
+		stx CLR1
+		stx CLR2
+		stx CLR3
+		stx CLR4
+		sty CLR1
 
 		ldx <DLQRCODE
 		ldy >DLQRCODE

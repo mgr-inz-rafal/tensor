@@ -4756,7 +4756,7 @@ DL_TOP_SCROL2
 DL_BOT_SCROL2			
 			dta b(%10111)		; Important: do not disable the Hscroll :)
 			dta b($70)
-			dta b($70)
+			dta b(%11110000)
 			dta b($02)
 			dta b($41),a(DLNEW_RECORD)
 
@@ -5805,10 +5805,20 @@ dli_routine_new_record
 		sty COLOR1
 		jmp dli_end
 		
-@		lda >FONT_SLOT_2
+@		cmp #$4c
+		bne @+
+		lda VCOUNT
+		lda >FONT_SLOT_2
 		ldy RECORD_PSEUDONIM_COLOR_4
 		sty COLOR0
 		sta CHBASE
+		jmp dli_end
+
+@		ldx #0
+		ldy #$02
+		sta WSYNC
+		stx COLOR2
+		sty COLOR1		
 		
 		jmp dli_end
 
@@ -6198,7 +6208,7 @@ sdm_2
 		jmp sdm_3
 
 draw_skip_with_fire
-		lda #17
+		lda #0
 		sta SCRMEM+TITLEOFFSET+2+40+6
 		sta SCRMEM+TITLEOFFSET+2+40+6+39
 		ldy #0

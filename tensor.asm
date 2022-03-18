@@ -5603,7 +5603,10 @@ MUL9999_LUT_ROW_END
 MUL9999_LUT_END
 
 SCORE_LINE_BUFFER
-		dta b(124),d'   Globalny rekord punkt',b(80),d'w: '
+		dta b(124),d'Rekord ',b(32),d'wdu',b(87),d' '
+		dta d'SELECT'*
+		dta d' po kod QR): '
+
 NUMBUF
         dta b(0)
         dta b(0)
@@ -5611,10 +5614,11 @@ NUMBUF
         dta b(0)
         dta b(0)
         dta b(0)
-		dta d'    ',b(124)
+		dta b(124)
 
 SCORE_LINE_BUFFER_EN
-		dta b(124),d'       Global highscore: '
+		dta b(124),d'Highscore ',b(32),d'SELECT'*
+		dta d' for QR code): '
 NUMBUF_EN
         dta b(9)
         dta b(8)
@@ -5622,7 +5626,7 @@ NUMBUF_EN
         dta b(6)
         dta b(5)
         dta b(4)
-		dta d'       ',b(124)
+		dta b(124)
 
 DATAMATRIX_STRING
 		dta c'http://atari.pl/hsc/?x=115'

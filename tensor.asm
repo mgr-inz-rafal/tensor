@@ -5802,7 +5802,6 @@ dli_routine_new_record
 @		cmp #$3C	; Digits - shadow
 		bne @+
 		ldy #$04
-		sta WSYNC
 		sty COLOR1
 		jmp dli_end
 		

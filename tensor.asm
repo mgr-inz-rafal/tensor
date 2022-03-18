@@ -6176,6 +6176,9 @@ sdm_3
 		#if .word ptr0 = #DataMatrix_data+$100+24*24
 sdm_B		lda trig0
 			bne sdm_B
+			ldx #<MODUL
+			ldy #>MODUL
+			jsr INIT_MUSIC
 			rts
 		#end
 		jmp sdm_1

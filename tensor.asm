@@ -5620,7 +5620,7 @@ NUMBUF_EN
 		dta d'       ',b(124)
 
 DATAMATRIX_STRING
-		dta c'http://atari.pl/hsc/?x=000'
+		dta c'http://atari.pl/hsc/?x=115'
 NUMBUF_FOR_DATAMATRIX
         dta b(0)
         dta b(0)

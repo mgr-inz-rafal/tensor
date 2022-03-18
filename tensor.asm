@@ -4751,11 +4751,14 @@ DLNEW_RECORD
 :2			dta b($70)
 			dta b(%11110000)	; DLI - level name		[VCOUNT=$4C]
 DL_TOP_SCROL2
-			dta b(%10110)
+			dta b(%10110)		; Important: do not disable the Hscroll :)
 			dta b($40)
 DL_BOT_SCROL2			
-			dta b(%10111)
-			dta b($41),a(DLLEVELSELECTOR)
+			dta b(%10111)		; Important: do not disable the Hscroll :)
+			dta b($70)
+			dta b($70)
+			dta b($02)
+			dta b($41),a(DLNEW_RECORD)
 
 DLQRCODE
 			dta b($70)
@@ -5199,7 +5202,6 @@ show_new_record_screen
 		eor #%00010000
 		sta CURMAP_LOCATION_EMULATION_LOCATION+1
 
-
 		lda curmapname
 		pha
 		lda curmapname+1
@@ -5240,6 +5242,7 @@ show_new_record_screen
 
 		jsr draw_new_record_header
 		jsr draw_enter_pseudonim
+		jsr draw_skip_with_fire
 
 		ldx #<MODUL
 		ldy #>MODUL
@@ -5272,10 +5275,12 @@ snrs_1	#if .byte last_true_player_pos > #$ff/2
 		ldy mvstate
 		sta (ZX5_OUTPUT),y
 
+		lda trig0
+		beq raszpla
+
 		; Return	- $0c
 		; Backspace - $34
 		; Space     - $21
-
 		lda CH
 		cmp #$ff
 		beq snrs_0
@@ -5295,7 +5300,7 @@ snrs_1	#if .byte last_true_player_pos > #$ff/2
 		jsr disable_antic
 		jsr store_new_high_score_entry
 		jsr enable_antic
-		rts
+raszpla	rts
 
 snrs_9	#if .byte @ = #$34
 			lda mvstate
@@ -6192,6 +6197,40 @@ sdm_2
 		adw ptr1 #40-24
 		ldx #0
 		jmp sdm_3
+
+draw_skip_with_fire
+		lda #17
+		sta SCRMEM+TITLEOFFSET+2+40+6
+		sta SCRMEM+TITLEOFFSET+2+40+6+39
+		ldy #0
+		lda language
+		and #%00000001
+		bne dswf_1
+dswf_0	lda TEXT_FIRE_TO_SKIP,y
+		sta SCRMEM+TITLEOFFSET+2+40+7,y
+		iny
+		cpy #TEXT_FIRE_TO_SKIP_EN-TEXT_FIRE_TO_SKIP
+		bne dswf_0
+		rts
+dswf_1	lda TEXT_FIRE_TO_SKIP_EN,y
+		sta SCRMEM+TITLEOFFSET+2+40+7,y
+		iny
+		cpy #TEXT_FIRE_TO_SKIP_EN-TEXT_FIRE_TO_SKIP
+		bne dswf_1
+		rts		
+
+; This is fuck*.*in' sqeezed just after `reset_kutka_data`
+; with a single byte to spare at $7FB2
+		org $7FB2+1
+TEXT_FIRE_TO_SKIP
+		dta d'    Wdus '
+		dta d'FIRE'*
+		dta d' aby pominac podawanie   '
+TEXT_FIRE_TO_SKIP_EN		
+		dta d'          Press '
+		dta d'FIRE'*
+		dta d' to skip          '
+TEKSTY_END
 	
 ; Notes
 ;

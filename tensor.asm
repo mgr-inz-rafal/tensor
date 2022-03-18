@@ -6232,9 +6232,9 @@ dswf_1	lda TEXT_FIRE_TO_SKIP_EN,y
 ; with a single byte to spare at $7FB2
 		org $7FB2+1
 TEXT_FIRE_TO_SKIP
-		dta d'    Wdus '
+		dta d'    Wdu',b(87),d' '
 		dta d'FIRE'*
-		dta d' aby pominac podawanie   '
+		dta d' aby pomin',b(81),b(86),d' podawanie   '
 TEXT_FIRE_TO_SKIP_EN		
 		dta d'          Press '
 		dta d'FIRE'*

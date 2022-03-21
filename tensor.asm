@@ -512,7 +512,7 @@ INSTRUCTION_DATA
 	dta b(124),d' Docent Ireneusz Trzaskowski poszukuje',b(124)
 	dta b(124),d'na Jowiszu mistycznych migda',b(123),b(80),d'w. Nie  ',b(124)
 	dta b(124),d'umie skaka',b(86),d', bo zakazi',b(123),d' si',b(68),d' osteopo-  ',b(124)
-	dta b(124),d'roz',b(81),d'. Nie mo',b(88),d'e te',b(88),d' strzela',b(86),d' bo sko',b(77),d'-  ',b(124)
+	dta b(124),d'roz',b(81),d'. Nie mo',b(88),d'e te',b(88),d' strzela',b(86),d', bo sko',b(77),d'- ',b(124)
 	dta b(124),d'czy',b(123),d'y mu si',b(68),d' naboje. Natomiast to co  ',b(124)
 	dta b(124),d'mo',b(88),d'e i co z dzik',b(81),d' furi',b(81),d' robi, to u',b(88),d'ywa',b(124)
 	dta b(124),b(95),d'Tensora Miotu Grawitacyjnego',b(95),d' aby    ',b(124)

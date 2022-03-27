@@ -355,9 +355,12 @@ MENU_0_DATA
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
 	dta b(124),d'                                      ',b(124)
-; Next line could potentially be removed, but it'll break the memory alignment.
-; Consider removing if happen to change the memory layout anyway.
-	dta b(124),d'              Wyj',b(87),d'cie                 ',b(124)
+LATEST_HIGH_SCORE_ENTRY_BUFFER
+	dta b($40),b($40),b($40),b($40),b($40),b($40),b($40),b($40),b($40),b($40),b($40),b($40)
+LATEST_HIGH_SCORE_CURSOR_POSITION
+	dta b(0)
+; These are still free bytes to be taken
+	dta d'  Wyj',b(87),d'cie                 ',b(124)
 
 AMYGDALA_DATA_7	; Robak
 	dta b(0),b(146),b(130),b(84),b(16),b(88),b(16),b(56),b($34),b($44)
@@ -4486,6 +4489,7 @@ sz_0
 sz_2	lda (ZX5_OUTPUT),y
 		eor #%01000000
 		sta (ptr0),y
+		sta LATEST_HIGH_SCORE_ENTRY_BUFFER-2,y
 		iny
 		cpy #12
 		bne sz_2
@@ -5181,6 +5185,8 @@ show_new_record_screen
 
 		jsr clear_intermission_screen
 
+		jsr restore_last_entered_record_nick
+
 		lda current_score
 		pha
 		jsr draw_points_internal_1
@@ -5257,6 +5263,7 @@ show_new_record_screen
 		mwa #SCRMEM+TITLEOFFSET+31 ZX5_OUTPUT
 		lda #0
 		sta ppx
+		lda LATEST_HIGH_SCORE_CURSOR_POSITION
 		sta mvstate
 		lda #$ff
 		sta CH
@@ -5298,6 +5305,7 @@ snrs_1	#if .byte last_true_player_pos > #$ff/2
 		cpy #0		; But we don't allow empty name
 		beq snrs_9
 
+		sty LATEST_HIGH_SCORE_CURSOR_POSITION
 		jsr disable_antic
 		jsr store_new_high_score_entry
 		jsr enable_antic
@@ -6242,6 +6250,16 @@ dswf_1	lda TEXT_FIRE_TO_SKIP_EN,y
 		cpy #TEXT_FIRE_TO_SKIP_EN-TEXT_FIRE_TO_SKIP
 		bne dswf_1
 		rts		
+
+restore_last_entered_record_nick
+		ldy #0
+rlern_0	lda LATEST_HIGH_SCORE_ENTRY_BUFFER,y
+		add #64+128
+		sta SCRMEM+TITLEOFFSET+31,y
+		iny
+		cpy #12
+		bne rlern_0
+		rts
 
 ; This is fuck*.*in' sqeezed just after `reset_kutka_data`
 ; with a single byte to spare at $7FB2

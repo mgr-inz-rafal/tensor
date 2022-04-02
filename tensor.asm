@@ -5266,6 +5266,7 @@ show_new_record_screen
 		sta mvstate
 		lda #$ff
 		sta CH
+
 snrs_0	inc ppx
 		lda ppx
 		and #%01000000
@@ -5282,8 +5283,7 @@ snrs_1	#if .byte last_true_player_pos > #$ff/2
 		ldy mvstate
 		sta (ZX5_OUTPUT),y
 
-		lda trig0
-		beq raszpla
+		jsr hold_fire_to_skip
 
 		; Return	- $0c
 		; Backspace - $34
@@ -5308,7 +5308,7 @@ snrs_1	#if .byte last_true_player_pos > #$ff/2
 		jsr disable_antic
 		jsr store_new_high_score_entry
 		jsr enable_antic
-raszpla	rts
+		rts
 
 snrs_9	#if .byte @ = #$34
 			lda mvstate
@@ -6260,15 +6260,30 @@ rlern_0	lda LATEST_HIGH_SCORE_ENTRY_BUFFER,y
 		bne rlern_0
 		rts
 
+hold_fire_to_skip
+		lda #0
+		sta amygdala_type
+zupa	lda trig0
+		beq raszpla
+		rts
+raszpla	inc amygdala_type
+		jsr synchro17
+		lda amygdala_type
+		cmp #$ff/2+$ff/3
+		bne zupa
+		pla
+		pla
+		rts
+
 ; This is fuck*.*in' sqeezed just after `reset_kutka_data`
 ; with a single byte to spare at $7FB2
 		org $7FB2+1
 TEXT_FIRE_TO_SKIP
-		dta d'    Wdu',b(87),d' '
+		dta d'Przytrzymaj '
 		dta d'FIRE'*
-		dta d' aby pomin',b(81),b(86),d' podawanie   '
+		dta d' aby pomin',b(81),b(86),d' podawanie'
 TEXT_FIRE_TO_SKIP_EN		
-		dta d'          Press '
+		dta d'           Hold '
 		dta d'FIRE'*
 		dta d' to skip          '
 TEKSTY_END

@@ -394,7 +394,6 @@ ill_3	cpx #0
 ill_2	
 		rts
 
-
 allow_kutka_override
 		lda language
 		and #%00000001
@@ -6151,6 +6150,11 @@ sdm_5	lda #0
 		jmp sdm_5
 
 sdm_6
+		ldx <DLQRCODE
+		ldy >DLQRCODE
+		stx SDLSTL
+		sty SDLSTL+1
+
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL
 		ldx #$0f
@@ -6174,11 +6178,6 @@ sdm_6
 
 		sty CLR1
 		sty $D017
-
-		ldx <DLQRCODE
-		ldy >DLQRCODE
-		stx SDLSTL
-		sty SDLSTL+1
 
 		mwa #COMPRESSED_DATAMATRIX_DATA ZX5_INPUT
 		mwa #DataMatrix_code ZX5_OUTPUT

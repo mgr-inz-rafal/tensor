@@ -2591,7 +2591,7 @@ dlns_1
 		
 		; Animate
 dlns_0
-:2		jsr synchro
+		jsr wait_here
 		inc scroll
 		lda scroll
 		and #%00001111
@@ -3957,7 +3957,6 @@ syn_pal
 		#end
 		jmp syn_pal
 		rts
-
 
 synchro17
 		ldx #17
@@ -6274,6 +6273,23 @@ raszpla	inc amygdala_type
 		pla
 		pla
 		rts
+
+synchro7
+		ldx #7
+sa9111	cpx #0
+		beq @+
+		jsr synchro
+		dex
+		jmp sa9111
+@		rts
+
+		org 713
+wait_here
+		phr
+		jsr synchro7
+		plr
+		rts
+
 
 ; This is fuck*.*in' sqeezed just after `reset_kutka_data`
 ; with a single byte to spare at $7FB2

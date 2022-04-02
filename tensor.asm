@@ -5418,11 +5418,11 @@ INSTRUCTION_DATA_EN
 	dta b(124),d'is useless due to lack of ammo. He    ',b(124)
 	dta b(124),d'can, however, use the ',b(95),d'Gravitational  ',b(124)
 	dta b(124),d'Tensor Gear',b(95),d' to blunge and mingle the ',b(124)
-	dta b(124),d'space continuum and make the things   ',b(124)
-	dta b(124),d'fall down. Please help him aggregate  ',b(124)
-	dta b(124),d'all the mystical almonds, to save the ',b(124)
+	dta b(124),d'space continuum and make things fall  ',b(124)
+	dta b(124),d'down. Please help him aggregate all   ',b(124)
+	dta b(124),d'mystical almonds, to save the world   ',b(124)
 INSTRUCTION_LAST_LINE_EN
-	dta b(124),d'world from Evil, and get some cheese. ',b(124)
+	dta b(124),d'from rotten Evil, and get some cheese.',b(124)
 
 FIND_START_VALUE
         ldx #0

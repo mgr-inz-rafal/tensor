@@ -11,8 +11,6 @@
 
 ; These use some stack
 STACK_STARTED_WITH_KUTKA_OVERRIDE equ $100
-STACK_CURRENT_PERSISTENCY_BANK equ $101
-STACK_ON_PROPER_CART equ $102
 STACK_GOING_FROM_PREVIOUS_LEVEL equ $103
 STACK_HERE_P2 equ $104
 STACK_SKIP_MUSIC_CONDUCT equ $105
@@ -82,7 +80,6 @@ CART_RAM_START	equ $a000
 CART_RAM_END	equ CART_RAM_START+CART_RAM_SIZE
 SAVES_PER_SLOT	equ CART_RAM_SIZE/SAVE_SLOT_LEN
 LAST_SAVE_SLOT_ADDRESS equ CART_RAM_START+SAVES_PER_SLOT*SAVE_SLOT_LEN-SAVE_SLOT_LEN
-SAVE_SLOT_OCCUPIED_MARK equ $bb
 SCORE_SPRITE_START equ 113-4
 SCORE_DLI_LINE equ $6b
 REDUCER_START_POS equ $ff/2-4-19
@@ -128,7 +125,6 @@ MAP_NAMES_BUFFER_SIZE equ (16*2+2)*MAPCOUNT+16*2
 .zpvar	.word	copysrc 
 .zpvar	.word	len      
 .zpvar	.word	pnb      
-.zpvar	.word	current_persistency_address	; ...$BA
 .zpvar  .word   any_moved
 .zpvar  .byte   instafall	
 
@@ -341,7 +337,7 @@ TITLE_BOTTOM_BORDER
 	dta b(72)
 	dta b(73)
 	dta b(127)
-FLASH_BURN_SIGN
+FLASH_BURN_SIGN // TODO: Use this as a "read-only" disk indicator
 	dta b(125)
 	dta b(92)
 MENU_0_DATA
@@ -787,124 +783,18 @@ HIGH_SCORE_TABLE_TRUE_END
                    dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
 HIGH_SCORE_TABLE_END
 
-; wr555 the value from A
-wr555
-			bit STACK_CURRENT_PERSISTENCY_BANK
-			bvs _wr5c2
-			sta $d502   
-			sta $b555
-			rts     
-_wr5c2  
-			sta $d542   
-			sta $b555			
-			rts
-
-; wr222 the value from A
-wr222
-			bit STACK_CURRENT_PERSISTENCY_BANK
-			bvs _wr2c2
-			sta $d501
-			sta $aaaa
-			rts 
-_wr2c2      
-			sta $d541       
-			sta $aaaa       
-			rts
-
-unlock_cart
-			lda #$AA
-			jsr wr555
-			lda #$55
-			jsr wr222
-			rts
-		
-write_byte_to_cart
-			tya
-			pha
-
-			jsr unlock_cart
-			ldy #0
-			lda #$a0
-			jsr wr555
-			sta (current_persistency_address),y
-			txa
-			sta (ptr0),y
-			jsr cart_off
-			pla
-			tay
-			rts
-
-cart_off
-			sta $d580
-			sta wsync
-			rts
-
 burn_state
-			mwa #PERSISTENCY_BANK_CTL current_persistency_address
-bs_8		jsr find_persistency_slot
-			cpy #$ff
-			beq bs_7
-			sty STACK_CURRENT_PERSISTENCY_BANK
-bs_6		cpy #0
-			beq bs_5
-			inw current_persistency_address
-			dey
-			jmp bs_6
-
-bs_5
-			ldx #SAVE_SLOT_OCCUPIED_MARK
-			jsr write_byte_to_cart
-
-			ldy #0
-bs_1		inw ptr0
-			lda LEVEL_COMPLETION_BITS,y
-			tax
-			jsr write_byte_to_cart
-			iny
-			cpy #8
-			bne bs_1
-
-			mwa #HIGH_SCORE_TABLE ptr1
-			ldy #0
-bs_2		inw ptr0
-			lda (ptr1),y
-			tax
-			jsr write_byte_to_cart
-			inw ptr1
-			#if .word ptr1 <> #HIGH_SCORE_TABLE_END
-				jmp bs_2
-			#end
-
-			inw ptr0
-			ldx instafall
-			jsr write_byte_to_cart
-
-			inw ptr0
-			ldx level_rotation
-			jsr write_byte_to_cart
-
-			inw ptr0
-			ldx language
-			jsr write_byte_to_cart
-
-bs_X		rts
-bs_7
-			jsr erase_state_sector
-			jmp bs_8
+			rts
 
 persistent_save
 			jsr STOP_MUSIC
 			sta WSYNC
-			lda STACK_ON_PROPER_CART
-			beq yhha2
 			jsr os_gone
 			jsr burn_state
 			jsr os_back
-yhha2		rts
+			rts
 
 persistent_load
-			lda STACK_ON_PROPER_CART
-			beq yhha2
 			jsr os_gone
 			jsr read_state
 			jsr os_back
@@ -938,163 +828,6 @@ als_3
 			rts
 
 read_state
-			jsr find_last_burned_state
-			cpy #$ff
-			beq bs_X ; No stored state found
-
-			sta PERSISTENCY_BANK_CTL,y
-			sta WSYNC
-
-			ldy #0
-			inw ptr0
-
-rs_1		lda (ptr0),y
-			sta LEVEL_COMPLETION_BITS,y
-			iny
-			cpy #8
-			bne rs_1
-
-			adw ptr0 #7
-			ldy #0
-			mwa #HIGH_SCORE_TABLE ptr1
-rs_2		inw ptr0
-			lda (ptr0),y
-			sta (ptr1),y
-			inw ptr1
-			#if .word ptr1 <> #HIGH_SCORE_TABLE_END
-				jmp rs_2
-			#end
-
-			inw ptr0
-			lda (ptr0),y
-			sta instafall
-
-			iny
-			lda (ptr0),y
-			sta level_rotation
-
-			iny
-			lda (ptr0),y
-			sta language
-
-			jsr cart_off
-
-			rts
-
-find_last_burned_state
-			ldy #PERSISTENCY_BANK_END
-
-flbs_3		sta PERSISTENCY_BANK_CTL,y
-			sta wsync
-
-			tya
-			pha
-			mwa #LAST_SAVE_SLOT_ADDRESS ptr0
-			ldy #0
-flbs_2		lda (ptr0),y
-			cmp #SAVE_SLOT_OCCUPIED_MARK
-			beq flbs_1
-
-; Try previous slot
-			sbw ptr0 #SAVE_SLOT_LEN
-			#if .word ptr0 < #CART_RAM_START
-				pla
-				tay
-				dey
-				cpy #PERSISTENCY_BANK_START-1
-				beq flbs_4
-				jmp flbs_3
-			#end
-			jmp flbs_2
-
-; Found last save
-flbs_1		pla
-			tay
-flbs_5		jsr cart_off
-			rts
-; No save found
-flbs_4
-			ldy #$ff
-			jmp flbs_5
-
-erase_state_sector
-			ldy #PERSISTENCY_BANK_START
-			sty STACK_CURRENT_PERSISTENCY_BANK
-			sta PERSISTENCY_BANK_CTL,y
-			sta WSYNC
-			jsr unlock_cart
-			lda #$80
-			jsr wr555
-			jsr unlock_cart
-			sta PERSISTENCY_BANK_CTL,y
-			sta WSYNC
-			lda #$30
-			sta CART_RAM_START
-			jsr wait_to_complete
-			jsr cart_off
-			rts
-
-wait_to_complete
-poll_write
-			lda #0
-			sta workpages
-_poll_again		
-			lda CART_RAM_START
-			cmp CART_RAM_START
-			bne poll_write
-			cmp CART_RAM_START
-			bne poll_write
-			inc workpages
-			bne _poll_again
-			rts
-
-find_persistency_slot
-
-			ldy #PERSISTENCY_BANK_START
-
-fps_5		ldx #10
-			sta PERSISTENCY_BANK_CTL,y
-			sta wsync
-
-			tya
-			pha
-			mwa #CART_RAM_START ptr0
-			ldy #0
-fps_3		lda (ptr0),y
-			cmp #SAVE_SLOT_OCCUPIED_MARK
-			beq fps_1
-
-; Found slot
-			pla
-			tay 
-
-			; persistency bank in Y
-			; slot address in ptr0
-			jmp fps_6
-
-; Try next slot within this bank
-fps_1		dex
-			beq fps_2
-
-			adw ptr0 #SAVE_SLOT_LEN
-
-			jmp fps_3
-
-
-; Try next persistency bank
-fps_2		pla
-			tay
-			iny
-			cpy #PERSISTENCY_BANK_END+1
-			beq fps_4
-			jmp fps_5
-	
-; No slot found
-fps_4		ldy #$ff
-			jmp flbs_5
-
-fps_6	
-			jsr cart_off	
 			rts
 
 fnt
@@ -1173,14 +906,8 @@ ai8
 	jsr detect_ntsc
 	jsr clear_pmg
 
-	jsr are_we_on_proper_cart
-	lda STACK_ON_PROPER_CART
-	bne sqm7
-	lda #64
-	sta FLASH_BURN_SIGN
-	
+
 	; TODO: unlock burning
-sqm7
 	lda PERSISTENCY_LOADED
 	bne awwq
 	jsr persistent_load
@@ -5336,52 +5063,6 @@ snrs_2
 		sta CH
 		jmp snrs_0
 
-		rts
-
-are_we_on_proper_cart
-		jsr os_gone
-		ldy #PERSISTENCY_BANK_CHECK
-		sta PERSISTENCY_BANK_CTL,y
-		sta wsync
-
-		ldy #0
-		ldx #1
-		lda CART_RAM_START,y
-		cmp #$4a	; 'J'
-		bne awioc_0
-		iny
-		lda CART_RAM_START,y
-		cmp #$65	; 'e'
-		bne awioc_0
-		iny
-		lda CART_RAM_START,y
-		cmp #$62	; 'b'
-		bne awioc_0
-		iny
-		lda CART_RAM_START,y
-		cmp #$61	; 'a'
-		bne awioc_0
-		iny
-		lda CART_RAM_START,y
-		cmp #$63	; 'c'
-		bne awioc_0
-		iny
-		lda CART_RAM_START,y
-		cmp #$50	; 'P'
-		bne awioc_0
-		iny
-		lda CART_RAM_START,y
-		cmp #$69	; 'i'
-		bne awioc_0
-		iny
-		lda CART_RAM_START,y
-		cmp #$53	; 'S'
-		bne awioc_0
-		jmp awioc_1
-awioc_0 dex
-awioc_1	stx STACK_ON_PROPER_CART
-		jsr cart_off
-		jsr os_back
 		rts
 
 SET_DLI_ROUTINE

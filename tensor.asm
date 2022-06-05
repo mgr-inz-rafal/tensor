@@ -15,6 +15,7 @@ STACK_GOING_FROM_PREVIOUS_LEVEL equ $103
 STACK_HERE_P2 equ $104
 STACK_SKIP_MUSIC_CONDUCT equ $105
 workpages equ $106
+STACK_file_open_mode		equ $107
 
 DataMatrix_data equ $4525	; Must be the same as MAP_01_NAME in both `tensor.asm` and `datamatrix.asx`
 DataMatrix_code equ DataMatrix_data+832
@@ -248,7 +249,6 @@ COMPRESSED_DATAMATRIX_DATA equ *-$2000 + FONTS_STORAGE
 		ins "datamatrix.kloc"
 COMPRESSED_DATAMATRIX_DATA_END equ *-$2000 + FONTS_STORAGE		
 FONTS_END equ *
-
 
 COPY_UNDER_OS_FONTS
 	sei
@@ -783,22 +783,140 @@ HIGH_SCORE_TABLE_TRUE_END
                    dta b($99),b($99),b($ff),b('j'),b('e'),b('b'),b('a'),b('c'),b(' '),b('p'),b('i'),b('s')
 HIGH_SCORE_TABLE_END
 
+pizda_wisi jmp pizda_wisi
+
+; Free IOCB returned in X
+.proc	io_find_free_iocb
+		ldx #$00
+        ldy #$01
+io_loop lda IOCB,x
+        cmp #$ff
+        beq io_fnd
+        txa
+        clc
+        adc #$10
+        tax
+        bpl io_loop
+        ldy #-95
+io_fnd  rts
+.endp
+
+io_open_file_load
+		lda #OPEN
+		sta ICCOM,x
+		lda #OPNIN
+		sta icax1,x
+		lda #$00
+		sta icax2,x 
+		lda #<save_state_file
+		sta ICBAL,x
+		lda #>save_state_file
+		sta ICBAL+1,x
+		jsr CIOV
+		rts
+
+io_open_file_save
+		lda #OPEN
+		sta ICCOM,x
+		lda #OPNOT
+		sta icax1,x
+		lda #$00
+		sta icax2,x 
+		lda #<save_state_file
+		sta ICBAL,x
+		lda #>save_state_file
+		sta ICBAL+1,x
+		jsr CIOV
+		rts
+		
+.proc	io_close_file
+		lda #CLOSE
+		sta ICCOM,X
+		jsr CIOV
+		rts
+.endp
+
+.proc	io_read_binary(.word buf_addr .word buf_len) .var
+.var	buf_addr .word
+.var	buf_len .word
+		lda #GETCHR
+		sta ICCOM,x
+		lda buf_addr
+		sta ICBAL,x
+		lda buf_addr+1
+		sta ICBAL+1,x
+		lda buf_len
+		sta ICBLL,x
+		lda buf_len+1
+		sta ICBLL+1,x
+		jsr ciov		
+		rts
+.endp
+
+.proc	io_write_binary(.word buf_addr .word buf_len) .var
+.var	buf_addr .word
+.var	buf_len .word
+		lda #PUTCHR
+		sta ICCOM,x
+		lda buf_addr
+		sta ICBAL,x
+		lda buf_addr+1
+		sta ICBAL+1,x
+		lda buf_len
+		sta ICBLL,x
+		lda buf_len+1
+		sta ICBLL+1,x
+		jsr ciov	
+		rts
+.endp
+
+save_state_file	dta c"D:JEBAC.PIS",b($9b)
+
 burn_state
-			rts
+			io_find_free_iocb
+			jmi pizda_wisi
+			jsr io_open_file_save
+			jmi pizda_wisi
+			io_write_binary #LEVEL_COMPLETION_BITS #8
+			jmi pizda_wisi
+			io_write_binary #HIGH_SCORE_TABLE #(HIGH_SCORE_TABLE_TRUE_END-HIGH_SCORE_TABLE)
+			jmi pizda_wisi
+			io_write_binary #instafall #1
+			jmi pizda_wisi
+			io_write_binary #level_rotation #1
+			jmi pizda_wisi
+			io_write_binary #language #1
+			jmi pizda_wisi
+			io_close_file
+bs_X		rts
 
 persistent_save
+			jsr disable_antic
 			jsr STOP_MUSIC
-			sta WSYNC
-			jsr os_gone
-			jsr burn_state
 			jsr os_back
+			cli
+			lda #$40
+			sta NMIEN
+			sta WSYNC
+			jsr disable_antic
+			jsr burn_state
+			lda #$22	; Default SDMCTL value
+			sta SDMCTL
 			rts
 
 persistent_load
-			jsr os_gone
-			jsr read_state
+			jsr disable_antic
+			jsr STOP_MUSIC
 			jsr os_back
+			cli
+			lda #$40
+			sta NMIEN
+			sta WSYNC
+			jsr disable_antic
+			jsr read_state
 			jsr apply_loaded_state
+			lda #$22	; Default SDMCTL value
+			sta SDMCTL
 			rts
 
 apply_loaded_state
@@ -828,7 +946,23 @@ als_3
 			rts
 
 read_state
-			rts
+			io_find_free_iocb
+			jmi RS_X
+			jsr io_open_file_load
+			jmi RS_X
+			io_read_binary #LEVEL_COMPLETION_BITS #8
+			jmi RS_X
+			io_read_binary #HIGH_SCORE_TABLE #(HIGH_SCORE_TABLE_TRUE_END-HIGH_SCORE_TABLE)
+			jmi RS_X
+			io_read_binary #instafall #1
+			jmi RS_X
+			io_read_binary #level_rotation #1
+			jmi RS_X
+			io_read_binary #language #1
+			jmi RS_X
+			io_close_file
+			jmi RS_X
+RS_X		rts
 
 fnt
 	ift USESPRITES
@@ -1482,10 +1616,6 @@ stop
 	tax
 	sta:rne hposp0,x+
 
-	; TODO: Burn only if options are dirty
-	; TODO: unlock burning
-	jsr persistent_save
-
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL
 
@@ -1685,6 +1815,10 @@ USESPRITES = 1
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 run_here			
+	; TODO: Burn only if options are dirty
+	; TODO: unlock burning
+	jsr persistent_save
+
 		lda DL_TOP_SCROL
 		sta scroll_tmp
 		jsr init_game
@@ -2663,7 +2797,7 @@ show_intermission
 		; TODO: unlock burning
 		jsr persistent_save
 
-si_01	; Define offset for caver number
+si_01	; Define offset for cavern number
 		ldx #0
 		stx repaint
 		inx
@@ -3663,12 +3797,7 @@ x2pmg_0	cpy #0
 		mva ptr2 psy
 		rts
 
-pizda_wisi jmp pizda_wisi
-
 synchro
-		lda os_gone_debug
-		cmp #0
-		bne pizda_wisi
 		lda PAL
 		cmp #1
 		beq syn_pal

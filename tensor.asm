@@ -1616,6 +1616,10 @@ stop
 	tax
 	sta:rne hposp0,x+
 
+	; TODO: Burn only if options are dirty
+	; TODO: unlock burning
+	jsr persistent_save
+
 	lda #$22	; Default SDMCTL value
 	sta SDMCTL
 
@@ -1815,10 +1819,6 @@ USESPRITES = 1
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 run_here			
-	; TODO: Burn only if options are dirty
-	; TODO: unlock burning
-	jsr persistent_save
-
 		lda DL_TOP_SCROL
 		sta scroll_tmp
 		jsr init_game
@@ -5162,7 +5162,8 @@ snrs_1	#if .byte last_true_player_pos > #$ff/2
 		sty LATEST_HIGH_SCORE_CURSOR_POSITION
 		jsr disable_antic
 		jsr store_new_high_score_entry
-		jsr enable_antic
+		lda #$22	; Default SDMCTL value
+		sta SDMCTL
 		rts
 
 snrs_9	#if .byte @ = #$34

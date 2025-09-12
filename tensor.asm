@@ -891,17 +891,17 @@ burn_state
 bs_X		rts
 
 persistent_save
-			jsr disable_antic
+			;jsr disable_antic
 			jsr STOP_MUSIC
 			jsr os_back
 			cli
 			lda #$40
 			sta NMIEN
 			sta WSYNC
-			jsr disable_antic
+			;jsr disable_antic
 			jsr burn_state
-			lda #$22	; Default SDMCTL value
-			sta SDMCTL
+			;lda #$22	; Default SDMCTL value
+			;sta SDMCTL
 			rts
 
 persistent_load
